@@ -7,7 +7,7 @@
  */
 function AppConfig($setting = null)
 {
-    $config = require __DIR__ . "/app.php";
+    $config = require __DIR__ . "/../../../../Config/app.php";
     return !$setting ? $config : $config[$setting];
 }
 
@@ -18,7 +18,7 @@ function AppConfig($setting = null)
  */
 function AuthConfig($setting = null)
 {
-    $config = require __DIR__ . "/auth.php";
+    $config = require __DIR__ . "/../../../../Config/auth.php";
     return !$setting ? $config : $config[$setting];
 }
 
@@ -29,7 +29,7 @@ function AuthConfig($setting = null)
  */
 function viewConfig($setting = null)
 {
-    $config = require __DIR__ . "/view.php";
+    $config = require __DIR__ . "/../../../../Config/view.php";
     return !$setting ? $config : $config[$setting];
 }
 
@@ -37,6 +37,6 @@ function viewConfig($setting = null)
 
 function dbConfig($setting = null)
 {
-    $config = require __DIR__ . "/database.php";
+    $config = require __DIR__ . "/../../../../Config/database.php";
     return !$setting ? $config : $config[$setting];
 }
