@@ -33,8 +33,6 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "leafs/leaf": "^2.4",
-        "leafs/mvc": "*",
-        "leafs/api": "*"
+        "leafs/leaf": "^2.*"
     }
 }
