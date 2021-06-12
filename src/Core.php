@@ -1,5 +1,7 @@
 <?php
 
+namespace Leaf;
+
 /**
  * Leaf MVC Core
  * ----------
@@ -9,7 +11,7 @@ class Core
 {
     protected static $paths;
 
-    public function paths($paths = null)
+    public static function paths($paths = null)
     {
         if (!$paths) {
             return static::$paths;
