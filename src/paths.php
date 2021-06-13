@@ -1,7 +1,5 @@
 <?php
 
-// App paths as callable methods
-
 if (!function_exists('app_paths')) {
     /**
      * Get all app paths
