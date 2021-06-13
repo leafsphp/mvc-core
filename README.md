@@ -24,7 +24,7 @@ composer require leafs/mvc-core
 
 ## Including in earlier versions
 
-You can include mvc core in earlier versions of Leaf MVC and Leaf API manually simply by removing the already existing `Config/functions.php` file and including this in `Config/bootstrap.php`
+You can include mvc core in earlier versions of Leaf MVC and Leaf API manually simply by removing the already existing `Config/functions.php` and `Config/bootstrap.php` files. That's it.
 
 ## Basic Usage
 
