@@ -33,6 +33,6 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "leafs/leaf": "^2.*"
+        "leafs/leaf": "*"
     }
 }
