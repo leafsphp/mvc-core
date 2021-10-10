@@ -27,7 +27,6 @@
         "files": [
             "src/bootstrap.php",
             "src/config.php",
-            "src/functions.php",
             "src/paths.php"
         ]
     },
