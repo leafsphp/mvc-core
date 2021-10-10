@@ -11,6 +11,17 @@ function AppConfig($setting = null)
     return !$setting ? $config : $config[$setting];
 }
 
+// paths
+
+/**
+ * Get paths configuration
+ */
+function PathsConfig($setting = null)
+{
+    $config = require __DIR__ . "/../../../../Config/paths.php";
+    return !$setting ? $config : $config[$setting];
+}
+
 // Auth
 
 /**
@@ -27,15 +38,15 @@ function AuthConfig($setting = null)
 /**
  * Get view configuration
  */
-function viewConfig($setting = null)
+function ViewConfig($setting = null)
 {
     $config = require __DIR__ . "/../../../../Config/view.php";
-    return !$setting ? $config : $config[$setting];
+    return !$setting ? $config : $config[$setting] ?? null;
 }
 
 // Db
 
-function dbConfig($setting = null)
+function DatabaseConfig($setting = null)
 {
     $config = require __DIR__ . "/../../../../Config/database.php";
     return !$setting ? $config : $config[$setting];
