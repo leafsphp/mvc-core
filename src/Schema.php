@@ -1,8 +1,6 @@
 <?php
 
-namespace Leaf\Schema;
-
-use Illuminate\Database\Schema\Blueprint;
+namespace Leaf;
 
 class Schema
 {
@@ -20,7 +18,7 @@ class Schema
 		}
 
 		if (!$capsule::schema()->hasTable($table)) {
-			$capsule::schema()->create($table, function (Blueprint $table) use($schema) {
+			$capsule::schema()->create($table, function ($table) use($schema) {
 				foreach ($schema as $key => $value) {
 					if ($key == "id" || $key == "_id") {
 						$table->increments($key);
