@@ -27,7 +27,8 @@
         "files": [
             "src/bootstrap.php",
             "src/config.php",
-            "src/paths.php"
+            "src/paths.php",
+            "src/functions.php"
         ]
     },
     "minimum-stability": "stable",
