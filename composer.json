@@ -33,6 +33,9 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "leafs/leaf": "*"
+        "leafs/leaf": "*",
+        "doctrine/dbal": "^2.9",
+        "illuminate/database": "^8.63",
+        "illuminate/events": "^8.63"
     }
 }
