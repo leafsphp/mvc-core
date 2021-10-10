@@ -1,10 +1,10 @@
 <?php
 
-if (!function_exists('app_paths')) {
+if (!function_exists('AppPaths')) {
     /**
      * Get all app paths
      */
-    function app_paths($path = null, bool $slash = false)
+    function AppPaths($path = null, bool $slash = false)
     {
         $paths = Leaf\Core::paths();
         $res = !$path ? $paths : $paths[$path] ?? "/";
@@ -12,142 +12,142 @@ if (!function_exists('app_paths')) {
     }
 }
 
-if (!function_exists('config_path')) {
+if (!function_exists('ConfigPath')) {
     /**
      * Config directory path
      */
-    function config_path($path = null)
+    function ConfigPath($path = null)
     {
-        return app_paths("config_path") . "/$path";
+        return AppPaths("configPath") . "/$path";
     }
 }
 
-if (!function_exists('commands_path')) {
+if (!function_exists('CommandsPath')) {
     /**
      * Commands directory path
      */
-    function commands_path($path = null)
+    function CommandsPath($path = null)
     {
-        return app_paths("commands_path") . "/$path";
+        return AppPaths("commandsPath") . "/$path";
     }
 }
 
-if (!function_exists('controllers_path')) {
+if (!function_exists('ControllersPath')) {
     /**
      * Controllers directory path
      */
-    function controllers_path($path = null)
+    function ControllersPath($path = null)
     {
-        return app_paths("controllers_path") . "/$path";
+        return AppPaths("controllersPath") . "/$path";
     }
 }
 
-if (!function_exists('database_path')) {
+if (!function_exists('DatabasePath')) {
     /**
      * Database storage path
      */
-    function database_path($path = null)
+    function DatabasePath($path = null)
     {
-        return app_paths("database_storage_path") . "/$path";
+        return AppPaths("database_storagePath") . "/$path";
     }
 }
 
-if (!function_exists('factories_path')) {
+if (!function_exists('FactoriesPath')) {
     /**
      * Factories directory path
      */
-    function factories_path($path = null)
+    function FactoriesPath($path = null)
     {
-        return app_paths("factories_path") . "/$path";
+        return AppPaths("factoriesPath") . "/$path";
     }
 }
 
-if (!function_exists('helpers_path')) {
+if (!function_exists('HelpersPath')) {
     /**
      * Helpers directory path
      */
-    function helpers_path($path = null)
+    function HelpersPath($path = null)
     {
-        return app_paths("helpers_path") . "/$path";
+        return AppPaths("helpersPath") . "/$path";
     }
 }
 
-if (!function_exists('lib_path')) {
+if (!function_exists('LibPath')) {
     /**
      * Helpers directory path
      */
-    function lib_path($path = null)
+    function LibPath($path = null)
     {
-        return app_paths("lib_path") . "/$path";
+        return AppPaths("libPath") . "/$path";
     }
 }
 
-if (!function_exists('migrations_path')) {
+if (!function_exists('MigrationsPath')) {
     /**
      * Migrations directory path
      */
-    function migrations_path($path = null, bool $slash = true)
+    function MigrationsPath($path = null, bool $slash = true)
     {
-        return app_paths("migrations_path", $slash) . "/$path";
+        return AppPaths("migrationsPath", $slash) . "/$path";
     }
 }
 
-if (!function_exists('models_path')) {
+if (!function_exists('ModelsPath')) {
     /**
      * Models directory path
      */
-    function models_path($path = null)
+    function ModelsPath($path = null)
     {
-        return app_paths("models_path") . "/$path";
+        return AppPaths("modelsPath") . "/$path";
     }
 }
 
-if (!function_exists('public_path')) {
+if (!function_exists('PublicPath')) {
     /**
      * Public directory path
      */
-    function public_path($path = null)
+    function PublicPath($path = null)
     {
-        return app_paths("public_path") . "/$path";
+        return AppPaths("publicPath") . "/$path";
     }
 }
 
-if (!function_exists('routes_path')) {
+if (!function_exists('RoutesPath')) {
     /**
      * Routes directory path
      */
-    function routes_path($path = null)
+    function RoutesPath($path = null)
     {
-        return app_paths("routes_path") . "/$path";
+        return AppPaths("routesPath") . "/$path";
     }
 }
 
-if (!function_exists('seeds_path')) {
+if (!function_exists('SeedsPath')) {
     /**
      * Seeds directory path
      */
-    function seeds_path($path = null)
+    function SeedsPath($path = null)
     {
-        return app_paths("seeds_path") . "/$path";
+        return AppPaths("seedsPath") . "/$path";
     }
 }
 
-if (!function_exists('storage_path')) {
+if (!function_exists('StoragePath')) {
     /**
      * Storage directory path
      */
-    function storage_path($path = null, bool $slash = false)
+    function StoragePath($path = null, bool $slash = false)
     {
-        return app_paths("storage_path", $slash) . "/$path";
+        return AppPaths("storagePath", $slash) . "/$path";
     }
 }
 
-if (!function_exists('views_path')) {
+if (!function_exists('ViewsPath')) {
     /**
      * Views directory path
      */
-    function views_path($path = null, bool $slash = true)
+    function ViewsPath($path = null, bool $slash = true)
     {
-        return app_paths("views_path", $slash) . "/$path";
+        return AppPaths("viewsPath", $slash) . "/$path";
     }
 }
