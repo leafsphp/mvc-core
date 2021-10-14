@@ -7,18 +7,24 @@ class Schema
 	/**
 	 * @param \Illuminate\Database\Capsule\Manager $capsule
 	 * @param string $table The name of table to manipulate
-	 * @param string $schema The JSON schema for database
+	 * @param string|null $schema The JSON schema for database
 	 */
-    public static function build($capsule, $table, $schema)
-    {
-		$schema = json_decode($schema);
+	public static function build($capsule, $table, $schema = null)
+	{
+		if (file_exists($table)) {
+			$schema = json_decode(file_get_contents($table));
+			$table = basename($table);
+			$table = str_replace(".json", "", $table);
+		} else {
+			$schema = json_decode($schema);
+		}
 
 		if (is_array($schema)) {
 			$schema = $schema[0];
 		}
 
 		if (!$capsule::schema()->hasTable($table)) {
-			$capsule::schema()->create($table, function ($table) use($schema) {
+			$capsule::schema()->create($table, function ($table) use ($schema) {
 				foreach ($schema as $key => $value) {
 					if ($key == "id" || $key == "_id") {
 						$table->increments($key);
@@ -116,5 +122,5 @@ class Schema
 				}
 			});
 		}
-    }
+	}
 }
