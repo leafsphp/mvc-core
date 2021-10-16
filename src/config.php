@@ -51,3 +51,14 @@ function DatabaseConfig($setting = null)
     $config = require __DIR__ . "/../../../../Config/database.php";
     return !$setting ? $config : $config[$setting];
 }
+
+// Cors
+
+/**
+ * Get an auth configuration
+ */
+function CorsConfig($setting = null)
+{
+    $config = require __DIR__ . "/../../../../Config/cors.php";
+    return !$setting ? $config : $config[$setting];
+}
