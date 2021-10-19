@@ -12,8 +12,12 @@ if (!function_exists('_env')) {
     {
         $item = getenv($key);
 
-        if (!isset($_ENV[$key]) || (isset($_ENV[$key]) && $_ENV[$key] == null)) {
-            $item = $default;
+        if (!$item) {
+            if (isset($_ENV[$key])) {
+                $item = $_ENV[$key];
+            } else {
+                $item = $default;
+            }
         }
 
         return $item;

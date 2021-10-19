@@ -14,6 +14,10 @@ class Database
 
     public static function config($config = [])
     {
+        if (empty($config)) {
+            return static::$config;
+        }
+
         static::$config = array_merge(static::$config, $config);
     }
 
