@@ -71,7 +71,7 @@ class Schema
 					}
 
 					if ($type == "string") {
-						if (strpos($value, "{") == 0 || strpos($value, "[") == 0) {
+						if (strpos($value, "{") === 0 || strpos($value, "[") === 0) {
 							if (substr($key, -1) === "?") {
 								$table->json(substr($key, 0, -1))->nullable();
 								continue;
