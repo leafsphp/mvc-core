@@ -31,7 +31,8 @@
             "src/functions.php"
         ]
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
+	"prefer-stable": true,
     "require": {
         "leafs/leaf": "*",
         "doctrine/dbal": "^2.9",
