@@ -7,7 +7,7 @@
  */
 function AppConfig($setting = null)
 {
-    $config = require __DIR__ . "/../../../../Config/app.php";
+    $config = require __DIR__ . "/../../../../config/app.php";
     return !$setting ? $config : $config[$setting];
 }
 
@@ -18,7 +18,7 @@ function AppConfig($setting = null)
  */
 function PathsConfig($setting = null)
 {
-    $config = require __DIR__ . "/../../../../Config/paths.php";
+    $config = require __DIR__ . "/../../../../config/paths.php";
     return !$setting ? $config : $config[$setting];
 }
 
@@ -29,7 +29,7 @@ function PathsConfig($setting = null)
  */
 function AuthConfig($setting = null)
 {
-    $config = require __DIR__ . "/../../../../Config/auth.php";
+    $config = require __DIR__ . "/../../../../config/auth.php";
     return !$setting ? $config : $config[$setting];
 }
 
@@ -40,7 +40,7 @@ function AuthConfig($setting = null)
  */
 function ViewConfig($setting = null)
 {
-    $config = require __DIR__ . "/../../../../Config/view.php";
+    $config = require __DIR__ . "/../../../../config/view.php";
     return !$setting ? $config : $config[$setting] ?? null;
 }
 
@@ -48,7 +48,7 @@ function ViewConfig($setting = null)
 
 function DatabaseConfig($setting = null)
 {
-    $config = require __DIR__ . "/../../../../Config/database.php";
+    $config = require __DIR__ . "/../../../../config/database.php";
     return !$setting ? $config : $config[$setting];
 }
 
@@ -59,6 +59,6 @@ function DatabaseConfig($setting = null)
  */
 function CorsConfig($setting = null)
 {
-    $config = require __DIR__ . "/../../../../Config/cors.php";
+    $config = require __DIR__ . "/../../../../config/cors.php";
     return !$setting ? $config : $config[$setting];
 }
