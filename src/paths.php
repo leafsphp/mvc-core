@@ -108,7 +108,8 @@ if (!function_exists('PublicPath')) {
      */
     function PublicPath($path = null)
     {
-        return AppPaths("publicPath") . "/$path";
+        $IS_PUBLIC_ROOT = (strpos($_SERVER["SCRIPT_FILENAME"], "/public/") && strpos($_SERVER["REQUEST_URI"], "/public") == null);
+        return ($IS_PUBLIC_ROOT ? "" : AppPaths("publicPath")) . "/$path";
     }
 }
 
