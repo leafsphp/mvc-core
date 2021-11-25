@@ -36,6 +36,7 @@
     "require": {
         "leafs/leaf": "*",
         "doctrine/dbal": "^2.9",
+        "vlucas/phpdotenv": "^5.4",
         "illuminate/database": "^8.63",
         "illuminate/events": "^8.63"
     }
