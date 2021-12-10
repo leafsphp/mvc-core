@@ -1,10 +1,4 @@
 <!-- markdownlint-disable no-inline-html -->
-
-## View Leaf's docs [here](https://leafphp.netlify.app/#/)
-
-Built with ❤ by [**Mychi Darko**](https://mychi.netlify.app)
-
-<!-- markdownlint-disable no-inline-html -->
 <p align="center">
     <br><br>
     <img src="https://leafphp.dev/logo-circle.png" height="100"/>
