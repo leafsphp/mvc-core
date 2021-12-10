@@ -9,7 +9,7 @@
         "php",
         "framework"
     ],
-    "homepage": "https://leafphp.netlify.app/#/",
+    "homepage": "https://leafphp.dev/modules/mvc-core/",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -35,9 +35,9 @@
 	"prefer-stable": true,
     "require": {
         "leafs/leaf": "*",
-        "doctrine/dbal": "^2.9",
+        "doctrine/dbal": "^3.2",
         "vlucas/phpdotenv": "^5.4",
-        "illuminate/database": "^8.63",
-        "illuminate/events": "^8.63"
+        "illuminate/database": "^8.75",
+        "illuminate/events": "^8.75"
     }
 }
