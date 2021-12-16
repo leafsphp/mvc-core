@@ -9,7 +9,7 @@ class Schema
 	 * @param string $table The name of table to manipulate
 	 * @param string|null $schema The JSON schema for database
 	 */
-	public static function build($capsule, $table, $schema = null)
+	public static function build(\Illuminate\Database\Capsule\Manager $capsule, string $table, string $schema = null)
 	{
 		if (file_exists($table)) {
 			$schema = json_decode(file_get_contents($table));
@@ -117,8 +117,7 @@ class Schema
 						}
 
 						$table->boolean($key);
-						continue;
-					}
+                    }
 				}
 			});
 		}
