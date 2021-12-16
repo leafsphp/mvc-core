@@ -4,20 +4,16 @@ if (!function_exists('_env')) {
     /**
      * Gets the value of an environment variable.
      *
-     * @param  string  $key
+     * @param string $key
      * @param  mixed  $default
      * @return mixed
      */
-    function _env($key, $default = null)
+    function _env(string $key, $default = null)
     {
         $item = getenv($key);
 
         if (!$item) {
-            if (isset($_ENV[$key])) {
-                $item = $_ENV[$key];
-            } else {
-                $item = $default;
-            }
+            $item = $_ENV[$key] ?? $default;
         }
 
         return $item;
