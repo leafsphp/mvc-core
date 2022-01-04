@@ -83,14 +83,14 @@ abstract class Factory
 		$model = $this->model ?? $this->getModelName();
 
 		if (!$primaryKey) {
-			$primaryKey = strtolower($this->getModelName() . "_id");
-			$primaryKey = str_replace("\app\models\\", "", $primaryKey);
+			$primaryKey = strtolower($this->getModelName() . '_id');
+			$primaryKey = str_replace('\app\models\\', '', $primaryKey);
 		}
 
 		if (is_array($primaryKey)) {
 			$dataToOverride = $primaryKey;
 		} else {
-			$key = explode("_", $primaryKey);
+			$key = explode('_', $primaryKey);
 			if (count($key) > 1) {
 				unset($key[0]);
 			}
@@ -167,10 +167,10 @@ abstract class Factory
 	public function getModelName(): string
     {
 		$class = get_class($this);
-		$modelClass = "\App\Models" . Str::studly(str_replace(["App\Database\Factories", "Factory"], "", $class));
+		$modelClass = '\App\Models' . Str::studly(str_replace(['App\Database\Factories', 'Factory'], '', $class));
 
 		if (!class_exists($modelClass)) {
-			throw new \Exception("Couldn't retrieve model for " . get_class($this) . ". Add a \$model attribute to fix this.");
+			throw new \Exception('Couldn\'t retrieve model for ' . get_class($this) . '. Add a \$model attribute to fix this.');
 		}
 
 		return $modelClass;
