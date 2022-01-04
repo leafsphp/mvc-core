@@ -8,12 +8,12 @@ if (!function_exists('_env')) {
      * @param  mixed  $default
      * @return mixed
      */
-    function _env(string $key, $default = null)
+    function _env($key, $default = null)
     {
         $item = getenv($key);
 
-        if (!$item) {
-            $item = $_ENV[$key] ?? $default;
+        if (!isset($_ENV[$key]) || (isset($_ENV[$key]) && $_ENV[$key] == null)) {
+            $item = $default;
         }
 
         return $item;
