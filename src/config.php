@@ -1,17 +1,12 @@
 <?php
 
-// App
-
 /**
  * Get app configuration
  */
 function AppConfig($setting = null)
 {
-    $config = require dirname(__DIR__, 4) . '/config/app.php';
-    return !$setting ? $config : $config[$setting];
+    return MvcConfig('app', $setting);
 }
-
-// paths
 
 /**
  * Get paths configuration
@@ -22,43 +17,52 @@ function PathsConfig($setting = null)
     return !$setting ? $config : $config[$setting];
 }
 
-// Auth
-
 /**
  * Get an auth configuration
  */
 function AuthConfig($setting = null)
 {
-    $config = require dirname(__DIR__, 4) . '/config/auth.php';
-    return !$setting ? $config : $config[$setting];
+    return MvcConfig('auth', $setting);
 }
-
-// Views
 
 /**
  * Get view configuration
  */
 function ViewConfig($setting = null)
 {
-    $config = require dirname(__DIR__, 4) . '/config/view.php';
+    $config = \Leaf\Core::config('view');
     return !$setting ? $config : $config[$setting] ?? null;
 }
 
-// Db
-
+/**
+ * Get database configuration
+ */
 function DatabaseConfig($setting = null)
 {
-    $config = require dirname(__DIR__, 4) . '/config/database.php';
-    return !$setting ? $config : $config[$setting];
+    return MvcConfig('database', $setting);
 }
-
-// Cors
 
 /**
  * Get an auth configuration
  */
 function CorsConfig($setting = null)
 {
-    $config = require dirname(__DIR__, 4) . '/config/cors.php';
+    return MvcConfig('cors', $setting);
+}
+
+/**
+ * Get mail configuration
+ */
+function MailConfig($setting = null)
+{
+    return MvcConfig('mail', $setting);
+}
+
+/**
+ * Get an application configuration
+ */
+function MvcConfig($appConfig, $setting = null)
+{
+    $config = \Leaf\Core::config($appConfig);
     return !$setting ? $config : $config[$setting];
 }

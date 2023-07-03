@@ -18,7 +18,7 @@ if (!function_exists('ConfigPath')) {
      */
     function ConfigPath($path = ''): string
     {
-        return AppPaths('configPath') . "/$path";
+        return AppPaths('config') . "/$path";
     }
 }
 
@@ -28,7 +28,7 @@ if (!function_exists('CommandsPath')) {
      */
     function CommandsPath($path = ''): string
     {
-        return AppPaths('commandsPath') . "/$path";
+        return AppPaths('commands') . "/$path";
     }
 }
 
@@ -38,7 +38,7 @@ if (!function_exists('ControllersPath')) {
      */
     function ControllersPath($path = ''): string
     {
-        return AppPaths('controllersPath') . "/$path";
+        return AppPaths('controllers') . "/$path";
     }
 }
 
@@ -48,7 +48,7 @@ if (!function_exists('DatabasePath')) {
      */
     function DatabasePath($path = ''): string
     {
-        return AppPaths('databaseStoragePath') . "/$path";
+        return AppPaths('databaseStorage') . "/$path";
     }
 }
 
@@ -58,7 +58,7 @@ if (!function_exists('FactoriesPath')) {
      */
     function FactoriesPath($path = ''): string
     {
-        return AppPaths('factoriesPath') . "/$path";
+        return AppPaths('factories') . "/$path";
     }
 }
 
@@ -68,7 +68,7 @@ if (!function_exists('HelpersPath')) {
      */
     function HelpersPath($path = ''): string
     {
-        return AppPaths('helpersPath') . "/$path";
+        return AppPaths('helpers') . "/$path";
     }
 }
 
@@ -78,7 +78,7 @@ if (!function_exists('LibPath')) {
      */
     function LibPath($path = ''): string
     {
-        return AppPaths('libPath') . "/$path";
+        return AppPaths('lib') . "/$path";
     }
 }
 
@@ -88,7 +88,7 @@ if (!function_exists('MigrationsPath')) {
      */
     function MigrationsPath($path = '', bool $slash = true): string
     {
-        return AppPaths('migrationsPath', $slash) . "/$path";
+        return AppPaths('migrations', $slash) . "/$path";
     }
 }
 
@@ -98,7 +98,7 @@ if (!function_exists('ModelsPath')) {
      */
     function ModelsPath($path = ''): string
     {
-        return AppPaths('modelsPath') . "/$path";
+        return AppPaths('models') . "/$path";
     }
 }
 
@@ -109,7 +109,7 @@ if (!function_exists('PublicPath')) {
     function PublicPath($path = '', $slash = true): string
     {
         $IS_PUBLIC_ROOT = (strpos($_SERVER['SCRIPT_FILENAME'], '/public/') && strpos($_SERVER['REQUEST_URI'], '/public') == null);
-        return ($IS_PUBLIC_ROOT ? '' : AppPaths('publicPath', $slash)) . "/$path";
+        return ($IS_PUBLIC_ROOT ? '' : AppPaths('public', $slash)) . "/$path";
     }
 }
 
@@ -119,7 +119,7 @@ if (!function_exists('RoutesPath')) {
      */
     function RoutesPath($path = ''): string
     {
-        return AppPaths('routesPath') . "/$path";
+        return AppPaths('routes') . "/$path";
     }
 }
 
@@ -129,7 +129,7 @@ if (!function_exists('SeedsPath')) {
      */
     function SeedsPath($path = ''): string
     {
-        return AppPaths('seedsPath') . "/$path";
+        return AppPaths('seeds') . "/$path";
     }
 }
 
@@ -139,7 +139,7 @@ if (!function_exists('StoragePath')) {
      */
     function StoragePath($path = '', bool $slash = false): string
     {
-        return AppPaths('storagePath', $slash) . "/$path";
+        return AppPaths('storage', $slash) . "/$path";
     }
 }
 
@@ -149,6 +149,6 @@ if (!function_exists('ViewsPath')) {
      */
     function ViewsPath($path = '', bool $slash = true): string
     {
-        return AppPaths('viewsPath', $slash) . "/$path";
+        return AppPaths('views', $slash) . "/$path";
     }
 }
