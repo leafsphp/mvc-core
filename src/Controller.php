@@ -2,13 +2,11 @@
 
 namespace Leaf;
 
-use Leaf\Http\Response;
-
 /**
  * Leaf base controller
  * -----------------
  * Base controller for Leaf PHP Framework
- * 
+ *
  * @author Michael Darko <mickdd22@gmail.com>
  * @since 1.4.0
  * @version 2.0
@@ -30,7 +28,7 @@ class Controller
 
 	/**
 	 * Validate the given request with the given rules.
-	 * 
+	 *
 	 * @param  array  $rules
 	 */
 	public function validate(array $rules)
@@ -40,11 +38,11 @@ class Controller
 
 	/**
 	 * Upload a file
-	 * 
+	 *
 	 * @param string $file The file to upload
 	 * @param string $path The path to save the file in
 	 * @param array $config Configuration options for file upload
-	 * 
+	 *
 	 * @return string|bool
 	 */
 	public function fileUpload(string $file, string $path, array $config = [])

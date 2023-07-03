@@ -26,7 +26,7 @@ class Schema
 		if (!$capsule::schema()->hasTable($table)) {
 			$capsule::schema()->create($table, function ($table) use ($schema) {
 				foreach ($schema as $key => $value) {
-					if ($key == 'id' || $key == '_id') {
+					if ($key === 'id' || $key === '_id') {
 						$table->increments($key);
 						continue;
 					}
@@ -36,7 +36,7 @@ class Schema
 						continue;
 					}
 
-					if ($key == 'timestamps') {
+					if ($key === 'timestamps') {
 						$table->timestamps();
 						continue;
 					}
@@ -60,7 +60,7 @@ class Schema
 
 					$type = gettype($value);
 
-					if ($type == 'integer') {
+					if ($type === 'integer') {
 						if (substr($key, -1) === '?') {
 							$table->integer(substr($key, 0, -1))->nullable();
 							continue;
@@ -70,7 +70,7 @@ class Schema
 						continue;
 					}
 
-					if ($type == 'string') {
+					if ($type === 'string') {
 						if (strpos($value, '{') === 0 || strpos($value, '[') === 0) {
 							if (substr($key, -1) === '?') {
 								$table->json(substr($key, 0, -1))->nullable();
@@ -81,7 +81,7 @@ class Schema
 							continue;
 						}
 
-						if ($key == 'description' || $key == 'text' || strlen($value) > 150) {
+						if ($key === 'description' || $key === 'text' || strlen($value) > 150) {
 							if (substr($key, -1) === '?') {
 								$table->text(substr($key, 0, -1))->nullable();
 								continue;
@@ -100,7 +100,7 @@ class Schema
 						continue;
 					}
 
-					if ($type == 'array') {
+					if ($type === 'array') {
 						if (substr($key, -1) === '?') {
 							$table->enum(substr($key, 0, -1), $value)->nullable();
 							continue;
@@ -110,7 +110,7 @@ class Schema
 						continue;
 					}
 
-					if ($type == 'boolean') {
+					if ($type === 'boolean') {
 						if (substr($key, -1) === '?') {
 							$table->boolean(substr($key, 0, -1))->nullable();
 							continue;

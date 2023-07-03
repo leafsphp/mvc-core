@@ -47,9 +47,9 @@ abstract class Factory
 
 	/**
 	 * Create a number of records based on definition
-	 * 
+	 *
 	 * @param int $number The number of records to create
-	 * 
+	 *
 	 * @return self
 	 */
 	public function create(int $number): Factory
@@ -96,8 +96,8 @@ abstract class Factory
 			}
 			$key = implode($key);
 
-			$primaryKeyData = $this->data[rand(0, count($this->data) - 1)][$key] ?? null;
-			$primaryKeyData = $primaryKeyData ?? $model::all()[rand(0, count($model::all()) - 1)][$key];
+			$primaryKeyData = $this->data[\rand(0, count($this->data) - 1)][$key] ?? null;
+			$primaryKeyData = $primaryKeyData ?? $model::all()[\rand(0, count($model::all()) - 1)][$key];
 
 			$dataToOverride[$primaryKey] = $primaryKeyData;
 		}
@@ -140,9 +140,9 @@ abstract class Factory
 
 	/**
 	 * Return created records
-	 * 
+	 *
 	 * @param \array|null $override Override data to save
-	 * 
+	 *
 	 * @return array
 	 */
 	public function get(array $override = null): array
