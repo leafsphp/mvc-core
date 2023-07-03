@@ -1,20 +1,35 @@
 <?php
 
+if (!function_exists('assets')) {
+    /**
+     * Import an asset
+     */
+    function assets($assets = null)
+    {
+        return trim(AppPaths('assets'), '/') . '/' . trim($assets, '/');
+    }
+}
+
 if (!function_exists('view')) {
+    /**
+     * Render a view
+     *
+     * @return string
+     */
     function view(string $view, array $data = [])
     {
         if (ViewConfig('render')) {
             if (ViewConfig('config')) {
                 call_user_func_array(ViewConfig('config'), [[
-                    'views_path' => AppConfig('views.path'),
-                    'cache_path' => AppConfig('views.cachePath'),
+                    'views' => AppConfig('views.path'),
+                    'cache' => AppConfig('views.cachePath'),
                 ]]);
             }
 
             return ViewConfig('render')($view, $data);
         }
 
-        $engine = ViewConfig('view_engine');
+        $engine = ViewConfig('viewEngine');
 
         $className = strtolower(get_class(new $engine));
 
