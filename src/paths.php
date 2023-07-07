@@ -48,7 +48,7 @@ if (!function_exists('DatabasePath')) {
      */
     function DatabasePath($path = ''): string
     {
-        return AppPaths('databaseStorage') . "/$path";
+        return AppPaths('database') . "/$path";
     }
 }
 
