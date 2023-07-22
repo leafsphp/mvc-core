@@ -20,7 +20,6 @@ class Database
 
     /**
      * Set/Get database configuration
-     *
      * @param array $config The database configuration
      */
     public static function config($config = [])
