@@ -25,10 +25,10 @@
             "Leaf\\": "src"
         },
         "files": [
-            "src/bootstrap.php",
-            "src/config.php",
-            "src/paths.php",
-            "src/functions.php"
+            "src/globals/bootstrap.php",
+            "src/globals/config.php",
+            "src/globals/paths.php",
+            "src/globals/functions.php"
         ]
     },
     "minimum-stability": "dev",
