@@ -14,6 +14,10 @@ class Core
     protected static $config = [];
 
 
+    /**
+     * Set/Get paths
+     * @param string|array $paths The paths to set/get
+     */
     public static function paths($paths = null)
     {
         if (!$paths) {
@@ -56,6 +60,8 @@ class Core
 
     /**
      * Set/Get config
+     * @param string|array $config The config to set/get
+     * @param mixed $value The value to set config to. Ignored if $config is an array
      */
     public static function config($config = null, $value = null)
     {
@@ -73,5 +79,28 @@ class Core
         }
 
         static::$config[$config] = $value;
+    }
+
+    /**
+     * Load all application routes
+     */
+    public static function loadRoutes()
+    {
+        $routePath = static::$paths["routes"];
+        $routeFiles = glob("$routePath/*.php");
+
+        require "$routePath/index.php";
+
+        foreach ($routeFiles as $routeFile) {
+            if (basename($routeFile) === "index.php") {
+                continue;
+            }
+
+            if (strpos(basename($routeFile), "_") !== 0) {
+                continue;
+            }
+
+            require $routeFile;
+        }
     }
 }
