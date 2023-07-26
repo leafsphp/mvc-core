@@ -55,7 +55,7 @@ class Database
     /**
      * Create a Leaf Db connection using the model's database configuration
      */
-    public static function syncLeafDb()
+    public static function initDb()
     {
         if (function_exists('db')) {
             db()->connect([
