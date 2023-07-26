@@ -36,6 +36,7 @@ class Core
         static::loadConfig();
 
         Database::config(static::config('database'));
+        auth()->config(static::config('auth'));
 
         if (php_sapi_name() !== 'cli') {
             app()->config(static::config('app'));
@@ -82,9 +83,9 @@ class Core
     }
 
     /**
-     * Load all application routes
+     * Load all application routes and run the application
      */
-    public static function loadRoutes()
+    public static function runApplication()
     {
         $routePath = static::$paths["routes"];
         $routeFiles = glob("$routePath/*.php");
@@ -92,15 +93,18 @@ class Core
         require "$routePath/index.php";
 
         foreach ($routeFiles as $routeFile) {
-            if (basename($routeFile) === "index.php") {
+            if (basename($routeFile) === 'index.php') {
                 continue;
             }
 
-            if (strpos(basename($routeFile), "_") !== 0) {
+            if (strpos(basename($routeFile), '_') !== 0) {
                 continue;
             }
 
             require $routeFile;
         }
+
+        $app = \Leaf\Config::get('app.instance');
+        $app->run();
     }
 }
