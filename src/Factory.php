@@ -118,7 +118,7 @@ abstract class Factory
 	/**
 	 * Save created records in db
 	 *
-	 * @param \array $override Override data to save
+	 * @param array $override Override data to save
 	 *
 	 * @return true
 	 * @throws \Exception
@@ -147,7 +147,7 @@ abstract class Factory
 	/**
 	 * Return created records
 	 *
-	 * @param \array|null $override Override data to save
+	 * @param array|null $override Override data to save
 	 *
 	 * @return array
 	 */

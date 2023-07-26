@@ -13,15 +13,15 @@ namespace Leaf;
  */
 class Controller
 {
-	public $request;
-	public $response;
-	public $view;
+    public $request;
+    public $response;
+    public $view;
 
-	public function __construct()
-	{
-		$this->request = new Http\Request;
-		$this->response = new Http\Response;
-	}
+    public function __construct()
+    {
+        $this->request = new Http\Request;
+        $this->response = new Http\Response;
+    }
 
     /**
      * Return the leaf auth object
@@ -36,14 +36,14 @@ class Controller
         return \Leaf\Config::get('auth.instance');
     }
 
-	/**
-	 * Validate the incoming request with the given rules.
-	 * @param array $rules The rules to validate against
-	 */
-	public function validate(array $rules)
-	{
-		return $this->request->validate($rules);
-	}
+    /**
+     * Validate the incoming request with the given rules.
+     * @param array $rules The rules to validate against
+     */
+    public function validate(array $rules)
+    {
+        return $this->request->validate($rules);
+    }
 
     /**
      * Get the currently authenticated user.
