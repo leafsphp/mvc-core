@@ -13,13 +13,13 @@ use \Illuminate\Container\Container;
  */
 class Database
 {
+    /**@var \Illuminate\Database\Capsule\Manager $capsule */
     public static $capsule;
 
     protected static $config = [];
 
     /**
      * Set/Get database configuration
-     * 
      * @param array $config The database configuration
      */
     public static function config($config = [])
@@ -46,12 +46,16 @@ class Database
         static::$capsule->setEventDispatcher(new Dispatcher(new Container));
         static::$capsule->setAsGlobal();
         static::$capsule->bootEloquent();
+
+        if (php_sapi_name() === 'cli') {
+            Schema::$capsule = static::$capsule;
+        }
     }
 
     /**
      * Create a Leaf Db connection using the model's database configuration
      */
-    public static function syncLeafDb()
+    public static function initDb()
     {
         if (function_exists('db')) {
             db()->connect([

@@ -2,8 +2,6 @@
 
 namespace Leaf;
 
-use Leaf\Str;
-
 /**
  * Base Factory Class
  * -----------------
@@ -13,8 +11,15 @@ abstract class Factory
 {
 	/**
 	 * Faker class instance
+	 * @var \Faker\Generator
 	 */
 	public $faker;
+
+	/**
+	 * Laravel Str Facade
+	 * @var \Illuminate\Support\Str
+	 */
+	public $str;
 
 	/**
 	 * Generated factory data
@@ -23,7 +28,6 @@ abstract class Factory
 
 	/**
 	 * The name of the factory's corresponding model.
-	 *
 	 * @var string
 	 */
 	public $model = null;
@@ -33,6 +37,10 @@ abstract class Factory
 		if (class_exists(\Faker\Factory::class)) {
 			$this->faker = \Faker\Factory::create();
 		}
+
+		if (class_exists(\Illuminate\Support\Str::class)) {
+			$this->str = \Illuminate\Support\Str::class;
+		}
 	}
 
 	/**
@@ -41,19 +49,19 @@ abstract class Factory
 	 * @return array
 	 */
 	public function definition(): array
-    {
+	{
 		return [];
 	}
 
 	/**
 	 * Create a number of records based on definition
-	 * 
+	 *
 	 * @param int $number The number of records to create
-	 * 
+	 *
 	 * @return self
 	 */
 	public function create(int $number): Factory
-    {
+	{
 		$data = [];
 
 		for ($i = 0; $i < $number; $i++) {
@@ -65,16 +73,16 @@ abstract class Factory
 		return $this;
 	}
 
-    /**
-     * Create a relationship with another factory
-     *
-     * @param \Leaf\Factory $factory The instance of the factory to tie to
-     * @param array|string $primaryKey The primary key for that factory's table
-     * @throws \Exception
-     * @throws \Throwable
-     */
+	/**
+	 * Create a relationship with another factory
+	 *
+	 * @param \Leaf\Factory $factory The instance of the factory to tie to
+	 * @param array|string $primaryKey The primary key for that factory's table
+	 * @throws \Exception
+	 * @throws \Throwable
+	 */
 	public function has(Factory $factory, $primaryKey = null): Factory
-    {
+	{
 		if (count($this->data) === 0) {
 			$this->data[] = $this->definition();
 		}
@@ -96,8 +104,8 @@ abstract class Factory
 			}
 			$key = implode($key);
 
-			$primaryKeyData = $this->data[rand(0, count($this->data) - 1)][$key] ?? null;
-			$primaryKeyData = $primaryKeyData ?? $model::all()[rand(0, count($model::all()) - 1)][$key];
+			$primaryKeyData = $this->data[\rand(0, count($this->data) - 1)][$key] ?? null;
+			$primaryKeyData = $primaryKeyData ?? $model::all()[\rand(0, count($model::all()) - 1)][$key];
 
 			$dataToOverride[$primaryKey] = $primaryKeyData;
 		}
@@ -107,46 +115,44 @@ abstract class Factory
 		return $this;
 	}
 
-    /**
-     * Save created records in db
-     *
-     * @param \array|null $override Override data to save
-     *
-     * @return true
-     * @throws \Exception
-     */
-	public function save(array $override = null): bool
-    {
+	/**
+	 * Save created records in db
+	 *
+	 * @param array $override Override data to save
+	 *
+	 * @return true
+	 * @throws \Exception
+	 */
+	public function save(array $override = []): bool
+	{
 		$model = $this->model ?? $this->getModelName();
 
 		if (count($this->data) === 0) {
 			$this->data[] = $this->definition();
 		}
 
-        foreach ($this->data as $item) {
-            if ($override) {
-                $item = array_merge($item, $override);
-            }
+		foreach ($this->data as $item) {
+			$item = array_merge($item, $override);
 
-            $model = new $model;
-            foreach ($item as $key => $value) {
-                $model->{$key} = $value;
-            }
-            $model->save();
-        }
+			$model = new $model;
+			foreach ($item as $key => $value) {
+				$model->{$key} = $value;
+			}
+			$model->save();
+		}
 
-        return true;
-    }
+		return true;
+	}
 
 	/**
 	 * Return created records
-	 * 
-	 * @param \array|null $override Override data to save
-	 * 
+	 *
+	 * @param array|null $override Override data to save
+	 *
 	 * @return array
 	 */
 	public function get(array $override = null): array
-    {
+	{
 		if (count($this->data) === 0) {
 			$this->data[] = $this->definition();
 		}
@@ -160,14 +166,14 @@ abstract class Factory
 		return $this->data;
 	}
 
-    /**
-     * Get the default model name
-     * @throws \Exception
-     */
+	/**
+	 * Get the default model name
+	 * @throws \Exception
+	 */
 	public function getModelName(): string
-    {
+	{
 		$class = get_class($this);
-		$modelClass = '\App\Models' . Str::studly(str_replace(['App\Database\Factories', 'Factory'], '', $class));
+		$modelClass = '\App\Models' . $this->str::studly(str_replace(['App\Database\Factories', 'Factory'], '', $class));
 
 		if (!class_exists($modelClass)) {
 			throw new \Exception('Couldn\'t retrieve model for ' . get_class($this) . '. Add a \$model attribute to fix this.');
