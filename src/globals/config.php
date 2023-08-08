@@ -13,7 +13,7 @@ function AppConfig($setting = null)
  */
 function PathsConfig($setting = null)
 {
-    $config = require dirname(__DIR__, 4) . '/config/paths.php';
+    $config = require dirname(__DIR__, 5) . '/config/paths.php';
     return !$setting ? $config : $config[$setting];
 }
 
