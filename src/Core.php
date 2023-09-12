@@ -76,7 +76,7 @@ class Core
         }
 
         if (!$value) {
-            return static::$config[$config];
+            return static::$config[$config] ?? [];
         }
 
         static::$config[$config] = $value;
