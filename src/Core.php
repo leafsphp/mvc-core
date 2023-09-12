@@ -83,6 +83,19 @@ class Core
     }
 
     /**
+     * Load user defined libs
+     */
+    public static function loadLibs()
+    {
+        $libPath = static::$paths["lib"];
+        $libFiles = glob("$libPath/*.php");
+
+        foreach ($libFiles as $libFile) {
+            require $libFile;
+        }
+    }
+
+    /**
      * Load all application routes and run the application
      */
     public static function runApplication()
