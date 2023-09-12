@@ -9,7 +9,7 @@
         "php",
         "framework"
     ],
-    "homepage": "https://leafphp.dev/modules/mvc-core/",
+    "homepage": "https://leafphp.dev/docs/mvc/",
     "type": "library",
     "license": "MIT",
     "authors": [
