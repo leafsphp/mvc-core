@@ -20,8 +20,11 @@ if (!function_exists('view')) {
      *
      * @return string
      */
-    function view(string $view, array $data = [])
+    function view(string $view, array|object $data = [])
     {
+        if(is_object($data))
+			$data = (array) $data;
+        
         if (ViewConfig('render')) {
             if (ViewConfig('config')) {
                 call_user_func_array(ViewConfig('config'), [[
@@ -58,7 +61,7 @@ if (!function_exists('render')) {
      * @param string $view The view to render
      * @param array $data The data to pass to the view
      */
-    function render(string $view, array $data = [])
+    function render(string $view, array|object $data = [])
     {
         (new \Leaf\Http\Response())->markup(view($view, $data));
     }
