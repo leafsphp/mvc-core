@@ -82,11 +82,30 @@ if (!function_exists('redirect')) {
 if (!function_exists('route')) {
     /**
      * Get a route by name
-     * @param string $route The route to get
+     * @param group ...$args The route to get
      */
-    function route(string $route)
+    function route()
     {
-        return app()->route($route);
+        $args = func_get_args();
+
+        $routeName = array_shift($args);
+        $routeParams = count($args) > 0 ? $args : [];
+
+        $route = app()->route($routeName);
+
+        # check if it has args to replace
+        if (preg_match_all('/\{([^}]+)\}/', $route, $matches)) {
+            foreach ($matches[1] as $key => $paramName) {
+                if (isset($routeParams[$key])) {
+                    $route = str_replace('{' . $paramName . '}', $routeParams[$key], $route);
+                } else {
+                    // Handle missing parameters
+                    throw new InvalidArgumentException("Missing parameter '$paramName' for route '$routeName'.");
+                }
+            }
+        }
+    
+        return $route;
     }
 }
 
