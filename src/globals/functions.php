@@ -16,11 +16,11 @@ if (!function_exists('view')) {
      * Return a view
      *
      * @param string $view The view to render
-     * @param array $data The data to pass to the view
+     * @param array|object $data The data to pass to the view
      *
      * @return string
      */
-    function view(string $view, array|object $data = [])
+    function view(string $view, $data = [])
     {
         if(is_object($data))
 			$data = (array) $data;
@@ -59,9 +59,9 @@ if (!function_exists('render')) {
      * Render a view
      *
      * @param string $view The view to render
-     * @param array $data The data to pass to the view
+     * @param array|object $data The data to pass to the view
      */
-    function render(string $view, array|object $data = [])
+    function render(string $view, $data = [])
     {
         (new \Leaf\Http\Response())->markup(view($view, $data));
     }
@@ -82,7 +82,6 @@ if (!function_exists('redirect')) {
 if (!function_exists('route')) {
     /**
      * Get a route by name
-     * @param group ...$args The route to get
      */
     function route()
     {

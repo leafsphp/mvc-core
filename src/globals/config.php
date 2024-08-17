@@ -30,8 +30,7 @@ function AuthConfig($setting = null)
  */
 function ViewConfig($setting = null)
 {
-    $config = \Leaf\Core::config('view');
-    return !$setting ? $config : $config[$setting] ?? null;
+    return MvcConfig('view', $setting);
 }
 
 /**
