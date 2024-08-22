@@ -22,7 +22,7 @@ function PathsConfig($setting = null)
  */
 function AuthConfig($setting = null)
 {
-    return MvcConfig('_auth', $setting);
+    return MvcConfig('auth', $setting);
 }
 
 /**
@@ -30,7 +30,7 @@ function AuthConfig($setting = null)
  */
 function ViewConfig($setting = null)
 {
-    return MvcConfig('_view', $setting);
+    return MvcConfig('view', $setting);
 }
 
 /**
@@ -38,7 +38,7 @@ function ViewConfig($setting = null)
  */
 function DatabaseConfig($setting = null)
 {
-    return MvcConfig('_database', $setting);
+    return MvcConfig('database', $setting);
 }
 
 /**
@@ -46,7 +46,7 @@ function DatabaseConfig($setting = null)
  */
 function CorsConfig($setting = null)
 {
-    return MvcConfig('_cors', $setting);
+    return MvcConfig('cors', $setting);
 }
 
 /**
@@ -54,7 +54,7 @@ function CorsConfig($setting = null)
  */
 function MailConfig($setting = null)
 {
-    return MvcConfig('_mail', $setting);
+    return MvcConfig('mail', $setting);
 }
 
 /**
@@ -62,6 +62,6 @@ function MailConfig($setting = null)
  */
 function MvcConfig($appConfig, $setting = null)
 {
-    $config = \Leaf\Core::config($appConfig);
+    $config = \Leaf\Config::getStatic("_$appConfig");
     return !$setting ? $config : $config[$setting];
 }

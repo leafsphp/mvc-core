@@ -1,5 +1,7 @@
 <?php
 
+/// WILL REFACTOR IN NEXT VERSION
+
 if (!function_exists('assets')) {
     /**
      * Import an asset
@@ -22,9 +24,10 @@ if (!function_exists('view')) {
      */
     function view(string $view, $data = [])
     {
-        if(is_object($data))
-			$data = (array) $data;
-        
+        if (is_object($data)) {
+            $data = (array) $data;
+        }
+
         if (ViewConfig('render')) {
             if (ViewConfig('config')) {
                 call_user_func_array(ViewConfig('config'), [[
@@ -42,13 +45,29 @@ if (!function_exists('view')) {
         $fullName = explode('\\', $className);
         $className = $fullName[count($fullName) - 1];
 
-        if (forward_static_call_array(['Leaf\\View', $className], [])) {
-            forward_static_call_array(['Leaf\\View', $className], [])->configure(AppConfig('views.path'), AppConfig('views.cachePath'));
-            return forward_static_call_array(['Leaf\\View', $className], [])->render($view, $data);
+        if (\Leaf\Config::getStatic("views.$className")) {
+            if (ViewConfig('config')) {
+                call_user_func_array(ViewConfig('config'), [[
+                    'views' => AppConfig('views.path'),
+                    'cache' => AppConfig('views.cachePath'),
+                ]]);
+            } else {
+                \Leaf\Config::get("views.$className")->configure(AppConfig('views.path'), AppConfig('views.cachePath'));
+            }
+
+            return \Leaf\Config::get("views.$className")->render($view, $data);
         }
 
         $engine = new $engine($engine);
-        $engine->config(AppConfig('views.path'), AppConfig('views.cachePath'));
+
+        if (ViewConfig('config')) {
+            call_user_func_array(ViewConfig('config'), [[
+                'views' => AppConfig('views.path'),
+                'cache' => AppConfig('views.cachePath'),
+            ]]);
+        } else {
+            $engine->config(AppConfig('views.path'), AppConfig('views.cachePath'));
+        }
 
         return $engine->render($view, $data);
     }
