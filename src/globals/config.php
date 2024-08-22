@@ -22,7 +22,7 @@ function PathsConfig($setting = null)
  */
 function AuthConfig($setting = null)
 {
-    return MvcConfig('auth', $setting);
+    return MvcConfig('_auth', $setting);
 }
 
 /**
@@ -30,7 +30,7 @@ function AuthConfig($setting = null)
  */
 function ViewConfig($setting = null)
 {
-    return MvcConfig('view', $setting);
+    return MvcConfig('_view', $setting);
 }
 
 /**
@@ -38,7 +38,7 @@ function ViewConfig($setting = null)
  */
 function DatabaseConfig($setting = null)
 {
-    return MvcConfig('database', $setting);
+    return MvcConfig('_database', $setting);
 }
 
 /**
@@ -46,7 +46,7 @@ function DatabaseConfig($setting = null)
  */
 function CorsConfig($setting = null)
 {
-    return MvcConfig('cors', $setting);
+    return MvcConfig('_cors', $setting);
 }
 
 /**
@@ -54,7 +54,7 @@ function CorsConfig($setting = null)
  */
 function MailConfig($setting = null)
 {
-    return MvcConfig('mail', $setting);
+    return MvcConfig('_mail', $setting);
 }
 
 /**

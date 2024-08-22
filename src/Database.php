@@ -16,19 +16,26 @@ class Database
     /**@var \Illuminate\Database\Capsule\Manager $capsule */
     public static $capsule;
 
+    /**
+     * @deprecated use Leaf\Config::get('_database') instead
+     */
     protected static $config = [];
 
     /**
      * Set/Get database configuration
      * @param array $config The database configuration
+     * 
+     * @deprecated Config can be done through Leaf\Config
      */
     public static function config($config = [])
     {
+        $initialConfig = Config::getStatic('_database');
+
         if (empty($config)) {
-            return static::$config;
+            return $initialConfig;
         }
 
-        static::$config = array_merge(static::$config, $config);
+        Config::set('_database', array_merge($initialConfig, $config));
     }
 
     /**
@@ -36,11 +43,12 @@ class Database
      */
     public static function connect()
     {
-        $connection = static::$config['default'] ?? 'mysql';
+        $config = Config::get('_database');
+        $connection = $config['default'] ?? 'mysql';
 
         static::$capsule = new Manager;
         static::$capsule->addConnection(
-            static::$config['connections'][$connection]
+            $config['connections'][$connection]
         );
 
         static::$capsule->setEventDispatcher(new Dispatcher(new Container));
@@ -58,18 +66,20 @@ class Database
     public static function initDb()
     {
         if (function_exists('db')) {
+            $config = Config::get('_database');
+
             db()->connect([
-                'dbUrl' => static::$config['connections'][static::$config['default']]['url'] ?? null,
-                'dbtype' => static::$config['default'] ?? 'mysql',
-                'charset' => static::$config['connections'][static::$config['default']]['charset'] ?? 'utf8mb4',
-                'port' => static::$config['connections'][static::$config['default']]['port'] ?? '3306',
-                'host' => static::$config['connections'][static::$config['default']]['host'] ?? '127.0.0.1',
-                'username' => static::$config['connections'][static::$config['default']]['username'] ?? 'root',
-                'password' => static::$config['connections'][static::$config['default']]['password'] ?? '',
-                'dbname' => static::$config['connections'][static::$config['default']]['database'] ?? 'leaf_db',
-                'collation' => static::$config['connections'][static::$config['default']]['collation'] ?? 'utf8mb4_unicode_ci',
-                'prefix' => static::$config['connections'][static::$config['default']]['prefix'] ?? '',
-                'unix_socket' => static::$config['connections'][static::$config['default']]['unix_socket'] ?? '',
+                'dbUrl' => $config['connections'][$config['default']]['url'] ?? null,
+                'dbtype' => $config['default'] ?? 'mysql',
+                'charset' => $config['connections'][$config['default']]['charset'] ?? 'utf8mb4',
+                'port' => $config['connections'][$config['default']]['port'] ?? '3306',
+                'host' => $config['connections'][$config['default']]['host'] ?? '127.0.0.1',
+                'username' => $config['connections'][$config['default']]['username'] ?? 'root',
+                'password' => $config['connections'][$config['default']]['password'] ?? '',
+                'dbname' => $config['connections'][$config['default']]['database'] ?? 'leaf_db',
+                'collation' => $config['connections'][$config['default']]['collation'] ?? 'utf8mb4_unicode_ci',
+                'prefix' => $config['connections'][$config['default']]['prefix'] ?? '',
+                'unix_socket' => $config['connections'][$config['default']]['unix_socket'] ?? '',
             ]);
         }
     }

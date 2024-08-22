@@ -87,7 +87,7 @@ class Schema
                     $table = str_replace('.json', '', basename($table));
                 } else {
                     $table = str_replace('.json', '', $table);
-                    $schema = json_decode(file_get_contents(AppPaths("schema") . "/$table.json"));
+                    $schema = json_decode(file_get_contents(AppPaths('schema') . "/$table.json"));
                 }
             } else {
                 $schema = json_decode($schema);
@@ -109,8 +109,8 @@ class Schema
      */
     protected static function getColumns(string $key, $value): array
     {
-        $column = '';
         $type = '';
+        $column = '';
 
         $keyData = explode(':', $key);
 
