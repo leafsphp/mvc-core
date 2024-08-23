@@ -37,6 +37,8 @@ class Core
         if (php_sapi_name() !== 'cli') {
             app()->config(Config::getStatic('_app'));
             app()->cors(Config::getStatic('_cors'));
+
+            \Leaf\Vite::config('build', PublicPath('', false));
         }
     }
 
