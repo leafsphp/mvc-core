@@ -1,7 +1,5 @@
 <?php
 
-/// WILL REFACTOR IN NEXT VERSION
-
 if (!function_exists('assets')) {
     /**
      * Import an asset
@@ -9,7 +7,7 @@ if (!function_exists('assets')) {
      */
     function assets($assets = '')
     {
-        return trim(AppPaths('assets'), '/') . '/' . trim($assets, '/');
+        return PublicPath('assets/' . trim($assets, '/'));
     }
 }
 
@@ -24,6 +22,8 @@ if (!function_exists('view')) {
      */
     function view(string $view, $data = [])
     {
+        /// WILL REFACTOR IN NEXT VERSION
+
         if (is_object($data)) {
             $data = (array) $data;
         }
