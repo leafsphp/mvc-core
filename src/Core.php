@@ -38,7 +38,11 @@ class Core
             app()->config(Config::getStatic('_app'));
             app()->cors(Config::getStatic('_cors'));
 
-            \Leaf\Vite::config('build', PublicPath('', false));
+            if (class_exists('Leaf\Vite')) {
+                \Leaf\Vite::config('assets', '');
+                \Leaf\Vite::config('build', PublicPath('build', false));
+                \Leaf\Vite::config('hotFile', trim(PublicPath('hot', false), '/'));
+            }
         }
     }
 
