@@ -7,7 +7,7 @@ if (!function_exists('assets')) {
      */
     function assets($assets = '')
     {
-        return PublicPath('assets/' . trim($assets, '/'));
+        return "/assets/" . trim($assets, '/'));
     }
 }
 
