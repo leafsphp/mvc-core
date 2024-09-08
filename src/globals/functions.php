@@ -7,7 +7,7 @@ if (!function_exists('assets')) {
      */
     function assets($assets = '')
     {
-        return "/assets/" . trim($assets, '/'));
+        return "/assets/" . trim($assets, '/');
     }
 }
 
