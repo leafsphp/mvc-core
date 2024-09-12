@@ -17,39 +17,21 @@ class Database
     public static $capsule;
 
     /**
-     * @deprecated use Leaf\Config::get('_database') instead
-     */
-    protected static $config = [];
-
-    /**
-     * Set/Get database configuration
-     * @param array $config The database configuration
-     * 
-     * @deprecated Config can be done through Leaf\Config
-     */
-    public static function config($config = [])
-    {
-        $initialConfig = Config::getStatic('_database');
-
-        if (empty($config)) {
-            return $initialConfig;
-        }
-
-        Config::set('_database', array_merge($initialConfig, $config));
-    }
-
-    /**
      * Create a new database connection for models
      */
     public static function connect()
     {
-        $config = Config::get('_database');
-        $connection = $config['default'] ?? 'mysql';
-
         static::$capsule = new Manager;
-        static::$capsule->addConnection(
-            $config['connections'][$connection]
-        );
+
+        $config = Config::getStatic('mvc.config.database');
+        $connections = $config['connections'] ?? [];
+
+        foreach ($connections as $name => $connection) {
+            static::$capsule->addConnection(
+                $connection,
+                $config['default'] === $name ? 'default' : $name,
+            );
+        }
 
         static::$capsule->setEventDispatcher(new Dispatcher(new Container));
         static::$capsule->setAsGlobal();
@@ -61,26 +43,34 @@ class Database
     }
 
     /**
-     * Create a Leaf Db connection using the model's database configuration
+     * Create a Leaf Db connection using the the default connection
+     * defined in the config/database.php file
+     *
+     * @return \PDO|null
      */
     public static function initDb()
     {
         if (function_exists('db')) {
-            $config = Config::get('_database');
+            $config = Config::getStatic('mvc.config.database');
+            $defaultConnection = $config['connections'][$config['default'] ?? 'mysql'] ?? [];
 
-            db()->connect([
-                'dbUrl' => $config['connections'][$config['default']]['url'] ?? null,
-                'dbtype' => $config['default'] ?? 'mysql',
-                'charset' => $config['connections'][$config['default']]['charset'] ?? 'utf8mb4',
-                'port' => $config['connections'][$config['default']]['port'] ?? '3306',
-                'host' => $config['connections'][$config['default']]['host'] ?? '127.0.0.1',
-                'username' => $config['connections'][$config['default']]['username'] ?? 'root',
-                'password' => $config['connections'][$config['default']]['password'] ?? '',
-                'dbname' => $config['connections'][$config['default']]['database'] ?? 'leaf_db',
-                'collation' => $config['connections'][$config['default']]['collation'] ?? 'utf8mb4_unicode_ci',
-                'prefix' => $config['connections'][$config['default']]['prefix'] ?? '',
-                'unix_socket' => $config['connections'][$config['default']]['unix_socket'] ?? '',
-            ]);
+            if (!empty($defaultConnection)) {
+                return db()->connect([
+                    'dbUrl' => $defaultConnection['url'] ?? null,
+                    'dbtype' => $defaultConnection['driver'] ?? 'mysql',
+                    'charset' => $defaultConnection['charset'] ?? 'utf8mb4',
+                    'port' => $defaultConnection['port'] ?? '3306',
+                    'host' => $defaultConnection['host'] ?? '127.0.0.1',
+                    'username' => $defaultConnection['username'] ?? 'root',
+                    'password' => $defaultConnection['password'] ?? '',
+                    'dbname' => $defaultConnection['database'] ?? 'leaf_db',
+                    'collation' => $defaultConnection['collation'] ?? 'utf8mb4_unicode_ci',
+                    'prefix' => $defaultConnection['prefix'] ?? '',
+                    'unix_socket' => $defaultConnection['unix_socket'] ?? '',
+                ]);
+            }
         }
+
+        return null;
     }
 }
