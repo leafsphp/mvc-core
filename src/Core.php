@@ -12,16 +12,12 @@ class Core
     protected static $paths;
 
     /**
-     * Set/Get paths
-     * @param string|array $paths The paths to set/get
+     * Return application paths
+     * @return array
      */
-    public static function paths($paths = null)
+    public static function paths(): array
     {
-        if (!$paths) {
-            return static::$paths;
-        }
-
-        static::$paths = $paths;
+        return static::$paths;
     }
 
     /**
@@ -29,14 +25,13 @@ class Core
      */
     public static function loadApplicationConfig()
     {
-        static::paths(PathsConfig());
         static::loadConfig();
 
-        auth()->config(Config::getStatic('_auth'));
+        auth()->config(Config::getStatic('mvc.config.auth'));
 
         if (php_sapi_name() !== 'cli') {
-            app()->config(Config::getStatic('_app'));
-            app()->cors(Config::getStatic('_cors'));
+            app()->config(Config::getStatic('mvc.config.app'));
+            app()->cors(Config::getStatic('mvc.config.cors'));
 
             if (class_exists('Leaf\Vite')) {
                 \Leaf\Vite::config('assets', PublicPath('build'));
@@ -51,6 +46,8 @@ class Core
      */
     protected static function loadConfig()
     {
+        static::$paths = PathsConfig();
+
         $configPath = static::$paths['config'];
         $configFiles = glob("$configPath/*.php");
 
@@ -58,7 +55,7 @@ class Core
             $configName = basename($configFile, '.php');
             $config = require $configFile;
 
-            \Leaf\Config::set("_$configName", $config);
+            \Leaf\Config::set("mvc.config.$configName", value: $config);
         }
     }
 

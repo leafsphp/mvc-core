@@ -8,6 +8,7 @@ if (!function_exists('AppPaths')) {
     {
         $paths = Leaf\Core::paths();
         $res = !$path ? $paths : $paths[$path] ?? '/';
+
         return $slash ? "/$res" : $res;
     }
 }
