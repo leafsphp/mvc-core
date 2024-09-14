@@ -109,7 +109,11 @@ if (!function_exists('PublicPath')) {
      */
     function PublicPath($path = '', $slash = true): string
     {
-        $IS_PUBLIC_ROOT = (strpos($_SERVER['SCRIPT_FILENAME'], '/public/') && strpos($_SERVER['REQUEST_URI'], '/public') == null);
+        $SCRIPT_FILENAME = $_SERVER['SCRIPT_FILENAME'];
+        
+        if(strpos($SCRIPT_FILENAME, '\\') !== false) $SCRIPT_FILENAME = str_replace('\\', '/', $SCRIPT_FILENAME);
+        $IS_PUBLIC_ROOT = (strpos($SCRIPT_FILENAME, '/public/') && strpos($_SERVER['REQUEST_URI'], '/public') == null);
+    
         return ($IS_PUBLIC_ROOT ? '' : '/public') . "/$path";
     }
 }
