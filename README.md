@@ -11,7 +11,7 @@
 [![Total Downloads](https://poser.pugx.org/leafs/mvc-core/downloads)](https://packagist.org/packages/leafs/mvc-core)
 [![License](https://poser.pugx.org/leafs/mvc-core/license)](https://packagist.org/packages/leafs/mvc-core)
 
-This is a package holding core files specific to MVC based leaf frameworks like Leaf MVC and Leaf API. MVC core holds functionality like shortcut functions and helpers which can be used throughout your application.
+This is the heart of Leaf MVC. It serves as a bridge between Leaf and the MVC file structure. It provides a ton of functionality that makes it easy to build a full-blown MVC application with Leaf.
 
 ## 📦 Installation
 
@@ -27,27 +27,19 @@ or with composer
 composer require leafs/mvc-core
 ```
 
-## Including in earlier versions
-
-You can include mvc core in earlier versions of [Leaf MVC](https://mvc.leafphp.dev) and [Leaf API](https://api.leafphp.dev) manually simply by removing the already existing `Config/functions.php` and `Config/bootstrap.php` files. That's it.
-
-## 🗂 Basic Usage
-
-Basically, MVC Core provides everything you need to transform your basic leaf app into a full-blown MVC framework without manually pulling in dependencies from all over the internet. Leaf MVC core is basically tailored to Leaf and binds all separate MVC features together.
-
 ## 🧩 Components
 
 MVC Core comes with:
 
-- Api Controllers
 - Controllers
+- Api Controllers
 - Database & Models
 - Factories
 - Models
 - Schemas
 - Tons of MVC and module globals
 
-The full documentation is covered in Leaf MVC and Leaf API, as well as Skeleton. This is because MVC core is used together with Leaf MVC, Leaf API and Skeleton.
+Since you don't use this package on its own, the documentation is covered in the [Leaf MVC documentation](https://leafphp.dev/docs/mvc/).
 
 ## 💬 Stay In Touch
 
@@ -69,16 +61,8 @@ To report a security vulnerability, you can reach out to [@mychidarko](https://t
 
 ## 🤩 Sponsoring Leaf
 
-Your cash contributions go a long way to help us make Leaf even better for you. You can sponsor Leaf and any of our packages on [open collective](https://opencollective.com/leaf) or check the [contribution page](https://leafphp.dev/support/) for a list of ways to contribute.
+We are committed to keeping Leaf open-source and free, but maintaining and developing new features now requires significant time and resources. As the project has grown, so have the costs, which have been mostly covered by the team. To sustain and grow Leaf, we need your help to support full-time maintainers.
 
-And to all our existing cash/code contributors, we love you all ❤️
+You can sponsor Leaf and any of our packages on [open collective](https://opencollective.com/leaf) or check the [contribution page](https://leafphp.dev/support/) for a list of ways to contribute.
 
-<a href="https://github.com/leafsphp/leaf/graphs/contributors" target="_blank"><img src="https://opencollective.com/leafphp/contributors.svg?width=890" /></a>
-
-## 🤯 Links/Projects
-
-- [Leaf Docs](https://leafphp.dev)
-- [Leaf MVC](https://mvc.leafphp.dev)
-- [Leaf API](https://api.leafphp.dev)
-- [Leaf CLI](https://cli.leafphp.dev)
-- [Aloe CLI](https://leafphp.dev/aloe-cli/)
+And to all our [existing cash/code contributors](https://leafphp.dev#sponsors), we love you all ❤️
