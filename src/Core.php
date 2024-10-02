@@ -32,6 +32,7 @@ class Core
         if (php_sapi_name() !== 'cli') {
             app()->config(Config::getStatic('mvc.config.app'));
             app()->cors(Config::getStatic('mvc.config.cors'));
+            app()->csrf(Config::getStatic('mvc.config.csrf'));
 
             if (class_exists('Leaf\Vite')) {
                 \Leaf\Vite::config('assets', PublicPath('build'));
@@ -55,7 +56,7 @@ class Core
             $configName = basename($configFile, '.php');
             $config = require $configFile;
 
-            \Leaf\Config::set("mvc.config.$configName", value: $config);
+            \Leaf\Config::set("mvc.config.$configName", $config);
         }
     }
 
