@@ -32,7 +32,19 @@ class Core
         if (php_sapi_name() !== 'cli') {
             app()->config(Config::getStatic('mvc.config.app'));
             app()->cors(Config::getStatic('mvc.config.cors'));
-            app()->csrf(Config::getStatic('mvc.config.csrf'));
+
+            if (class_exists('Leaf\CSRF')) {
+                $csrfEnabled = (
+                    Config::getStatic('mvc.config.csrf') &&
+                    Config::getStatic('mvc.config.auth')['session'] ?? false
+                );
+
+                if (Config::getStatic('mvc.config.csrf')['enabled'] ?? null !== null) {
+                    $csrfEnabled = Config::getStatic('mvc.config.csrf')['enabled'];
+                }
+
+                app()->csrf($csrfEnabled);
+            }
 
             if (class_exists('Leaf\Vite')) {
                 \Leaf\Vite::config('assets', PublicPath('build'));
