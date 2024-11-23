@@ -33,7 +33,7 @@ class Core
             app()->config(Config::getStatic('mvc.config.app'));
             app()->cors(Config::getStatic('mvc.config.cors'));
 
-            if (class_exists('Leaf\CSRF')) {
+            if (class_exists('Leaf\Anchor\CSRF')) {
                 $csrfEnabled = (
                     Config::getStatic('mvc.config.csrf') &&
                     Config::getStatic('mvc.config.auth')['session'] ?? false
@@ -43,7 +43,7 @@ class Core
                     $csrfEnabled = Config::getStatic('mvc.config.csrf')['enabled'];
                 }
 
-                app()->csrf($csrfEnabled);
+                app()->csrf(Config::getStatic('mvc.config.csrf'));
             }
 
             if (class_exists('Leaf\Vite')) {
