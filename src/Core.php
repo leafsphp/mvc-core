@@ -27,23 +27,36 @@ class Core
     {
         static::loadConfig();
 
-        auth()->config(Config::getStatic('mvc.config.auth'));
+        if (class_exists('Leaf\Auth') && Config::getStatic('mvc.config.auth')) {
+            auth()->config(Config::getStatic('mvc.config.auth'));
+        }
+
+        if (class_exists('Leaf\Mail') && Config::getStatic('mvc.config.mail')) {
+            mailer()->connect(Config::getStatic('mvc.config.mail'));
+        }
 
         if (php_sapi_name() !== 'cli') {
             app()->config(Config::getStatic('mvc.config.app'));
-            app()->cors(Config::getStatic('mvc.config.cors'));
+            
+            if (class_exists('Leaf\Http\Cors') && Config::getStatic('mvc.config.cors')) {
+                app()->cors(Config::getStatic('mvc.config.cors'));
+            }
 
-            if (class_exists('Leaf\Anchor\CSRF')) {
+            if (class_exists('Leaf\Anchor\CSRF') && Config::getStatic('mvc.config.csrf')) {
+                $csrfConfig = Config::getStatic('mvc.config.csrf');
+
                 $csrfEnabled = (
-                    Config::getStatic('mvc.config.csrf') &&
+                    $csrfConfig &&
                     Config::getStatic('mvc.config.auth')['session'] ?? false
                 );
 
-                if (Config::getStatic('mvc.config.csrf')['enabled'] ?? null !== null) {
-                    $csrfEnabled = Config::getStatic('mvc.config.csrf')['enabled'];
+                if ($csrfConfig['enabled'] ?? null !== null) {
+                    $csrfEnabled = $csrfConfig['enabled'];
                 }
 
-                app()->csrf(Config::getStatic('mvc.config.csrf'));
+                if ($csrfEnabled) {
+                    app()->csrf($csrfConfig);
+                }
             }
 
             if (class_exists('Leaf\Vite')) {
