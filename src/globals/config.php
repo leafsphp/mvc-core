@@ -13,7 +13,38 @@ function AppConfig($setting = null)
  */
 function PathsConfig($setting = null)
 {
-    $config = require dirname(__DIR__, 5) . '/config/paths.php';
+    $config = [
+        'commands' => 'app/console',
+        'config' => 'config',
+        'channels' => 'app/channels',
+        'components' => 'app/components',
+        'controllers' => 'app/controllers',
+        'databaseStorage' => 'storage/app/db',
+        'exceptions' => 'app/exceptions',
+        'events' => 'app/events',
+        'factories' => 'app/database/factories',
+        'helpers' => 'app/helpers',
+        'jobs' => 'app/jobs',
+        'lib' => 'lib',
+        'mail' => 'app/mailers',
+        'middleware' => 'app/middleware',
+        'migrations' => 'app/database/migrations',
+        'models' => 'app/models',
+        'routes' => 'app/routes',
+        'schema' => 'app/database/schema',
+        'scripts' => 'app/scripts',
+        'seeds' => 'app/database/seeds',
+        'services' => 'app/services',
+        'storage' => 'storage',
+        'utils' => 'app/utils',
+        'views' => 'app/views',
+        'workers' => 'app/workers',
+    ];
+
+    if (file_exists(dirname(__DIR__, 5) . '/config/paths.php')) {
+        $config = array_merge($config, require dirname(__DIR__, 5) . '/config/paths.php');
+    }
+
     return !$setting ? $config : $config[$setting];
 }
 
