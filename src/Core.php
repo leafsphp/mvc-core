@@ -275,6 +275,8 @@ class Core
         $routePath = static::$paths['routes'];
         $routeFiles = glob("$routePath/*.php");
 
+        app()->setNamespace('\App\Controllers');
+
         require "$routePath/index.php";
 
         foreach ($routeFiles as $routeFile) {
