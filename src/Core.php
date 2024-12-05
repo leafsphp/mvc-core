@@ -243,7 +243,7 @@ class Core
     /**
      * Load Aloe console and user defined commands
      */
-    public static function loadConsole()
+    public static function loadConsole($externalCommands = [])
     {
         static::loadApplicationConfig();
 
@@ -262,6 +262,10 @@ class Core
                     "App\\Console\\$commandName",
                 );
             }
+        }
+
+        foreach ($externalCommands as $command) {
+            $console->register($command);
         }
 
         $console->run();
