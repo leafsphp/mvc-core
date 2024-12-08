@@ -64,6 +64,27 @@ class Core
                 \Leaf\Vite::config('build', 'public/build');
                 \Leaf\Vite::config('hotFile', 'public/hot');
             }
+
+            Config::attachView(ViewConfig('viewEngine'), 'template');
+
+            if (ViewConfig('config')) {
+                call_user_func_array(ViewConfig('config'), [
+                    app()->template(),
+                    [
+                        'views' => AppConfig('views.path'),
+                        'cache' => AppConfig('views.cachePath'),
+                    ]
+                ]);
+            } else if (method_exists(app()->template(), 'configure')) {
+                app()->template()->configure([
+                    'views' => AppConfig('views.path'),
+                    'cache' => AppConfig('views.cachePath'),
+                ]);
+            }
+
+            if (is_callable(ViewConfig('extend'))) {
+                call_user_func_array(ViewConfig('extend'), app()->template());
+            }
         }
     }
 
@@ -79,12 +100,12 @@ class Core
                 'app.down' => _env('APP_DOWN', false),
                 'debug' => _env('APP_DEBUG', true),
                 'log.dir' => 'storage/logs/',
-                'log.enabled' => true,
+                'log.enabled' => _env('APP_LOG_ENABLED', true),
                 'log.file' => 'app.log',
                 'log.level' => Log::DEBUG,
                 'log.open' => true,
                 'log.writer' => null,
-                'mode' => 'development',
+                'mode' => _env('APP_ENV', 'development'),
                 'views.path' => ViewsPath(null, false),
                 'views.cachePath' => StoragePath('framework/views')
             ],
@@ -95,11 +116,11 @@ class Core
                 'timestamps.format' => 'YYYY-MM-DD HH:mm:ss',
                 'unique' => ['email'],
                 'hidden' => ['field.id', 'field.password'],
-                'session' => true,
+                'session' => _env('AUTH_SESSION', true),
                 'session.lifetime' => 60 * 60 * 24,
                 'session.cookie' => ['secure' => false, 'httponly' => true, 'samesite' => 'lax'],
                 'token.lifetime' => 60 * 60 * 24 * 365,
-                'token.secret' => _env('TOKEN_SECRET', '@leaf$MVC*JWT#AUTH.Secret'),
+                'token.secret' => _env('AUTH_TOKEN_SECRET', '@leaf$MVC*JWT#AUTH.Secret'),
                 'messages.loginParamsError' => 'Incorrect credentials!',
                 'messages.loginPasswordError' => 'Password is incorrect!',
                 'password.key' => 'password',
@@ -111,10 +132,10 @@ class Core
                 },
             ],
             'cors' => [
-                'origin' => '*',
-                'methods' => 'GET,HEAD,PUT,PATCH,POST,DELETE',
-                'allowedHeaders' => '*',
-                'exposedHeaders' => '',
+                'origin' => _env('CORS_ALLOWED_ORIGINS', '*'),
+                'methods' => _env('CORS_ALLOWED_METHODS', 'GET,HEAD,PUT,PATCH,POST,DELETE'),
+                'allowedHeaders' => _env('CORS_ALLOWED_HEADERS', '*'),
+                'exposedHeaders' => _env('CORS_EXPOSED_HEADERS', ''),
                 'credentials' => false,
                 'maxAge' => null,
                 'preflightContinue' => false,
@@ -188,10 +209,11 @@ class Core
             ],
             'view' => [
                 'viewEngine' => \Leaf\Blade::class,
-                'render' => null,
-                'config' => function ($config) {
-                    \Leaf\Config::get('views.blade')->configure($config['views'], $config['cache']);
+                'config' => function ($engine, $config) {
+                    $engine->configure($config['views'], $config['cache']);
                 },
+                'render' => null,
+                'extend' => null,
             ],
             'mail' => [
                 'host' => _env('MAIL_HOST', 'smtp.mailtrap.io'),
