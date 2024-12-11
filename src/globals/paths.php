@@ -45,7 +45,7 @@ if (!function_exists('ControllersPath')) {
 
 if (!function_exists('DatabasePath')) {
     /**
-     * Database storage path
+     * Database path
      */
     function DatabasePath($path = ''): string
     {
