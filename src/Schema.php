@@ -2,186 +2,329 @@
 
 namespace Leaf;
 
+use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Schema\Blueprint;
+use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Leaf DB Schema [WIP]
+ * ---
+ * One file to rule them all.
+ * 
+ * @version 1.0
+ */
 class Schema
 {
-    public static $capsule;
+    /**@var \Illuminate\Database\Capsule\Manager $capsule */
+    protected static Manager $connection;
 
     /**
-     * @param string $table The name of table to manipulate
-     * @param string|null $schema The JSON schema for database
+     * Migrate your schema file tables
+     * 
+     * @param string $fileToMigrate The schema file to migrate
+     * @return bool
      */
-    public static function build(string $table, ?string $schema = null)
+    public static function migrate(string $fileToMigrate): bool
     {
-        list($table, $schema) = static::getSchema($table, $schema);
+        $data = Yaml::parseFile($fileToMigrate);
+        $tableName = rtrim(path($fileToMigrate)->basename(), '.yml');
 
-        if (is_array($schema)) {
-            $schema = $schema[0];
+        if ($data['truncate'] ?? false) {
+            static::$connection::schema()->dropIfExists($tableName);
         }
 
-        if (!static::$capsule::schema()->hasTable($table)) {
-            static::$capsule::schema()->create($table, function (Blueprint $table) use ($schema) {
-                foreach ($schema as $key => $value) {
-                    list($key, $type) = static::getColumns($key, $value);
-
-                    echo $key . " => " . $type . "\n";
-
-                    if (strpos($key, '*') === 0) {
-                        $table->foreignId(substr($key, 1));
-                        continue;
-                    }
-
-                    if ($key === 'timestamps') {
-                        $table->timestamps();
-                        continue;
-                    }
-
-                    if ($key === 'softDeletes') {
-                        $table->softDeletes();
-                        continue;
-                    }
-
-                    if ($key === 'rememberToken') {
-                        $table->rememberToken();
-                        continue;
-                    }
-
-                    if ($type === 'enum') {
-                        if (substr($key, -1) === '?') {
-                            $table->enum(substr($key, 0, -1), $value)->nullable();
-                            continue;
-                        }
-
-                        $table->enum($key, $value);
-                        continue;
-                    }
-
-                    if (method_exists($table, $type)) {
-                        if (substr($key, -1) === '?') {
-                            call_user_func_array([$table, $type], [substr($key, 0, -1)])->nullable();
-                            continue;
-                        }
-
-                        call_user_func_array([$table, $type], [$key]);
-                        continue;
-                    }
-                }
-            });
-        }
-    }
-
-    /**
-     * Get the table and table structure
-     * @param string $table The name of table to manipulate (can be the name of the file)
-     * @param string|null $schema The JSON schema for database (if $table is not the name of the file)
-     *
-     * @return array
-     */
-    protected static function getSchema(string $table, ?string $schema = null): array
-    {
         try {
-            if ($schema === null) {
-                if (file_exists($table)) {
-                    $schema = file_get_contents($table);
-                    $table = str_replace('.json', '', basename($table));
-                } else {
-                    $table = str_replace('.json', '', $table);
-                    $schema = json_decode(file_get_contents(AppPaths('schema') . "/$table.json"));
+            if (!static::$connection::schema()->hasTable($tableName)) {
+                if (storage()->exists(StoragePath("database/$tableName"))) {
+                    storage()->delete(StoragePath("database/$tableName"));
                 }
-            } else {
-                $schema = json_decode($schema);
+
+                static::$connection::schema()->create($tableName, function (Blueprint $table) use ($data) {
+                    $columns = $data['columns'] ?? [];
+                    $relationships = $data['relationships'] ?? [];
+
+                    $increments = $data['increments'] ?? true;
+                    $timestamps = $data['timestamps'] ?? true;
+                    $softDeletes = $data['softDeletes'] ?? false;
+                    $rememberToken = $data['remember_token'] ?? false;
+
+                    if ($increments) {
+                        $table->increments('id');
+                    }
+
+                    foreach ($relationships as $model) {
+                        $table->foreignIdFor($model);
+                    }
+
+                    foreach ($columns as $columnName => $columnValue) {
+                        if (is_string($columnValue)) {
+                            $table->{$columnValue}($columnName);
+                        }
+
+                        if (is_array($columnValue)) {
+                            $column = $table->{$columnValue['type']}($columnName);
+
+                            unset($columnValue['type']);
+
+                            foreach ($columnValue as $columnOptionName => $columnOptionValue) {
+                                if (is_bool($columnOptionValue)) {
+                                    $column->{$columnOptionName}();
+                                } else {
+                                    $column->{$columnOptionName}($columnOptionValue);
+                                }
+                            }
+                        }
+                    }
+
+                    if ($rememberToken) {
+                        $table->rememberToken();
+                    }
+
+                    if ($softDeletes) {
+                        $table->softDeletes();
+                    }
+
+                    if ($timestamps) {
+                        $table->timestamps();
+                    }
+                });
+            } else if (storage()->exists(StoragePath("database/$tableName"))) {
+                static::$connection::schema()->table($tableName, function (Blueprint $table) use ($data, $tableName) {
+                    $columns = $data['columns'] ?? [];
+                    $relationships = $data['relationships'] ?? [];
+
+                    $allPreviousMigrations = glob(StoragePath("database/$tableName/*.yml"));
+                    $lastMigration = $allPreviousMigrations[count($allPreviousMigrations) - 1] ?? null;
+                    $lastMigration = Yaml::parseFile($lastMigration);
+
+                    $increments = $data['increments'] ?? true;
+                    $timestamps = $data['timestamps'] ?? true;
+                    $softDeletes = $data['softDeletes'] ?? false;
+                    $rememberToken = $data['remember_token'] ?? false;
+
+                    if ($increments !== ($lastMigration['increments'] ?? true)) {
+                        if ($increments && !static::$connection::schema()->hasColumn($tableName, 'id')) {
+                            $table->increments('id');
+                        } else if (!$increments && static::$connection::schema()->hasColumn($tableName, 'id')) {
+                            $table->dropColumn('id');
+                        }
+                    }
+
+                    $columnsDiff = [];
+                    $staticColumns = [];
+                    $removedColumns = [];
+
+                    foreach ($lastMigration['columns'] as $colKey => $colVal) {
+                        if (!array_key_exists($colKey, $columns)) {
+                            $removedColumns[] = $colKey;
+                        } else if (static::getColumnAttributes($colVal) !== static::getColumnAttributes($columns[$colKey])) {
+                            $columnsDiff[] = $colKey;
+                            $staticColumns[] = $colKey;
+                        } else {
+                            $staticColumns[] = $colKey;
+                        }
+                    }
+
+                    $newColumns = array_diff(array_keys($columns), $staticColumns);
+
+                    if (count($newColumns) > 0) {
+                        foreach ($newColumns as $newColumn) {
+                            $column = static::getColumnAttributes($columns[$newColumn]);
+
+                            if (!static::$connection::schema()->hasColumn($tableName, $newColumn)) {
+                                $newCol = $table->{$column['type']}($newColumn);
+
+                                unset($column['type']);
+
+                                foreach ($column as $columnOptionName => $columnOptionValue) {
+                                    if (is_bool($columnOptionValue)) {
+                                        if ($columnOptionValue) {
+                                            $newCol->{$columnOptionName}();
+                                        }
+                                    } else {
+                                        $newCol->{$columnOptionName}($columnOptionValue);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (count($columnsDiff) > 0) {
+                        foreach ($columnsDiff as $changedColumn) {
+                            $column = static::getColumnAttributes($columns[$changedColumn]);
+                            $prevMigrationColumn = static::getColumnAttributes($lastMigration['columns'][$changedColumn] ?? []);
+
+                            if ($column['type'] === 'timestamp') {
+                                continue;
+                            }
+
+                            $newCol = $table->{$column['type']}(
+                                $changedColumn,
+                                ($column['type'] === 'string') ? $column['length'] : null
+                            );
+
+                            unset($column['type']);
+
+                            foreach ($column as $columnOptionName => $columnOptionValue) {
+                                if ($columnOptionValue === $prevMigrationColumn[$columnOptionName]) {
+                                    continue;
+                                }
+
+                                if ($columnOptionName === 'unique') {
+                                    if ($columnOptionValue) {
+                                        $newCol->unique()->change();
+                                    } else {
+                                        $table->dropUnique("{$tableName}_{$changedColumn}_unique");
+                                    }
+
+                                    continue;
+                                }
+
+                                if ($columnOptionName === 'index') {
+                                    if ($columnOptionValue) {
+                                        $newCol->index()->change();
+                                    } else {
+                                        $table->dropIndex("{$tableName}_{$changedColumn}_index");
+                                    }
+
+                                    continue;
+                                }
+
+                                // skipping this for now, primary + autoIncrement
+                                // doesn't work well in the same run. They need to be
+                                // run separately for some reason
+                                // if ($columnOptionName === 'autoIncrement') {
+
+                                if ($columnOptionName === 'primary') {
+                                    if ($columnOptionValue) {
+                                        $newCol->primary()->change();
+                                    } else {
+                                        $table->dropPrimary("{$tableName}_{$changedColumn}_primary");
+                                    }
+
+                                    continue;
+                                }
+
+                                if ($columnOptionName === 'default') {
+                                    $newCol->default($columnOptionValue)->change();
+                                    continue;
+                                }
+
+                                if (is_bool($columnOptionValue)) {
+
+                                    if ($columnOptionValue) {
+                                        $newCol->{$columnOptionName}()->change();
+                                    } else {
+                                        $newCol->{$columnOptionName}(false)->change();
+                                    }
+                                } else {
+                                    $newCol->{$columnOptionName}($columnOptionValue)->change();
+                                }
+                            }
+
+                            $newCol->change();
+                        }
+                    }
+
+                    if (count($removedColumns) > 0) {
+                        foreach ($removedColumns as $removedColumn) {
+                            if (static::$connection::schema()->hasColumn($tableName, $removedColumn)) {
+                                $table->dropColumn($removedColumn);
+                            }
+                        }
+                    }
+
+                    if ($rememberToken !== ($lastMigration['remember_token'] ?? false)) {
+                        if ($rememberToken && !static::$connection::schema()->hasColumn($tableName, 'remember_token')) {
+                            $table->rememberToken();
+                        } else if (!$rememberToken && static::$connection::schema()->hasColumn($tableName, 'remember_token')) {
+                            $table->dropRememberToken();
+                        }
+                    }
+
+                    if ($softDeletes !== ($lastMigration['softDeletes'] ?? false)) {
+                        if ($softDeletes && !static::$connection::schema()->hasColumn($tableName, 'deleted_at')) {
+                            $table->softDeletes();
+                        } else if (!$softDeletes && static::$connection::schema()->hasColumn($tableName, 'deleted_at')) {
+                            $table->dropSoftDeletes();
+                        }
+                    }
+
+                    if ($timestamps !== ($lastMigration['timestamps'] ?? true)) {
+                        if ($timestamps && !static::$connection::schema()->hasColumn($tableName, 'created_at')) {
+                            $table->timestamps();
+                        } else if (!$timestamps && static::$connection::schema()->hasColumn($tableName, 'created_at')) {
+                            $table->dropTimestamps();
+                        }
+                    }
+                });
             }
 
-            return [$table, $schema];
+            storage()->copy(
+                $fileToMigrate,
+                StoragePath('database' . '/' . $tableName . '/' . tick()->format('YYYY_MM_DD_HHmmss[.yml]')),
+                ['recursive' => true]
+            );
         } catch (\Throwable $th) {
             throw $th;
         }
+
+        return true;
     }
 
     /**
-     * Get the columns of a table and their types
-     *
-     * @param string $key The column as provided in the schema
-     * @param mixed $value The value of the column as provided in the schema
-     *
-     * @return array
+     * Seed a database table from schema file
+     * 
+     * @param string $fileToSeed The name of the schema file
+     * @return bool
      */
-    protected static function getColumns(string $key, $value): array
+    public static function seed(string $fileToSeed): bool
     {
-        $type = '';
-        $column = '';
+        $data = Yaml::parseFile($fileToSeed);
+        return true;
+    }
 
-        $keyData = explode(':', $key);
+    /**
+     * Get all column attributes
+     */
+    public static function getColumnAttributes($value)
+    {
+        $attributes = [
+            'type' => 'string',
+            'length' => null,
+            'nullable' => false,
+            'default' => null,
+            'unsigned' => false,
+            'index' => false,
+            'unique' => false,
+            'primary' => false,
+            'foreign' => false,
+            'foreignTable' => null,
+            'foreignColumn' => null,
+            'onDelete' => null,
+            'onUpdate' => null,
+            'comment' => null,
+            'autoIncrement' => false,
+            'useCurrent' => false,
+            'useCurrentOnUpdate' => false,
+        ];
 
-        if (count($keyData) > 1) {
-            $type = trim($keyData[1]);
-            $column = trim($keyData[0]);
-
-            if ($type === 'id') {
-                $column .= '*';
-                $type = 'bigIncrements';
-            } else if ($type === 'number') {
-                $type = 'integer';
-            } else if ($type === 'bool') {
-                $type = 'boolean';
-            }
-
-            if (gettype($value) === 'NULL' && rtrim($column, '*') !== $column) {
-                $column .= '?';
-            }
-
-            return [$column, $type];
+        if (is_string($value)) {
+            $attributes['type'] = $value;
+        } else if (is_array($value)) {
+            $attributes = array_merge($attributes, $value);
         }
 
-        echo $key . " => " . $value . "\n";
+        return $attributes;
+    }
 
-        if (
-            (strtolower($key) === 'id' && gettype($value) === 'integer') ||
-            (strpos(strtolower($key), '_id') !== false && gettype($value) === 'integer')
-        ) {
-            return [$key, 'bigIncrements'];
-        }
-
-        if (
-            strpos(ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '_$0', $key)), '_'), '_at') !== false ||
-            strpos(ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '_$0', $key)), '_'), '_date') !== false ||
-            strpos(ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '_$0', $key)), '_'), '_time') !== false ||
-            strpos($key, 'timestamp') === 0 ||
-            strpos($key, 'time') === 0 ||
-            strpos($key, 'date') === 0
-        ) {
-            return [$key, 'timestamp'];
-        }
-
-        if (gettype($value) === 'integer') {
-            return [$key, 'integer'];
-        }
-
-        if (gettype($value) === 'double') {
-            return [$key, 'float'];
-        }
-
-        if (gettype($value) === 'string') {
-            if (strpos($value, '{') === 0 || strpos($value, '[') === 0) {
-                return [$key, 'json'];
-            }
-
-            if ($key === 'description' || $key === 'text' || strlen($value) > 150) {
-                return [$key, 'text'];
-            }
-
-            return [$key, 'string'];
-        }
-
-        if (gettype($value) === 'array') {
-            return [$key, 'enum'];
-        }
-
-        if (gettype($value) === 'boolean') {
-            return [$key, 'boolean'];
-        }
-
-        return [$column, $type];
+    /**
+     * Set the internal db connection
+     * @param mixed $connection
+     * @return void
+     */
+    public static function setDbConnection($connection)
+    {
+        static::$connection = $connection;
     }
 }
