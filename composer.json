@@ -38,6 +38,7 @@
         "doctrine/dbal": "^3.2",
         "vlucas/phpdotenv": "^5.4",
         "illuminate/database": "^8.75",
-        "illuminate/events": "^8.75"
+        "illuminate/events": "^8.75",
+        "symfony/yaml": "^6.4"
     }
 }

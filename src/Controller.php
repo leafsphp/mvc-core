@@ -66,54 +66,7 @@ class Controller
      */
     public function view(string $view, array $data = [])
     {
-        /// WILL REFACTOR IN NEXT VERSION
-
-        if (is_object($data)) {
-            $data = (array) $data;
-        }
-
-        if (ViewConfig('render')) {
-            if (ViewConfig('config')) {
-                call_user_func_array(ViewConfig('config'), [[
-                    'views' => AppConfig('views.path'),
-                    'cache' => AppConfig('views.cachePath'),
-                ]]);
-            }
-
-            return ViewConfig('render')($view, $data);
-        }
-
-        $engine = ViewConfig('viewEngine');
-        $className = strtolower(get_class(new $engine));
-
-        $fullName = explode('\\', $className);
-        $className = $fullName[count($fullName) - 1];
-
-        if (\Leaf\Config::getStatic("views.$className")) {
-            if (ViewConfig('config')) {
-                call_user_func_array(ViewConfig('config'), [[
-                    'views' => AppConfig('views.path'),
-                    'cache' => AppConfig('views.cachePath'),
-                ]]);
-            } else {
-                \Leaf\Config::get("views.$className")->configure(AppConfig('views.path'), AppConfig('views.cachePath'));
-            }
-
-            return \Leaf\Config::get("views.$className")->render($view, $data);
-        }
-
-        $engine = new $engine($engine);
-
-        if (ViewConfig('config')) {
-            call_user_func_array(ViewConfig('config'), [[
-                'views' => AppConfig('views.path'),
-                'cache' => AppConfig('views.cachePath'),
-            ]]);
-        } else {
-            $engine->config(AppConfig('views.path'), AppConfig('views.cachePath'));
-        }
-
-        return $engine->render($view, $data);
+        return view($view, $data);
     }
 
     /**
