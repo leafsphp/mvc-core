@@ -19,6 +19,7 @@ function PathsConfig($setting = null)
         'channels' => 'app/channels',
         'components' => 'app/components',
         'controllers' => 'app/controllers',
+        'database' => 'app/database',
         'databaseStorage' => 'storage/app/db',
         'exceptions' => 'app/exceptions',
         'events' => 'app/events',

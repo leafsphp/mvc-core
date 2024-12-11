@@ -65,25 +65,27 @@ class Core
                 \Leaf\Vite::config('hotFile', 'public/hot');
             }
 
-            Config::attachView(ViewConfig('viewEngine'), 'template');
+            if (ViewConfig('viewEngine')) {
+                Config::attachView(ViewConfig('viewEngine'), 'template');
 
-            if (ViewConfig('config')) {
-                call_user_func_array(ViewConfig('config'), [
-                    app()->template(),
-                    [
+                if (ViewConfig('config')) {
+                    call_user_func_array(ViewConfig('config'), [
+                        app()->template(),
+                        [
+                            'views' => AppConfig('views.path'),
+                            'cache' => AppConfig('views.cachePath'),
+                        ]
+                    ]);
+                } else if (method_exists(app()->template(), 'configure')) {
+                    app()->template()->configure([
                         'views' => AppConfig('views.path'),
                         'cache' => AppConfig('views.cachePath'),
-                    ]
-                ]);
-            } else if (method_exists(app()->template(), 'configure')) {
-                app()->template()->configure([
-                    'views' => AppConfig('views.path'),
-                    'cache' => AppConfig('views.cachePath'),
-                ]);
-            }
+                    ]);
+                }
 
-            if (is_callable(ViewConfig('extend'))) {
-                call_user_func_array(ViewConfig('extend'), app()->template());
+                if (is_callable(ViewConfig('extend'))) {
+                    call_user_func_array(ViewConfig('extend'), app()->template());
+                }
             }
         }
     }
