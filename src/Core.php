@@ -50,7 +50,7 @@ class Core
                     Config::getStatic('mvc.config.auth')['session'] ?? false
                 );
 
-                if ($csrfConfig['enabled'] ?? null !== null) {
+                if (($csrfConfig['enabled'] ?? null) !== null) {
                     $csrfEnabled = $csrfConfig['enabled'];
                 }
 
