@@ -11,7 +11,7 @@
 [![Total Downloads](https://poser.pugx.org/leafs/mvc-core/downloads)](https://packagist.org/packages/leafs/mvc-core)
 [![License](https://poser.pugx.org/leafs/mvc-core/license)](https://packagist.org/packages/leafs/mvc-core)
 
-This is the heart of Leaf MVC. It serves as a bridge between Leaf and the MVC file structure. It provides a ton of functionality that makes it easy to build a full-blown MVC application with Leaf.
+Leaf MVC Core is the heart of Leaf MVC and serves as bridge between Leaf, modules and the MVC file structure. It provides a ton of extra functionality like extra globals, classes and methods that help with separation of concerns and building a full-blown MVC application with Leaf.
 
 ## 📦 Installation
 
@@ -32,12 +32,9 @@ composer require leafs/mvc-core
 MVC Core comes with:
 
 - Controllers
-- Api Controllers
-- Database & Models
-- Factories
-- Models
-- Schemas
+- Database & Model functionalities
 - Tons of MVC and module globals
+- Autoloading directory files
 
 Since you don't use this package on its own, the documentation is covered in the [Leaf MVC documentation](https://leafphp.dev/docs/mvc/).
 
