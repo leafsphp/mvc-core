@@ -38,7 +38,7 @@ class Database
         static::$capsule->bootEloquent();
 
         if (php_sapi_name() === 'cli') {
-            Schema::$capsule = static::$capsule;
+            Schema::setDbConnection(static::$capsule);
         }
     }
 
