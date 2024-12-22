@@ -53,6 +53,10 @@ class Schema
                     }
 
                     foreach ($relationships as $model) {
+                        if (strpos($model, 'App\Models') === false) {
+                            $model = "App\Models\\$model";
+                        }
+
                         $table->foreignIdFor($model);
                     }
 
