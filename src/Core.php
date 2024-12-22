@@ -87,6 +87,10 @@ class Core
                     call_user_func_array(ViewConfig('extend'), app()->template());
                 }
             }
+
+            if (storage()->exists(LibPath())) {
+                static::loadLibs();
+            }
         }
     }
 
