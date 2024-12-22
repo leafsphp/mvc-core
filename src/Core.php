@@ -88,8 +88,16 @@ class Core
                 }
             }
 
+            if (DatabaseConfig('sync')) {
+                \Leaf\Database::initDb();
+            }
+
             if (storage()->exists(LibPath())) {
                 static::loadLibs();
+            }
+            
+            if (storage()->exists('app/index.php')) {
+                require 'app/index.php';
             }
         }
     }
