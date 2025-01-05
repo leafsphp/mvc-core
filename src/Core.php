@@ -64,6 +64,10 @@ class Core
                 \Leaf\Vite::config('build', 'public/build');
                 \Leaf\Vite::config('hotFile', 'public/hot');
             }
+
+            if (DatabaseConfig('sync')) {
+                \Leaf\Database::initDb();
+            }
         }
     }
 
