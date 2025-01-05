@@ -72,6 +72,18 @@ class Core
             if (storage()->exists(LibPath())) {
                 static::loadLibs();
             }
+
+            if (
+                class_exists('Leaf\Billing\Stripe') ||
+                class_exists('Leaf\Billing\PayStack') ||
+                class_exists('Leaf\Billing\LemonSqueezy')
+            ) {
+                billing(Config::getStatic('mvc.config.billing'));
+            }
+
+            if (storage()->exists('app/index.php')) {
+                require 'app/index.php';
+            }
         }
     }
 
