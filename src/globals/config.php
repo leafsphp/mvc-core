@@ -19,6 +19,7 @@ function PathsConfig($setting = null)
         'channels' => 'app/channels',
         'components' => 'app/components',
         'controllers' => 'app/controllers',
+        'database' => 'app/database',
         'databaseStorage' => 'storage/app/db',
         'exceptions' => 'app/exceptions',
         'events' => 'app/events',
@@ -94,5 +95,5 @@ function MailConfig($setting = null)
 function MvcConfig($appConfig, $setting = null)
 {
     $config = \Leaf\Config::getStatic("mvc.config.$appConfig");
-    return !$setting ? $config : $config[$setting];
+    return !$setting ? $config : ($config[$setting] ?? null);
 }
