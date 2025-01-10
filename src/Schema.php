@@ -390,6 +390,24 @@ class Schema
     }
 
     /**
+     * Reset a database table
+     */
+    public static function reset(string $fileToReset): bool
+    {
+        $tableName = rtrim(path($fileToReset)->basename(), '.yml');
+
+        if (static::$connection::schema()->hasTable($tableName)) {
+            static::$connection::schema()->dropIfExists($tableName);
+
+            if (storage()->exists(StoragePath("database/$tableName"))) {
+                storage()->delete(StoragePath("database/$tableName"));
+            }
+        }
+
+        return static::migrate($fileToReset);
+    }
+
+    /**
      * Get all column attributes
      */
     public static function getColumnAttributes($value)
