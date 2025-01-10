@@ -408,6 +408,42 @@ class Schema
     }
 
     /**
+     * Rollback db to a previous state
+     */
+    public static function rollback(string $fileToRollback, int $step = 1): bool
+    {
+        $tableName = rtrim(path($fileToRollback)->basename(), '.yml');
+
+        if (!storage()->exists(StoragePath("database/$tableName"))) {
+            return false;
+        }
+
+        $files = glob(StoragePath("database/$tableName/*.yml"));
+
+        if (count($files) === 0) {
+            return false;
+        }
+
+        $migrationStep = count($files) - $step;
+        $currentFileToRollback = $files[$migrationStep] ?? null;
+
+        if (!$currentFileToRollback) {
+            return false;
+        }
+
+        $files = array_reverse($files);
+
+        for ($i = 0; $i < ($step - 1); $i++) {
+            storage()->delete($files[$i]);
+        }
+
+        storage()->rename($fileToRollback, StoragePath('database' . '/' . $tableName . '/' . tick()->format('YYYY_MM_DD_HHmmss[.yml]')));
+        storage()->rename($currentFileToRollback, $fileToRollback);
+
+        return static::migrate($fileToRollback);
+    }
+
+    /**
      * Get all column attributes
      */
     public static function getColumnAttributes($value)
