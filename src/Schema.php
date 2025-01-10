@@ -29,10 +29,6 @@ class Schema
         $data = Yaml::parseFile($fileToMigrate);
         $tableName = rtrim(path($fileToMigrate)->basename(), '.yml');
 
-        if ($data['truncate'] ?? false) {
-            static::$connection::schema()->dropIfExists($tableName);
-        }
-
         try {
             if (!static::$connection::schema()->hasTable($tableName)) {
                 if (storage()->exists(StoragePath("database/$tableName"))) {
@@ -285,6 +281,111 @@ class Schema
     public static function seed(string $fileToSeed): bool
     {
         $data = Yaml::parseFile($fileToSeed);
+        $tableName = rtrim(path($fileToSeed)->basename(), '.yml');
+
+        $seeds = $data['seeds'] ?? [];
+        $count = $seeds['count'] ?? 1;
+        $seedsData = $seeds['data'] ?? [];
+
+        $timestamps = $data['timestamps'] ?? true;
+        $softDeletes = $data['softDeletes'] ?? false;
+        $rememberToken = $data['remember_token'] ?? false;
+
+        $finalDataToSeed = [];
+
+        if ($seeds['truncate'] ?? false) {
+            static::$connection::table($tableName)->truncate();
+        }
+
+        if (is_array($seedsData[0] ?? null)) {
+            $finalDataToSeed = $seedsData;
+        } else {
+            for ($i = 0; $i < $count; $i++) {
+                $parsedData = [];
+
+                foreach ($seedsData as $key => $value) {
+                    $valueArray = explode('.', $value);
+
+                    if ($valueArray[0] === '@faker') {
+                        $localFakerInstance = \Faker\Factory::create();
+
+                        foreach ($valueArray as $index => $fakerMethod) {
+                            if ($index === 0) {
+                                continue;
+                            }
+
+                            if (strpos($fakerMethod, ':') !== false) {
+                                $fakerMethod = explode(':', $fakerMethod);
+                                $localFakerInstance = $localFakerInstance->{$fakerMethod[0]}($fakerMethod[1]);
+                            } else {
+                                $localFakerInstance = $localFakerInstance->{$fakerMethod}();
+                            }
+                        }
+
+                        $parsedData[$key] = $localFakerInstance;
+
+                        continue;
+                    }
+
+                    if ($valueArray[0] === '@tick') {
+                        $localTickInstance = tick();
+
+                        foreach ($valueArray as $index => $tickMethod) {
+                            if ($index === 0) {
+                                continue;
+                            }
+
+                            if (strpos($tickMethod, ':') !== false) {
+                                $tickMethod = explode(':', $tickMethod);
+                                $localTickInstance = $localTickInstance->{$tickMethod[0]}($tickMethod[1]);
+                            } else {
+                                $localTickInstance = $localTickInstance->{$tickMethod}();
+                            }
+                        }
+
+                        $parsedData[$key] = $localTickInstance;
+
+                        continue;
+                    }
+
+                    if (strpos($value, '@randomString') === 0) {
+                        $value = explode(':', $value);
+                        $parsedData[$key] = \Illuminate\Support\Str::random($value[1] ?? 10);
+
+                        continue;
+                    }
+
+                    if (strpos($value, '@hash') === 0) {
+                        $value = explode(':', $value);
+                        $parsedData[$key] = \Leaf\Helpers\Password::hash($value[1] ?? 'password');
+
+                        continue;
+                    }
+
+                    $parsedData[$key] = $value;
+                }
+
+                $finalDataToSeed[] = $parsedData;
+            }
+        }
+
+        foreach ($finalDataToSeed as $itemToSeed) {
+            if ($rememberToken) {
+                $itemToSeed['remember_token'] = \Illuminate\Support\Str::random(10);
+            }
+
+            if ($softDeletes) {
+                $itemToSeed['deleted_at'] = null;
+            }
+
+            if ($timestamps) {
+                $itemToSeed['created_at'] = tick()->format('YYYY-MM-DD HH:mm:ss');
+                $itemToSeed['updated_at'] = tick()->format('YYYY-MM-DD HH:mm:ss');
+            }
+
+            static::$connection::table($tableName)->insert($itemToSeed);
+        }
+
         return true;
     }
 
