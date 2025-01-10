@@ -88,9 +88,7 @@ class Core
                 }
             }
 
-            if (DatabaseConfig('sync')) {
-                \Leaf\Database::initDb();
-            }
+            \Leaf\Database::initDb();
 
             if (storage()->exists(LibPath())) {
                 static::loadLibs();
@@ -320,6 +318,8 @@ class Core
      */
     public static function runApplication()
     {
+        static::loadApplicationConfig();
+
         $routePath = static::$paths['routes'];
         $routeFiles = glob("$routePath/*.php");
 

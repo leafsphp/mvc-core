@@ -45,8 +45,6 @@ class Database
     /**
      * Create a Leaf Db connection using the the default connection
      * defined in the config/database.php file
-     *
-     * @return \PDO|null
      */
     public static function initDb()
     {
@@ -55,7 +53,7 @@ class Database
             $defaultConnection = $config['connections'][$config['default'] ?? 'mysql'] ?? [];
 
             if (!empty($defaultConnection)) {
-                return db()->connect([
+                return db()->load([
                     'dbUrl' => $defaultConnection['url'] ?? null,
                     'dbtype' => $defaultConnection['driver'] ?? 'mysql',
                     'charset' => $defaultConnection['charset'] ?? 'utf8mb4',
