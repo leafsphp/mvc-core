@@ -39,7 +39,8 @@
         "vlucas/phpdotenv": "^5.4",
         "illuminate/database": "^8.75",
         "illuminate/events": "^8.75",
-        "symfony/yaml": "^6.4"
+        "symfony/yaml": "^6.4",
+        "leafs/db": "^2.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24"
