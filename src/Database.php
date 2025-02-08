@@ -53,7 +53,7 @@ class Database
             $defaultConnection = $config['connections'][$config['default'] ?? 'mysql'] ?? [];
 
             if (!empty($defaultConnection)) {
-                return db()->load([
+                return db()->connect([
                     'dbUrl' => $defaultConnection['url'] ?? null,
                     'dbtype' => $defaultConnection['driver'] ?? 'mysql',
                     'charset' => $defaultConnection['charset'] ?? 'utf8mb4',
