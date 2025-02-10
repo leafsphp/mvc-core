@@ -23,7 +23,7 @@ class Database
     {
         static::$capsule = new Manager;
 
-        $config = Config::getStatic('mvc.config.database');
+        $config = Config::getStatic('mvc.config')['database'] ?? [];
         $connections = $config['connections'] ?? [];
 
         foreach ($connections as $name => $connection) {
@@ -49,7 +49,7 @@ class Database
     public static function initDb()
     {
         if (function_exists('db')) {
-            $config = Config::getStatic('mvc.config.database');
+            $config = Config::getStatic('mvc.config')['database'] ?? [];
             $defaultConnection = $config['connections'][$config['default'] ?? 'mysql'] ?? [];
 
             if (!empty($defaultConnection)) {
