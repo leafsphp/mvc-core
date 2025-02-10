@@ -94,6 +94,6 @@ function MailConfig($setting = null)
  */
 function MvcConfig($appConfig, $setting = null)
 {
-    $config = \Leaf\Config::getStatic("mvc.config.$appConfig");
+    $config = \Leaf\Config::getStatic('mvc.config')[$appConfig] ?? null;
     return !$setting ? $config : ($config[$setting] ?? null);
 }

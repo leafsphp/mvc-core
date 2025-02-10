@@ -27,79 +27,17 @@ class Core
     {
         static::loadConfig();
 
-        if (class_exists('Leaf\Auth')) {
-            auth()->config(Config::getStatic('mvc.config.auth'));
-        }
-
-        if (class_exists('Leaf\Mail')) {
-            mailer()->connect(Config::getStatic('mvc.config.mail'));
-        }
-
         if (php_sapi_name() !== 'cli') {
-            app()->config(Config::getStatic('mvc.config.app'));
-
-            if (class_exists('Leaf\Http\Cors')) {
-                app()->cors(Config::getStatic('mvc.config.cors'));
-            }
-
-            if (class_exists('Leaf\Anchor\CSRF')) {
-                $csrfConfig = Config::getStatic('mvc.config.csrf');
-
-                $csrfEnabled = (
-                    $csrfConfig &&
-                    Config::getStatic('mvc.config.auth')['session'] ?? false
-                );
-
-                if (($csrfConfig['enabled'] ?? null) !== null) {
-                    $csrfEnabled = $csrfConfig['enabled'];
-                }
-
-                if ($csrfEnabled) {
-                    app()->csrf($csrfConfig);
-                }
-            }
-
             if (class_exists('Leaf\Vite')) {
                 \Leaf\Vite::config('assets', PublicPath('build'));
                 \Leaf\Vite::config('build', 'public/build');
                 \Leaf\Vite::config('hotFile', 'public/hot');
             }
 
-            if (ViewConfig('viewEngine')) {
-                Config::attachView(ViewConfig('viewEngine'), 'template');
-
-                if (ViewConfig('config')) {
-                    call_user_func_array(ViewConfig('config'), [
-                        app()->template(),
-                        [
-                            'views' => AppConfig('views.path'),
-                            'cache' => AppConfig('views.cachePath'),
-                        ]
-                    ]);
-                } else if (method_exists(app()->template(), 'configure')) {
-                    app()->template()->configure([
-                        'views' => AppConfig('views.path'),
-                        'cache' => AppConfig('views.cachePath'),
-                    ]);
-                }
-
-                if (is_callable(ViewConfig('extend'))) {
-                    call_user_func(ViewConfig('extend'), app()->template());
-                }
-            }
-
             \Leaf\Database::initDb();
 
             if (storage()->exists(LibPath())) {
                 static::loadLibs();
-            }
-
-            if (
-                class_exists('Leaf\Billing\Stripe') ||
-                class_exists('Leaf\Billing\PayStack') ||
-                class_exists('Leaf\Billing\LemonSqueezy')
-            ) {
-                billing(Config::getStatic('mvc.config.billing'));
             }
 
             if (storage()->exists('app/index.php')) {
@@ -128,47 +66,6 @@ class Core
                 'mode' => _env('APP_ENV', 'development'),
                 'views.path' => ViewsPath(null, false),
                 'views.cachePath' => StoragePath('framework/views')
-            ],
-            'auth' => [
-                'db.table' => 'users',
-                'id.key' => 'id',
-                'timestamps' => true,
-                'timestamps.format' => 'YYYY-MM-DD HH:mm:ss',
-                'unique' => ['email'],
-                'hidden' => ['field.id', 'field.password'],
-                'session' => _env('AUTH_SESSION', true),
-                'session.lifetime' => 60 * 60 * 24,
-                'session.cookie' => ['secure' => false, 'httponly' => true, 'samesite' => 'lax'],
-                'token.lifetime' => 60 * 60 * 24 * 365,
-                'token.secret' => _env('AUTH_TOKEN_SECRET', '@leaf$MVC*JWT#AUTH.Secret'),
-                'messages.loginParamsError' => 'Incorrect credentials!',
-                'messages.loginPasswordError' => 'Password is incorrect!',
-                'password.key' => 'password',
-                'password.encode' => function ($password) {
-                    return \Leaf\Helpers\Password::hash($password);
-                },
-                'password.verify' => function ($password, $hashedPassword) {
-                    return \Leaf\Helpers\Password::verify($password, $hashedPassword);
-                },
-            ],
-            'cors' => [
-                'origin' => _env('CORS_ALLOWED_ORIGINS', '*'),
-                'methods' => _env('CORS_ALLOWED_METHODS', 'GET,HEAD,PUT,PATCH,POST,DELETE'),
-                'allowedHeaders' => _env('CORS_ALLOWED_HEADERS', '*'),
-                'exposedHeaders' => _env('CORS_EXPOSED_HEADERS', ''),
-                'credentials' => false,
-                'maxAge' => null,
-                'preflightContinue' => false,
-                'optionsSuccessStatus' => 204,
-            ],
-            'csrf' => [
-                'secret' => _env('APP_KEY', '@nkor_leaf$0Secret!!'),
-                'secretKey' => 'X-Leaf-CSRF-Token',
-                'except' => [],
-                'methods' => ['POST', 'PUT', 'PATCH', 'DELETE'],
-                'messages.tokenNotFound' => 'Token not found.',
-                'messages.tokenInvalid' => 'Invalid token.',
-                'onError' => null,
             ],
             'database' => [
                 'default' => _env('DB_CONNECTION', 'mysql'),
@@ -229,13 +126,114 @@ class Core
             ],
             'view' => [
                 'viewEngine' => \Leaf\Blade::class,
-                'config' => function ($engine, $config) {
-                    $engine->configure($config['views'], $config['cache']);
+                'config' => function ($engine, $viewConfig) {
+                    $engine->configure($viewConfig['views'], $viewConfig['cache']);
                 },
                 'render' => null,
                 'extend' => null,
             ],
-            'mail' => [
+        ];
+
+        if (storage()->exists($configPath = static::$paths['config'])) {
+            foreach (glob("$configPath/*.php") as $configFile) {
+                $config[basename($configFile, '.php')] = require $configFile;
+            }
+        }
+
+        app()->config($config['app']);
+
+        if ($config['view']['viewEngine']) {
+            Config::attachView($config['view']['viewEngine'], 'template');
+
+            if ($config['view']['config']) {
+                call_user_func_array($config['view']['config'], [
+                    app()->template(),
+                    [
+                        'views' => $config['app']['views.path'],
+                        'cache' => $config['app']['views.cachePath'],
+                    ]
+                ]);
+            } else if (method_exists(app()->template(), 'configure')) {
+                app()->template()->configure([
+                    'views' => $config['app']['views.path'],
+                    'cache' => $config['app']['views.cachePath'],
+                ]);
+            }
+
+            if (is_callable($config['view']['extend'])) {
+                call_user_func($config['view']['extend'], app()->template());
+            }
+        }
+
+        if (class_exists('Leaf\Auth')) {
+            $config['auth'] = [
+                'db.table' => 'users',
+                'id.key' => 'id',
+                'timestamps' => true,
+                'timestamps.format' => 'YYYY-MM-DD HH:mm:ss',
+                'unique' => ['email'],
+                'hidden' => ['field.id', 'field.password'],
+                'session' => _env('AUTH_SESSION', true),
+                'session.lifetime' => 60 * 60 * 24,
+                'session.cookie' => ['secure' => false, 'httponly' => true, 'samesite' => 'lax'],
+                'token.lifetime' => 60 * 60 * 24 * 365,
+                'token.secret' => _env('AUTH_TOKEN_SECRET', '@leaf$MVC*JWT#AUTH.Secret'),
+                'messages.loginParamsError' => 'Incorrect credentials!',
+                'messages.loginPasswordError' => 'Password is incorrect!',
+                'password.key' => 'password',
+                'password.encode' => function ($password) {
+                    return \Leaf\Helpers\Password::hash($password);
+                },
+                'password.verify' => function ($password, $hashedPassword) {
+                    return \Leaf\Helpers\Password::verify($password, $hashedPassword);
+                },
+            ];
+
+            auth()->config($config['auth']);
+        }
+
+        if (class_exists('Leaf\Http\Cors')) {
+            $config['cors'] = [
+                'origin' => _env('CORS_ALLOWED_ORIGINS', '*'),
+                'methods' => _env('CORS_ALLOWED_METHODS', 'GET,HEAD,PUT,PATCH,POST,DELETE'),
+                'allowedHeaders' => _env('CORS_ALLOWED_HEADERS', '*'),
+                'exposedHeaders' => _env('CORS_EXPOSED_HEADERS', ''),
+                'credentials' => false,
+                'maxAge' => null,
+                'preflightContinue' => false,
+                'optionsSuccessStatus' => 204,
+            ];
+
+            app()->cors($config['cors']);
+        }
+
+        if (class_exists('Leaf\Anchor\CSRF')) {
+            $config['csrf'] = [
+                'secret' => _env('APP_KEY', '@nkor_leaf$0Secret!!'),
+                'secretKey' => 'X-Leaf-CSRF-Token',
+                'except' => [],
+                'methods' => ['POST', 'PUT', 'PATCH', 'DELETE'],
+                'messages.tokenNotFound' => 'Token not found.',
+                'messages.tokenInvalid' => 'Invalid token.',
+                'onError' => null,
+            ];
+
+            $csrfEnabled = (
+                $config['csrf'] &&
+                Config::getStatic('mvc.config.auth')['session'] ?? false
+            );
+
+            if (($config['csrf']['enabled'] ?? null) !== null) {
+                $csrfEnabled = $config['csrf']['enabled'];
+            }
+
+            if ($csrfEnabled) {
+                app()->csrf($config['csrf']);
+            }
+        }
+
+        if (class_exists('Leaf\Mail')) {
+            $config['mail'] = [
                 'host' => _env('MAIL_HOST', 'smtp.mailtrap.io'),
                 'port' => _env('MAIL_PORT', 2525),
                 'keepAlive' => true,
@@ -251,22 +249,20 @@ class Core
                     'replyToName' => _env('MAIL_REPLY_TO_NAME'),
                     'replyToEmail' => _env('MAIL_REPLY_TO_EMAIL'),
                 ],
-            ],
-        ];
+            ];
 
-        foreach ($config as $configName => $config) {
-            \Leaf\Config::set("mvc.config.$configName", $config);
+            mailer()->connect($config['mail']);
         }
 
-        $configPath = static::$paths['config'];
-        $configFiles = glob("$configPath/*.php");
-
-        foreach ($configFiles as $configFile) {
-            $configName = basename($configFile, '.php');
-            $config = require $configFile;
-
-            \Leaf\Config::set("mvc.config.$configName", $config);
+        if (
+            class_exists('Leaf\Billing\Stripe') ||
+            class_exists('Leaf\Billing\PayStack') ||
+            class_exists('Leaf\Billing\LemonSqueezy')
+        ) {
+            billing($config['billing']);
         }
+
+        Config::set('mvc.config', $config);
     }
 
     /**
@@ -291,7 +287,7 @@ class Core
 
         \Leaf\Database::connect();
 
-        $console = new \Aloe\Console('v4.x-ALPHA');
+        $console = new \Aloe\Console('v4.x-BETA');
 
         if (\Leaf\FS\Directory::exists(static::$paths['commands'])) {
             $consolePath = static::$paths['commands'];
