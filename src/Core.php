@@ -27,14 +27,14 @@ class Core
     {
         static::loadConfig();
 
+        \Leaf\Database::initDb();
+
         if (php_sapi_name() !== 'cli') {
             if (class_exists('Leaf\Vite')) {
                 \Leaf\Vite::config('assets', PublicPath('build'));
                 \Leaf\Vite::config('build', 'public/build');
                 \Leaf\Vite::config('hotFile', 'public/hot');
             }
-
-            \Leaf\Database::initDb();
 
             if (storage()->exists(LibPath())) {
                 static::loadLibs();
@@ -254,6 +254,24 @@ class Core
             mailer()->connect($config['mail']);
         }
 
+        if (class_exists('Leaf\Queue')) {
+            $config['queue'] = [
+                'default' => _env('QUEUE_CONNECTION', 'database'),
+                'connections' => [
+                    'redis' => [
+                        'driver' => 'redis',
+                        'connection' => _env('REDIS_QUEUE_CONNECTION', 'default'),
+                        'queue' => _env('REDIS_QUEUE', 'default'),
+                    ],
+                    'database' => [
+                        'driver' => 'database',
+                        'connection' => _env('DB_QUEUE_CONNECTION', 'default'),
+                        'table' => _env('DB_QUEUE_TABLE', 'leaf_php_jobs'),
+                    ],
+                ],
+            ];
+        }
+
         if (
             class_exists('Leaf\Billing\Stripe') ||
             class_exists('Leaf\Billing\PayStack') ||
@@ -300,6 +318,10 @@ class Core
                     "App\\Console\\$commandName",
                 );
             }
+        }
+
+        if (class_exists('Leaf\Queue')) {
+            $externalCommands[] = \Leaf\Queue::commands();
         }
 
         foreach ($externalCommands as $command) {
