@@ -49,24 +49,26 @@ class Database
     public static function initDb()
     {
         if (function_exists('db')) {
+            $connections = [];
             $config = Config::getStatic('mvc.config')['database'] ?? [];
-            $defaultConnection = $config['connections'][$config['default'] ?? 'mysql'] ?? [];
 
-            if (!empty($defaultConnection)) {
-                return db()->connect([
-                    'dbUrl' => $defaultConnection['url'] ?? null,
-                    'dbtype' => $defaultConnection['driver'] ?? 'mysql',
-                    'charset' => $defaultConnection['charset'] ?? 'utf8mb4',
-                    'port' => $defaultConnection['port'] ?? '3306',
-                    'host' => $defaultConnection['host'] ?? '127.0.0.1',
-                    'username' => $defaultConnection['username'] ?? 'root',
-                    'password' => $defaultConnection['password'] ?? '',
-                    'dbname' => $defaultConnection['database'] ?? 'leaf_db',
-                    'collation' => $defaultConnection['collation'] ?? 'utf8mb4_unicode_ci',
-                    'prefix' => $defaultConnection['prefix'] ?? '',
-                    'unix_socket' => $defaultConnection['unix_socket'] ?? '',
-                ]);
+            foreach ($config['connections'] as $key => $connection) {
+                $connections[$key] = [
+                    'dbUrl' => $connection['url'] ?? null,
+                    'dbtype' => $connection['driver'],
+                    'charset' => $connection['charset'] ?? null,
+                    'port' => $connection['port'] ?? null,
+                    'host' => $connection['host'] ?? null,
+                    'username' => $connection['username'] ?? null,
+                    'password' => $connection['password'] ?? null,
+                    'dbname' => $connection['database'],
+                    'collation' => $connection['collation'] ?? 'utf8mb4_unicode_ci',
+                    'prefix' => $connection['prefix'] ?? '',
+                    'unix_socket' => $connection['unix_socket'] ?? '',
+                ];
             }
+
+            db()->addConnections($connections, $config['default']);
         }
 
         return null;
