@@ -272,6 +272,24 @@ class Core
             ];
         }
 
+        if (class_exists('Leaf\Redis')) {
+            $config['redis'] = [
+                'port' => 6379,
+                'scheme' => 'tcp',
+                'password' => null,
+                'host' => '127.0.0.1',
+                'session' => false,
+                'session.savePath' => null,
+                'session.saveOptions' => [],
+                'connection.timeout' => 0.0,
+                'connection.reserved' => null,
+                'connection.retryInterval' => 0,
+                'connection.readTimeout' => 0.0,
+            ];
+
+            redis()->connect($config['redis']);
+        }
+
         if (
             class_exists('Leaf\Billing\Stripe') ||
             class_exists('Leaf\Billing\PayStack') ||
