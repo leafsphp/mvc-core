@@ -11,6 +11,8 @@ class Core
 {
     protected static $paths;
 
+    protected static $mode = 'web';
+
     /**
      * Return application paths
      * @return array
@@ -312,6 +314,18 @@ class Core
         foreach ($libFiles as $libFile) {
             require $libFile;
         }
+    }
+
+    /**
+     * Set mode for Leaf MVC: API or Web
+     */
+    public static function mode(?string $mode = null)
+    {
+        if ($mode === null) {
+            return static::$mode;
+        }
+
+        static::$mode = $mode;
     }
 
     /**
