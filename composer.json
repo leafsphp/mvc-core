@@ -40,7 +40,7 @@
         "illuminate/database": "^8.75",
         "illuminate/events": "^8.75",
         "symfony/yaml": "^6.4",
-        "leafs/db": "v4.x-dev"
+        "leafs/db": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24"
