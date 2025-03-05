@@ -110,6 +110,16 @@ class Schema
                         }
                     }
 
+                    if ($relationships !== ($lastMigration['relationships'] ?? [])) {
+                        foreach ($relationships as $model) {
+                            if (strpos($model, 'App\Models') === false) {
+                                $model = "App\Models\\$model";
+                            }
+
+                            $table->foreignIdFor($model);
+                        }
+                    }
+
                     $columnsDiff = [];
                     $staticColumns = [];
                     $removedColumns = [];
@@ -132,7 +142,17 @@ class Schema
                             $column = static::getColumnAttributes($columns[$newColumn]);
 
                             if (!static::$connection::schema()->hasColumn($tableName, $newColumn)) {
-                                $newCol = $table->{$column['type']}($newColumn);
+                                // [TODO] Add more special cases
+                                if ($column['type'] === 'string') {
+                                    $newCol = $table->string(
+                                        $newColumn,
+                                        $column['length'] ?? 255
+                                    );
+
+                                    unset($column['length']);
+                                } else {
+                                    $newCol = $table->{$column['type']}($newColumn);
+                                }
 
                                 unset($column['type']);
 
@@ -322,7 +342,7 @@ class Schema
                             }
                         }
 
-                        $parsedData[$key] = $localFakerInstance;
+                        $parsedData[$key] = is_array($localFakerInstance) ? implode('-', $localFakerInstance) : $localFakerInstance;
 
                         continue;
                     }
