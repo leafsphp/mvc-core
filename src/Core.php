@@ -337,7 +337,7 @@ class Core
 
         \Leaf\Database::connect();
 
-        $console = new \Aloe\Console('v4.x-BETA');
+        $console = new \Aloe\Console('v4.0');
 
         if (\Leaf\FS\Directory::exists(static::$paths['commands'])) {
             $consolePath = static::$paths['commands'];
