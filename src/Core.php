@@ -168,7 +168,7 @@ class Core
         }
 
         if (class_exists('Leaf\Auth')) {
-            $config['auth'] = [
+            $config['auth'] = array_merge([
                 'db.table' => 'users',
                 'id.key' => 'id',
                 'timestamps' => true,
@@ -189,13 +189,13 @@ class Core
                 'password.verify' => function ($password, $hashedPassword) {
                     return \Leaf\Helpers\Password::verify($password, $hashedPassword);
                 },
-            ];
+            ], $config['auth'] ?? []);
 
             auth()->config($config['auth']);
         }
 
         if (class_exists('Leaf\Http\Cors')) {
-            $config['cors'] = [
+            $config['cors'] = array_merge([
                 'origin' => _env('CORS_ALLOWED_ORIGINS', '*'),
                 'methods' => _env('CORS_ALLOWED_METHODS', 'GET,HEAD,PUT,PATCH,POST,DELETE'),
                 'allowedHeaders' => _env('CORS_ALLOWED_HEADERS', '*'),
@@ -204,13 +204,13 @@ class Core
                 'maxAge' => null,
                 'preflightContinue' => false,
                 'optionsSuccessStatus' => 204,
-            ];
+            ], $config['cors'] ?? []);
 
             app()->cors($config['cors']);
         }
 
         if (class_exists('Leaf\Anchor\CSRF')) {
-            $config['csrf'] = [
+            $config['csrf'] = array_merge([
                 'secret' => _env('APP_KEY', '@nkor_leaf$0Secret!!'),
                 'secretKey' => 'X-Leaf-CSRF-Token',
                 'except' => [],
@@ -218,7 +218,7 @@ class Core
                 'messages.tokenNotFound' => 'Token not found.',
                 'messages.tokenInvalid' => 'Invalid token.',
                 'onError' => null,
-            ];
+            ], $config['csrf'] ?? []);
 
             $csrfEnabled = (
                 $config['csrf'] &&
@@ -235,7 +235,7 @@ class Core
         }
 
         if (class_exists('Leaf\Mail')) {
-            $config['mail'] = [
+            $config['mail'] = array_merge([
                 'host' => _env('MAIL_HOST', 'smtp.mailtrap.io'),
                 'port' => _env('MAIL_PORT', 2525),
                 'keepAlive' => true,
@@ -251,19 +251,19 @@ class Core
                     'replyToName' => _env('MAIL_REPLY_TO_NAME'),
                     'replyToEmail' => _env('MAIL_REPLY_TO_EMAIL'),
                 ],
-            ];
+            ], $config['mail'] ?? []);
 
             mailer()->connect($config['mail']);
         }
 
         if (class_exists('Leaf\Queue')) {
-            $config['queue'] = [
+            $config['queue'] = array_merge([
                 'default' => _env('QUEUE_CONNECTION', 'database'),
                 'connections' => [
                     'redis' => [
                         'driver' => 'redis',
                         'connection' => _env('REDIS_QUEUE_CONNECTION', 'default'),
-                        'queue' => _env('REDIS_QUEUE', 'default'),
+                        'table' => _env('REDIS_QUEUE', 'leaf_php_jobs'),
                     ],
                     'database' => [
                         'driver' => 'database',
@@ -271,15 +271,15 @@ class Core
                         'table' => _env('DB_QUEUE_TABLE', 'leaf_php_jobs'),
                     ],
                 ],
-            ];
+            ], $config['queue'] ?? []);
         }
 
         if (class_exists('Leaf\Redis')) {
-            $config['redis'] = [
-                'port' => 6379,
+            $config['redis'] = array_merge([
+                'port' => _env('REDIS_PORT', 6379),
                 'scheme' => 'tcp',
-                'password' => null,
-                'host' => '127.0.0.1',
+                'password' => _env('REDIS_PASSWORD', null),
+                'host' => _env('REDIS_HOST', '127.0.0.1'),
                 'session' => false,
                 'session.savePath' => null,
                 'session.saveOptions' => [],
@@ -287,7 +287,7 @@ class Core
                 'connection.reserved' => null,
                 'connection.retryInterval' => 0,
                 'connection.readTimeout' => 0.0,
-            ];
+            ], $config['redis'] ?? []);
 
             redis()->connect($config['redis']);
         }
