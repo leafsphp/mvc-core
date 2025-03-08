@@ -169,10 +169,10 @@ class Core
 
         if (class_exists('Leaf\Auth')) {
             $config['auth'] = array_merge([
-                'db.table' => 'users',
-                'id.key' => 'id',
-                'timestamps' => true,
-                'timestamps.format' => 'YYYY-MM-DD HH:mm:ss',
+                'db.table' => _env('AUTH_DB_TABLE', 'users'),
+                'id.key' => _env('AUTH_DB_ID', 'id'),
+                'timestamps' => _env('AUTH_TIMESTAMPS', true),
+                'timestamps.format' => _env('AUTH_TIMESTAMPS_FORMAT', 'YYYY-MM-DD HH:mm:ss'),
                 'unique' => ['email'],
                 'hidden' => ['field.id', 'field.password'],
                 'session' => _env('AUTH_SESSION', true),
