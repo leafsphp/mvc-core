@@ -135,6 +135,38 @@ class Schema
                         }
                     }
 
+                    if ($rememberToken !== ($lastMigration['remember_token'] ?? false)) {
+                        if ($rememberToken && !static::$connection::schema()->hasColumn($tableName, 'remember_token')) {
+                            $table->rememberToken();
+                        } else if (!$rememberToken && static::$connection::schema()->hasColumn($tableName, 'remember_token')) {
+                            $table->dropRememberToken();
+                        }
+                    }
+
+                    if ($softDeletes !== ($lastMigration['softDeletes'] ?? false)) {
+                        if ($softDeletes && !static::$connection::schema()->hasColumn($tableName, 'deleted_at')) {
+                            $table->softDeletes();
+                        } else if (!$softDeletes && static::$connection::schema()->hasColumn($tableName, 'deleted_at')) {
+                            $table->dropSoftDeletes();
+                        }
+                    }
+
+                    if ($timestamps !== ($lastMigration['timestamps'] ?? true)) {
+                        if ($timestamps && !static::$connection::schema()->hasColumn($tableName, 'created_at')) {
+                            $table->timestamps();
+                        } else if (!$timestamps && static::$connection::schema()->hasColumn($tableName, 'created_at')) {
+                            $table->dropTimestamps();
+                        }
+                    }
+
+                    if (count($removedColumns) > 0) {
+                        foreach ($removedColumns as $removedColumn) {
+                            if (static::$connection::schema()->hasColumn($tableName, $removedColumn)) {
+                                $table->dropColumn($removedColumn);
+                            }
+                        }
+                    }
+
                     $newColumns = array_diff(array_keys($columns), $staticColumns);
 
                     if (count($newColumns) > 0) {
@@ -243,38 +275,6 @@ class Schema
                             }
 
                             $newCol->change();
-                        }
-                    }
-
-                    if (count($removedColumns) > 0) {
-                        foreach ($removedColumns as $removedColumn) {
-                            if (static::$connection::schema()->hasColumn($tableName, $removedColumn)) {
-                                $table->dropColumn($removedColumn);
-                            }
-                        }
-                    }
-
-                    if ($rememberToken !== ($lastMigration['remember_token'] ?? false)) {
-                        if ($rememberToken && !static::$connection::schema()->hasColumn($tableName, 'remember_token')) {
-                            $table->rememberToken();
-                        } else if (!$rememberToken && static::$connection::schema()->hasColumn($tableName, 'remember_token')) {
-                            $table->dropRememberToken();
-                        }
-                    }
-
-                    if ($softDeletes !== ($lastMigration['softDeletes'] ?? false)) {
-                        if ($softDeletes && !static::$connection::schema()->hasColumn($tableName, 'deleted_at')) {
-                            $table->softDeletes();
-                        } else if (!$softDeletes && static::$connection::schema()->hasColumn($tableName, 'deleted_at')) {
-                            $table->dropSoftDeletes();
-                        }
-                    }
-
-                    if ($timestamps !== ($lastMigration['timestamps'] ?? true)) {
-                        if ($timestamps && !static::$connection::schema()->hasColumn($tableName, 'created_at')) {
-                            $table->timestamps();
-                        } else if (!$timestamps && static::$connection::schema()->hasColumn($tableName, 'created_at')) {
-                            $table->dropTimestamps();
                         }
                     }
                 });
