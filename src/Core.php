@@ -206,7 +206,9 @@ class Core
                 'optionsSuccessStatus' => 204,
             ], $config['cors'] ?? []);
 
-            app()->cors($config['cors']);
+            if (php_sapi_name() !== 'cli') {
+                app()->cors($config['cors']);
+            }
         }
 
         if (class_exists('Leaf\Anchor\CSRF')) {
@@ -229,7 +231,7 @@ class Core
                 $csrfEnabled = $config['csrf']['enabled'];
             }
 
-            if ($csrfEnabled) {
+            if ($csrfEnabled && php_sapi_name() !== 'cli') {
                 app()->csrf($config['csrf']);
             }
         }
@@ -297,6 +299,24 @@ class Core
             class_exists('Leaf\Billing\PayStack') ||
             class_exists('Leaf\Billing\LemonSqueezy')
         ) {
+            $config['billing'] = array_merge([
+                'provider' => _env('BILLING_PROVIDER', 'stripe'),
+                'secrets.apiKey' => _env('BILLING_API_KEY'),
+                'secrets.publishableKey' => _env('BILLING_PUBLISHABLE_KEY'),
+                'provider.version' => _env('BILLING_VERSION', '2023-10-16'),
+                'currency' => [
+                    'name' => _env('BILLING_CURRENCY', 'usd'),
+                    'symbol' => _env('BILLING_CURRENCY_SYMBOL', '$'),
+                    'display' => _env('BILLING_CURRENCY_DISPLAY', 'USD'),
+                    'locale' => _env('BILLING_CURRENCY_LOCALE', 'en_US'),
+                    'displaySymbol' => _env('BILLING_CURRENCY_DISPLAY_SYMBOL', '$'),
+                    'displayConversion' => _env('BILLING_CURRENCY_DISPLAY_CONVERSION', 1),
+                ],
+                'url.success' => _env('BILLING_SUCCESS_URL', '/billing/callback'),
+                'url.cancel' => _env('BILLING_CANCEL_URL', '/'),
+                'tiers' => [],
+            ], $config['billing'] ?? []);
+
             billing($config['billing']);
         }
 
@@ -352,8 +372,12 @@ class Core
             }
         }
 
-        if (class_exists('Leaf\Queue')) {
+        if (class_exists(class: 'Leaf\Queue')) {
             $externalCommands[] = \Leaf\Queue::commands();
+        }
+
+        if (function_exists('billing')) {
+            $externalCommands[] = billing()->commands();
         }
 
         foreach ($externalCommands as $command) {
