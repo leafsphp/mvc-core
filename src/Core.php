@@ -300,21 +300,40 @@ class Core
             class_exists('Leaf\Billing\LemonSqueezy')
         ) {
             $config['billing'] = array_merge([
-                'provider' => _env('BILLING_PROVIDER', 'stripe'),
-                'secrets.apiKey' => _env('BILLING_API_KEY'),
-                'secrets.publishableKey' => _env('BILLING_PUBLISHABLE_KEY'),
-                'provider.version' => _env('BILLING_VERSION', '2023-10-16'),
-                'currency' => [
-                    'name' => _env('BILLING_CURRENCY', 'usd'),
-                    'symbol' => _env('BILLING_CURRENCY_SYMBOL', '$'),
-                    'display' => _env('BILLING_CURRENCY_DISPLAY', 'USD'),
-                    'locale' => _env('BILLING_CURRENCY_LOCALE', 'en_US'),
-                    'displaySymbol' => _env('BILLING_CURRENCY_DISPLAY_SYMBOL', '$'),
-                    'displayConversion' => _env('BILLING_CURRENCY_DISPLAY_CONVERSION', 1),
+                'default' => _env('BILLING_PROVIDER', 'stripe'),
+                'connections' => [
+                    'stripe' => [
+                        'driver' => 'stripe',
+                        'secrets.apiKey' => _env('STRIPE_API_KEY'),
+                        'secrets.publishableKey' => _env('STRIPE_PUBLISHABLE_KEY'),
+                        'secrets.webhook' => _env('STRIPE_WEBHOOK_SECRET'),
+                        'version' => _env('STRIPE_API_VERSION', '2023-10-16'),
+                        'currency' => [
+                            'name' => _env('STRIPE_CURRENCY', 'usd'),
+                            'symbol' => _env('STRIPE_CURRENCY_SYMBOL', '$'),
+                            'display' => _env('STRIPE_CURRENCY_DISPLAY', 'USD'),
+                            'locale' => _env('STRIPE_CURRENCY_LOCALE', 'en_US'),
+                        ],
+                    ],
+                    'paystack' => [
+                        'driver' => 'paystack',
+                        'secrets.apiKey' => _env('PAYSTACK_API_KEY'),
+                        'secrets.publishableKey' => _env('PAYSTACK_PUBLISHABLE_KEY'),
+                        'secrets.webhook' => _env('PAYSTACK_WEBHOOK_SECRET'),
+                        'version' => _env('PAYSTACK_API_VERSION', null),
+                        'currency' => [
+                            'name' => _env('PAYSTACK_CURRENCY', 'ngn'),
+                            'symbol' => _env('PAYSTACK_CURRENCY_SYMBOL', '₦'),
+                            'display' => _env('PAYSTACK_CURRENCY_DISPLAY', 'NGN'),
+                            'locale' => _env('PAYSTACK_CURRENCY_LOCALE', 'en_US'),
+                        ],
+                    ],
                 ],
-                'url.success' => _env('BILLING_SUCCESS_URL', '/billing/callback'),
-                'url.cancel' => _env('BILLING_CANCEL_URL', '/'),
-                'tiers' => [],
+                'urls' => [
+                    'success' => _env('BILLING_SUCCESS_URL', '/billing/callback'),
+                    'cancel' => _env('BILLING_CANCEL_URL', '/billing/callback'),
+                ],
+                'tiers' => []
             ], $config['billing'] ?? []);
 
             billing($config['billing']);
