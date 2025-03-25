@@ -395,8 +395,8 @@ class Core
             $externalCommands[] = \Leaf\Queue::commands();
         }
 
-        if (function_exists('billing')) {
-            $externalCommands[] = billing()->commands();
+        if (class_exists('Leaf\Billing')) {
+            $externalCommands[] = \Leaf\Billing::commands();
         }
 
         foreach ($externalCommands as $command) {
