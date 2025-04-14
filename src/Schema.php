@@ -471,11 +471,11 @@ class Schema
             if ($columnValue['type'] === 'string' || $columnValue['type'] === 'char' || $columnValue['type'] === 'text') {
                 $returnedColumn = $table->{$columnValue['type']}(
                     $columnName,
-                    $columnValue['length']
+                    $columnValue['length'] ?? null
                 );
 
                 unset($columnValue['length']);
-            } else if ($columnName['type'] === 'enum' || $columnName['type'] === 'set') {
+            } else if ($columnValue['type'] === 'enum' || $columnValue['type'] === 'set') {
                 $returnedColumn = $table->{$columnValue['type']}(
                     $columnName,
                     $columnValue['values'] ?? []
