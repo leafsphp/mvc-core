@@ -403,7 +403,18 @@ class Core
             $console->register($command);
         }
 
-        $console->run();
+        try {
+            $console->run();
+        } catch (\Throwable $th) {
+            echo "\n------------------------\n\nLeaf MVC ";
+            $handler = (new \Leaf\Exception\Run());
+            $handler->allowQuit(false);
+            $handler->writeToOutput(false);
+            $handler->pushHandler(new \Leaf\Exception\Handler\PlainTextHandler());
+
+            echo $handler->handleException($th);
+            return 1;
+        }
     }
 
     /**
