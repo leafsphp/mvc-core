@@ -57,23 +57,7 @@ class Schema
                     }
 
                     foreach ($columns as $columnName => $columnValue) {
-                        if (is_string($columnValue)) {
-                            $table->{$columnValue}($columnName);
-                        }
-
-                        if (is_array($columnValue)) {
-                            $column = $table->{$columnValue['type']}($columnName);
-
-                            unset($columnValue['type']);
-
-                            foreach ($columnValue as $columnOptionName => $columnOptionValue) {
-                                if (is_bool($columnOptionValue)) {
-                                    $column->{$columnOptionName}();
-                                } else {
-                                    $column->{$columnOptionName}($columnOptionValue);
-                                }
-                            }
-                        }
+                        static::createColumn($table, $columnName, $columnValue);
                     }
 
                     if ($rememberToken) {
@@ -174,29 +158,7 @@ class Schema
                             $column = static::getColumnAttributes($columns[$newColumn]);
 
                             if (!static::$connection::schema()->hasColumn($tableName, $newColumn)) {
-                                // [TODO] Add more special cases
-                                if ($column['type'] === 'string') {
-                                    $newCol = $table->string(
-                                        $newColumn,
-                                        $column['length'] ?? 255
-                                    );
-
-                                    unset($column['length']);
-                                } else {
-                                    $newCol = $table->{$column['type']}($newColumn);
-                                }
-
-                                unset($column['type']);
-
-                                foreach ($column as $columnOptionName => $columnOptionValue) {
-                                    if (is_bool($columnOptionValue)) {
-                                        if ($columnOptionValue) {
-                                            $newCol->{$columnOptionName}();
-                                        }
-                                    } else {
-                                        $newCol->{$columnOptionName}($columnOptionValue);
-                                    }
-                                }
+                                static::createColumn($table, $newColumn, $column);
                             }
                         }
                     }
@@ -263,7 +225,6 @@ class Schema
                                 }
 
                                 if (is_bool($columnOptionValue)) {
-
                                     if ($columnOptionValue) {
                                         $newCol->{$columnOptionName}()->change();
                                     } else {
@@ -480,12 +441,15 @@ class Schema
             'foreign' => false,
             'foreignTable' => null,
             'foreignColumn' => null,
+            'values' => null,
             'onDelete' => null,
             'onUpdate' => null,
             'comment' => null,
             'autoIncrement' => false,
             'useCurrent' => false,
             'useCurrentOnUpdate' => false,
+            'charset' => null,
+            'collation' => null,
         ];
 
         if (is_string($value)) {
@@ -495,6 +459,47 @@ class Schema
         }
 
         return $attributes;
+    }
+
+    protected static function createColumn($table, $columnName, $columnValue)
+    {
+        if (is_string($columnValue)) {
+            return $table->{$columnValue}($columnName);
+        }
+
+        if (is_array($columnValue)) {
+            if ($columnValue['type'] === 'string' || $columnValue['type'] === 'char' || $columnValue['type'] === 'text') {
+                $returnedColumn = $table->{$columnValue['type']}(
+                    $columnName,
+                    $columnValue['length']
+                );
+
+                unset($columnValue['length']);
+            } else if ($columnName['type'] === 'enum' || $columnName['type'] === 'set') {
+                $returnedColumn = $table->{$columnValue['type']}(
+                    $columnName,
+                    $columnValue['values'] ?? []
+                );
+
+                unset($columnValue['values']);
+            } else {
+                $returnedColumn = $table->{$columnValue['type']}($columnName);
+            }
+
+            unset($columnValue['type']);
+
+            foreach ($columnValue as $columnOptionName => $columnOptionValue) {
+                if (is_bool($columnOptionValue)) {
+                    if ($columnOptionValue) {
+                        $returnedColumn->{$columnOptionName}();
+                    }
+                } else {
+                    $returnedColumn->{$columnOptionName}($columnOptionValue);
+                }
+            }
+
+            return $returnedColumn;
+        }
     }
 
     /**
