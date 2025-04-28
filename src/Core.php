@@ -391,7 +391,7 @@ class Core
             }
         }
 
-        if (class_exists(class: 'Leaf\Queue')) {
+        if (class_exists('Leaf\Queue')) {
             $externalCommands[] = \Leaf\Queue::commands();
         }
 
