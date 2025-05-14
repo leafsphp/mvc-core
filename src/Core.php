@@ -282,7 +282,7 @@ class Core
                 'scheme' => 'tcp',
                 'password' => _env('REDIS_PASSWORD', null),
                 'host' => _env('REDIS_HOST', '127.0.0.1'),
-                'session' => false,
+                'session' => _env('REDIS_SESSION', false),
                 'session.savePath' => null,
                 'session.saveOptions' => [],
                 'connection.timeout' => 0.0,
