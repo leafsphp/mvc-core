@@ -144,6 +144,24 @@ class Core
 
         app()->config($config['app']);
 
+        if (class_exists('Leaf\Redis')) {
+            $config['redis'] = array_merge([
+                'port' => _env('REDIS_PORT', 6379),
+                'scheme' => 'tcp',
+                'password' => _env('REDIS_PASSWORD', null),
+                'host' => _env('REDIS_HOST', '127.0.0.1'),
+                'session' => _env('REDIS_SESSION', false),
+                'session.savePath' => null,
+                'session.saveOptions' => [],
+                'connection.timeout' => 0.0,
+                'connection.reserved' => null,
+                'connection.retryInterval' => 0,
+                'connection.readTimeout' => 0.0,
+            ], $config['redis'] ?? []);
+
+            redis()->connect($config['redis']);
+        }
+
         if ($config['view']['viewEngine']) {
             Config::attachView($config['view']['viewEngine'], 'template');
 
@@ -276,24 +294,6 @@ class Core
             ], $config['queue'] ?? []);
         }
 
-        if (class_exists('Leaf\Redis')) {
-            $config['redis'] = array_merge([
-                'port' => _env('REDIS_PORT', 6379),
-                'scheme' => 'tcp',
-                'password' => _env('REDIS_PASSWORD', null),
-                'host' => _env('REDIS_HOST', '127.0.0.1'),
-                'session' => _env('REDIS_SESSION', false),
-                'session.savePath' => null,
-                'session.saveOptions' => [],
-                'connection.timeout' => 0.0,
-                'connection.reserved' => null,
-                'connection.retryInterval' => 0,
-                'connection.readTimeout' => 0.0,
-            ], $config['redis'] ?? []);
-
-            redis()->connect($config['redis']);
-        }
-
         if (
             class_exists('Leaf\Billing\Stripe') ||
             class_exists('Leaf\Billing\PayStack') ||
@@ -372,38 +372,38 @@ class Core
      */
     public static function loadConsole($externalCommands = [])
     {
-        static::loadApplicationConfig();
-
-        \Leaf\Database::connect();
-
-        $console = new \Aloe\Console('v4.0');
-
-        if (\Leaf\FS\Directory::exists(static::$paths['commands'])) {
-            $consolePath = static::$paths['commands'];
-            $consoleFiles = glob("$consolePath/*.php");
-
-            foreach ($consoleFiles as $consoleFile) {
-                $commandName = basename($consoleFile, '.php');
-
-                $console->register(
-                    "App\\Console\\$commandName",
-                );
-            }
-        }
-
-        if (class_exists('Leaf\Queue')) {
-            $externalCommands[] = \Leaf\Queue::commands();
-        }
-
-        if (class_exists('Leaf\Billing')) {
-            $externalCommands[] = \Leaf\Billing::commands();
-        }
-
-        foreach ($externalCommands as $command) {
-            $console->register($command);
-        }
-
         try {
+            static::loadApplicationConfig();
+
+            \Leaf\Database::connect();
+
+            $console = new \Aloe\Console('v4.4');
+
+            if (\Leaf\FS\Directory::exists(static::$paths['commands'])) {
+                $consolePath = static::$paths['commands'];
+                $consoleFiles = glob("$consolePath/*.php");
+
+                foreach ($consoleFiles as $consoleFile) {
+                    $commandName = basename($consoleFile, '.php');
+
+                    $console->register(
+                        "App\\Console\\$commandName",
+                    );
+                }
+            }
+
+            if (class_exists('Leaf\Queue')) {
+                $externalCommands[] = \Leaf\Queue::commands();
+            }
+
+            if (class_exists('Leaf\Billing')) {
+                $externalCommands[] = \Leaf\Billing::commands();
+            }
+
+            foreach ($externalCommands as $command) {
+                $console->register($command);
+            }
+
             $console->run();
         } catch (\Throwable $th) {
             echo "\n------------------------\n\nLeaf MVC ";
