@@ -339,6 +339,31 @@ class Core
             billing($config['billing']);
         }
 
+        if (class_exists('Leaf\FS\Bucket')) {
+            $config['storage'] = array_merge([
+                'default' => _env('FS_CONNECTION', 's3'),
+                'connections' => [
+                    's3' => [
+                        'driver' => 's3',
+                        'key' => _env('AWS_ACCESS_KEY_ID'),
+                        'secret' => _env('AWS_SECRET_ACCESS_KEY'),
+                        'region' => _env('AWS_DEFAULT_REGION'),
+                        'bucket' => _env('AWS_BUCKET'),
+                        'url' => _env('AWS_URL'),
+                        'endpoint' => _env('AWS_ENDPOINT'),
+                    ],
+                ],
+                'links' => [
+                    PublicPath('storage') => StoragePath('app/public'),
+                ],
+            ], $config['mail'] ?? []);
+
+            storage()->connections(
+                $config['storage']['connections'],
+                $config['storage']['default']
+            );
+        }
+
         Config::set('mvc.config', $config);
     }
 
