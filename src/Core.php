@@ -350,6 +350,7 @@ class Core
                         'region' => _env('AWS_DEFAULT_REGION'),
                         'bucket' => _env('AWS_BUCKET'),
                         'url' => _env('AWS_URL'),
+                        'use_path_style_endpoint' => _env('AWS_USE_PATH_STYLE_ENDPOINT', false),
                         'endpoint' => _env('AWS_ENDPOINT'),
                     ],
                 ],
