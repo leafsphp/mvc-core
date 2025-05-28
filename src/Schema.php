@@ -27,7 +27,7 @@ class Schema
     public static function migrate(string $fileToMigrate): bool
     {
         $data = Yaml::parseFile($fileToMigrate);
-        $tableName = rtrim(path($fileToMigrate)->basename(), '.yml');
+        $tableName = str_replace('.yml', '', path($fileToMigrate)->basename());
 
         try {
             if (!static::$connection::schema()->hasTable($tableName)) {
@@ -95,12 +95,28 @@ class Schema
                     }
 
                     if ($relationships !== ($lastMigration['relationships'] ?? [])) {
-                        foreach ($relationships as $model) {
+                        $newRelationships = array_diff($relationships, $lastMigration['relationships'] ?? []);
+                        $removedRelationships = array_diff($lastMigration['relationships'] ?? [], $relationships);
+
+                        foreach ($newRelationships as $model) {
                             if (strpos($model, 'App\Models') === false) {
                                 $model = "App\Models\\$model";
                             }
 
                             $table->foreignIdFor($model);
+                        }
+
+                        foreach ($removedRelationships as $model) {
+                            if (strpos($model, 'App\Models') === false) {
+                                $model = "App\Models\\$model";
+                            }
+
+                            $foreignKey = static::$connection::getForeignKeyName($tableName, $model::getForeignKey());
+
+                            if (static::$connection::schema()->hasColumn($tableName, $foreignKey)) {
+                                $table->dropForeign($foreignKey);
+                                $table->dropColumn($model::getForeignKey());
+                            }
                         }
                     }
 
@@ -172,12 +188,12 @@ class Schema
                                 continue;
                             }
 
-                            $newCol = $table->{$column['type']}(
+                            $newCol = static::createColumn(
+                                $table,
                                 $changedColumn,
-                                ($column['type'] === 'string') ? $column['length'] : null
+                                $column,
+                                false
                             );
-
-                            unset($column['type']);
 
                             foreach ($column as $columnOptionName => $columnOptionValue) {
                                 if ($columnOptionValue === $prevMigrationColumn[$columnOptionName]) {
@@ -461,7 +477,7 @@ class Schema
         return $attributes;
     }
 
-    protected static function createColumn($table, $columnName, $columnValue)
+    protected static function createColumn($table, $columnName, $columnValue, $createOnly = true)
     {
         if (is_string($columnValue)) {
             return $table->{$columnValue}($columnName);
@@ -488,13 +504,15 @@ class Schema
 
             unset($columnValue['type']);
 
-            foreach ($columnValue as $columnOptionName => $columnOptionValue) {
-                if (is_bool($columnOptionValue)) {
-                    if ($columnOptionValue) {
-                        $returnedColumn->{$columnOptionName}();
+            if ($createOnly === true) {
+                foreach ($columnValue as $columnOptionName => $columnOptionValue) {
+                    if (is_bool($columnOptionValue)) {
+                        if ($columnOptionValue) {
+                            $returnedColumn->{$columnOptionName}();
+                        }
+                    } else {
+                        $returnedColumn->{$columnOptionName}($columnOptionValue);
                     }
-                } else {
-                    $returnedColumn->{$columnOptionName}($columnOptionValue);
                 }
             }
 
