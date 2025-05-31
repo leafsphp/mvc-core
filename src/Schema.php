@@ -506,12 +506,12 @@ class Schema
 
             if ($createOnly === true) {
                 foreach ($columnValue as $columnOptionName => $columnOptionValue) {
-                    if (is_bool($columnOptionValue)) {
+                    if (!is_bool($columnOptionValue) || $columnOptionName === 'default') {
+                        $returnedColumn->{$columnOptionName}($columnOptionValue);
+                    } else {
                         if ($columnOptionValue) {
                             $returnedColumn->{$columnOptionName}();
                         }
-                    } else {
-                        $returnedColumn->{$columnOptionName}($columnOptionValue);
                     }
                 }
             }
