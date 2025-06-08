@@ -395,20 +395,33 @@ class Schema
      */
     public static function reset(string $fileToReset): bool
     {
-        $data = Yaml::parseFile($fileToReset);
-        $tableName = str_replace('.yml', '', path($fileToReset)->basename());
+        static::drop($fileToReset);
+        return static::migrate($fileToReset);
+    }
+
+    /**
+     * Drop a database table
+     */
+    public static function drop(string $fileToDrop): bool
+    {
+        $data = Yaml::parseFile($fileToDrop);
+        $tableName = str_replace('.yml', '', path($fileToDrop)->basename());
 
         $currentConnection = $data['connection'] ?? null;
 
-        if (static::$connection::schema($currentConnection)->hasTable($tableName)) {
-            static::$connection::schema($currentConnection)->dropIfExists($tableName);
+        try {
+            if (static::$connection::schema($currentConnection)->hasTable($tableName)) {
+                static::$connection::schema($currentConnection)->dropIfExists($tableName);
 
-            if (storage()->exists(StoragePath("database/$tableName"))) {
-                storage()->delete(StoragePath("database/$tableName"));
+                if (storage()->exists(StoragePath("database/$tableName"))) {
+                    storage()->delete(StoragePath("database/$tableName"));
+                }
             }
-        }
 
-        return static::migrate($fileToReset);
+            return true;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
