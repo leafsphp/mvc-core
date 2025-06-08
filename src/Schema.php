@@ -29,13 +29,15 @@ class Schema
         $data = Yaml::parseFile($fileToMigrate);
         $tableName = str_replace('.yml', '', path($fileToMigrate)->basename());
 
+        $currentConnection = $data['connection'] ?? null;
+
         try {
-            if (!static::$connection::schema()->hasTable($tableName)) {
+            if (!static::$connection::schema($currentConnection)->hasTable($tableName)) {
                 if (storage()->exists(StoragePath("database/$tableName"))) {
                     storage()->delete(StoragePath("database/$tableName"));
                 }
 
-                static::$connection::schema()->create($tableName, function (Blueprint $table) use ($data) {
+                static::$connection::schema($currentConnection)->create($tableName, function (Blueprint $table) use ($data) {
                     $columns = $data['columns'] ?? [];
                     $relationships = $data['relationships'] ?? [];
 
@@ -73,7 +75,7 @@ class Schema
                     }
                 });
             } else if (storage()->exists(StoragePath("database/$tableName"))) {
-                static::$connection::schema()->table($tableName, function (Blueprint $table) use ($data, $tableName) {
+                static::$connection::schema($currentConnection)->table($tableName, function (Blueprint $table) use ($currentConnection, $data, $tableName) {
                     $columns = $data['columns'] ?? [];
                     $relationships = $data['relationships'] ?? [];
 
@@ -87,9 +89,9 @@ class Schema
                     $rememberToken = $data['remember_token'] ?? false;
 
                     if ($increments !== ($lastMigration['increments'] ?? true)) {
-                        if ($increments && !static::$connection::schema()->hasColumn($tableName, 'id')) {
+                        if ($increments && !static::$connection::schema($currentConnection)->hasColumn($tableName, 'id')) {
                             $table->increments('id');
-                        } else if (!$increments && static::$connection::schema()->hasColumn($tableName, 'id')) {
+                        } else if (!$increments && static::$connection::schema($currentConnection)->hasColumn($tableName, 'id')) {
                             $table->dropColumn('id');
                         }
                     }
@@ -113,7 +115,7 @@ class Schema
 
                             $foreignKey = static::$connection::getForeignKeyName($tableName, $model::getForeignKey());
 
-                            if (static::$connection::schema()->hasColumn($tableName, $foreignKey)) {
+                            if (static::$connection::schema($currentConnection)->hasColumn($tableName, $foreignKey)) {
                                 $table->dropForeign($foreignKey);
                                 $table->dropColumn($model::getForeignKey());
                             }
@@ -136,32 +138,32 @@ class Schema
                     }
 
                     if ($rememberToken !== ($lastMigration['remember_token'] ?? false)) {
-                        if ($rememberToken && !static::$connection::schema()->hasColumn($tableName, 'remember_token')) {
+                        if ($rememberToken && !static::$connection::schema($currentConnection)->hasColumn($tableName, 'remember_token')) {
                             $table->rememberToken();
-                        } else if (!$rememberToken && static::$connection::schema()->hasColumn($tableName, 'remember_token')) {
+                        } else if (!$rememberToken && static::$connection::schema($currentConnection)->hasColumn($tableName, 'remember_token')) {
                             $table->dropRememberToken();
                         }
                     }
 
                     if ($softDeletes !== ($lastMigration['softDeletes'] ?? false)) {
-                        if ($softDeletes && !static::$connection::schema()->hasColumn($tableName, 'deleted_at')) {
+                        if ($softDeletes && !static::$connection::schema($currentConnection)->hasColumn($tableName, 'deleted_at')) {
                             $table->softDeletes();
-                        } else if (!$softDeletes && static::$connection::schema()->hasColumn($tableName, 'deleted_at')) {
+                        } else if (!$softDeletes && static::$connection::schema($currentConnection)->hasColumn($tableName, 'deleted_at')) {
                             $table->dropSoftDeletes();
                         }
                     }
 
                     if ($timestamps !== ($lastMigration['timestamps'] ?? true)) {
-                        if ($timestamps && !static::$connection::schema()->hasColumn($tableName, 'created_at')) {
+                        if ($timestamps && !static::$connection::schema($currentConnection)->hasColumn($tableName, 'created_at')) {
                             $table->timestamps();
-                        } else if (!$timestamps && static::$connection::schema()->hasColumn($tableName, 'created_at')) {
+                        } else if (!$timestamps && static::$connection::schema($currentConnection)->hasColumn($tableName, 'created_at')) {
                             $table->dropTimestamps();
                         }
                     }
 
                     if (count($removedColumns) > 0) {
                         foreach ($removedColumns as $removedColumn) {
-                            if (static::$connection::schema()->hasColumn($tableName, $removedColumn)) {
+                            if (static::$connection::schema($currentConnection)->hasColumn($tableName, $removedColumn)) {
                                 $table->dropColumn($removedColumn);
                             }
                         }
@@ -173,7 +175,7 @@ class Schema
                         foreach ($newColumns as $newColumn) {
                             $column = static::getColumnAttributes($columns[$newColumn]);
 
-                            if (!static::$connection::schema()->hasColumn($tableName, $newColumn)) {
+                            if (!static::$connection::schema($currentConnection)->hasColumn($tableName, $newColumn)) {
                                 static::createColumn($table, $newColumn, $column);
                             }
                         }
@@ -278,7 +280,9 @@ class Schema
     public static function seed(string $fileToSeed): bool
     {
         $data = Yaml::parseFile($fileToSeed);
-        $tableName = rtrim(path($fileToSeed)->basename(), '.yml');
+        $tableName = str_replace('.yml', '', path($fileToSeed)->basename());
+
+        $currentConnection = $data['connection'] ?? null;
 
         $seeds = $data['seeds'] ?? [];
         $count = $seeds['count'] ?? 1;
@@ -291,7 +295,7 @@ class Schema
         $finalDataToSeed = [];
 
         if ($seeds['truncate'] ?? false) {
-            static::$connection::table($tableName)->truncate();
+            static::$connection::table($tableName, null, $currentConnection)->truncate();
         }
 
         if (is_array($seedsData[0] ?? null)) {
@@ -380,7 +384,7 @@ class Schema
                 $itemToSeed['updated_at'] = tick()->format('YYYY-MM-DD HH:mm:ss');
             }
 
-            static::$connection::table($tableName)->insert($itemToSeed);
+            static::$connection::table($tableName, null, $currentConnection)->insert($itemToSeed);
         }
 
         return true;
@@ -391,10 +395,13 @@ class Schema
      */
     public static function reset(string $fileToReset): bool
     {
-        $tableName = rtrim(path($fileToReset)->basename(), '.yml');
+        $data = Yaml::parseFile($fileToReset);
+        $tableName = str_replace('.yml', '', path($fileToReset)->basename());
 
-        if (static::$connection::schema()->hasTable($tableName)) {
-            static::$connection::schema()->dropIfExists($tableName);
+        $currentConnection = $data['connection'] ?? null;
+
+        if (static::$connection::schema($currentConnection)->hasTable($tableName)) {
+            static::$connection::schema($currentConnection)->dropIfExists($tableName);
 
             if (storage()->exists(StoragePath("database/$tableName"))) {
                 storage()->delete(StoragePath("database/$tableName"));
