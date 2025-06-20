@@ -448,27 +448,34 @@ class Core
      */
     public static function runApplication()
     {
-        static::loadApplicationConfig();
+        // trick process into setting Leaf up
+        app();
 
-        $routePath = static::$paths['routes'];
-        $routeFiles = glob("$routePath/*.php");
+        try {
+            static::loadApplicationConfig();
 
-        app()->setNamespace('\App\Controllers');
+            $routePath = static::$paths['routes'];
+            $routeFiles = glob("$routePath/*.php");
 
-        require "$routePath/index.php";
+            app()->setNamespace('\App\Controllers');
 
-        foreach ($routeFiles as $routeFile) {
-            if (basename($routeFile) === 'index.php') {
-                continue;
+            require "$routePath/index.php";
+
+            foreach ($routeFiles as $routeFile) {
+                if (basename($routeFile) === 'index.php') {
+                    continue;
+                }
+
+                if (strpos(basename($routeFile), '_') !== 0) {
+                    continue;
+                }
+
+                require $routeFile;
             }
 
-            if (strpos(basename($routeFile), '_') !== 0) {
-                continue;
-            }
-
-            require $routeFile;
+            app()->run();
+        } catch (\Throwable $th) {
+            throw $th;
         }
-
-        app()->run();
     }
 }
