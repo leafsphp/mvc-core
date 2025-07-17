@@ -317,7 +317,12 @@ class Schema
 
                             if (strpos($fakerMethod, ':') !== false) {
                                 $fakerMethod = explode(':', $fakerMethod);
-                                $localFakerInstance = $localFakerInstance->{$fakerMethod[0]}($fakerMethod[1]);
+                                if (strpos($fakerMethod[1], ',') !== false) {
+                                    $array_params = explode(",",$fakerMethod[1]);
+                                    $localFakerInstance = $localFakerInstance->{$fakerMethod[0]}($array_params);
+                                } else {
+                                    $localFakerInstance = $localFakerInstance->{$fakerMethod[0]}($fakerMethod[1]);
+                                }
                             } else {
                                 $localFakerInstance = $localFakerInstance->{$fakerMethod}();
                             }
