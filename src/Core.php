@@ -62,8 +62,7 @@ class Core
                 'log.dir' => 'storage/logs/',
                 'log.enabled' => _env('APP_LOG_ENABLED', true),
                 'log.file' => 'app.log',
-                'log.level' => Log::DEBUG,
-                'log.open' => true,
+                'log.open' => false,
                 'log.writer' => null,
                 'mode' => _env('APP_ENV', 'development'),
                 'views.path' => ViewsPath(null, false),
@@ -140,6 +139,13 @@ class Core
             foreach (glob("$configPath/*.php") as $configFile) {
                 $config[basename($configFile, '.php')] = require $configFile;
             }
+        }
+
+        if (class_exists('Leaf\Log')) {
+            $config['app'] = array_merge([
+                'log.open' => true,
+                'log.level' => Log::DEBUG,
+            ], $config['app'] ?? []);
         }
 
         app()->config($config['app']);
