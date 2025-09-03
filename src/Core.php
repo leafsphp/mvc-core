@@ -290,11 +290,13 @@ class Core
                         'driver' => 'redis',
                         'connection' => _env('REDIS_QUEUE_CONNECTION', 'default'),
                         'table' => _env('REDIS_QUEUE', 'leaf_php_jobs'),
+                        'schedules.table' => _env('REDIS_SCHEDULES_TABLE', 'leaf_php_schedules'),
                     ],
                     'database' => [
                         'driver' => 'database',
                         'connection' => _env('DB_QUEUE_CONNECTION', 'default'),
                         'table' => _env('DB_QUEUE_TABLE', 'leaf_php_jobs'),
+                        'schedules.table' => _env('REDIS_SCHEDULES_TABLE', 'leaf_php_schedules'),
                     ],
                 ],
             ], $config['queue'] ?? []);
