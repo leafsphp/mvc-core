@@ -19,8 +19,17 @@ class Schema
     protected static Manager $connection;
 
     /**
+     * Get the database connection used in a schema file
+     * @param string $fileName The schema file name
+     * @return string|null
+     */
+    public static function getConnection(string $fileName): ?string
+    {
+        return Yaml::parseFile($fileName)['connection'] ?? null;
+    }
+
+    /**
      * Migrate your schema file tables
-     * 
      * @param string $fileToMigrate The schema file to migrate
      * @return bool
      */
@@ -273,7 +282,6 @@ class Schema
 
     /**
      * Seed a database table from schema file
-     * 
      * @param string $fileToSeed The name of the schema file
      * @return bool
      */
@@ -318,7 +326,7 @@ class Schema
                             if (strpos($fakerMethod, ':') !== false) {
                                 $fakerMethod = explode(':', $fakerMethod);
                                 if (strpos($fakerMethod[1], ',') !== false) {
-                                    $array_params = explode(",",$fakerMethod[1]);
+                                    $array_params = explode(",", $fakerMethod[1]);
                                     $localFakerInstance = $localFakerInstance->{$fakerMethod[0]}($array_params);
                                 } else {
                                     $localFakerInstance = $localFakerInstance->{$fakerMethod[0]}($fakerMethod[1]);
@@ -397,6 +405,8 @@ class Schema
 
     /**
      * Reset a database table
+     * @param string $fileToReset The schema file to reset
+     * @return bool
      */
     public static function reset(string $fileToReset): bool
     {
@@ -406,6 +416,8 @@ class Schema
 
     /**
      * Drop a database table
+     * @param string $fileToDrop The schema file to drop
+     * @return bool
      */
     public static function drop(string $fileToDrop): bool
     {
@@ -431,6 +443,9 @@ class Schema
 
     /**
      * Rollback db to a previous state
+     * @param string $fileToRollback The schema file to rollback
+     * @param int $step The number of steps to rollback
+     * @return bool
      */
     public static function rollback(string $fileToRollback, int $step = 1): bool
     {
@@ -467,6 +482,8 @@ class Schema
 
     /**
      * Get all column attributes
+     * @param mixed $value
+     * @return array
      */
     public static function getColumnAttributes($value)
     {
