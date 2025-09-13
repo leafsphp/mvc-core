@@ -290,11 +290,12 @@ class Schema
         $data = Yaml::parseFile($fileToSeed);
         $tableName = str_replace('.yml', '', path($fileToSeed)->basename());
 
+        $seeds = $data['seeds'] ?? [];
         $currentConnection = $data['connection'] ?? null;
 
-        $seeds = $data['seeds'] ?? [];
         $count = $seeds['count'] ?? 1;
         $seedsData = $seeds['data'] ?? [];
+        $seedsModel = $seeds['model'] ?? null;
 
         $timestamps = $data['timestamps'] ?? true;
         $softDeletes = $data['softDeletes'] ?? false;
@@ -306,7 +307,25 @@ class Schema
             static::$connection::table($tableName, null, $currentConnection)->truncate();
         }
 
-        if (is_array($seedsData[0] ?? null)) {
+        if (empty($seedsData) && !$seedsModel) {
+            $seedsModel = \Illuminate\Support\Str::studly(
+                \Illuminate\Support\Str::singular($tableName)
+            );
+        }
+
+        if ($seedsModel) {
+            if (strpos($seedsModel, 'App\Models') === false) {
+                $seedsModel = "App\Models\\$seedsModel";
+            }
+
+            if (!class_exists($seedsModel)) {
+                throw new \Exception("The model $seedsModel does not exist");
+            }
+
+            for ($i = 0; $i < $count; $i++) {
+                $finalDataToSeed[] = $seedsModel::__seeder();
+            }
+        } else if (is_array($seedsData[0] ?? null)) {
             $finalDataToSeed = $seedsData;
         } else {
             for ($i = 0; $i < $count; $i++) {
