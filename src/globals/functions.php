@@ -11,6 +11,17 @@ if (!function_exists('assets')) {
     }
 }
 
+if (!function_exists('fake')) {
+    /**
+     * Return a faker instance
+     * @return \Faker\Generator
+     */
+    function fake()
+    {
+        return \Faker\Factory::create();
+    }
+}
+
 if (!function_exists('view')) {
     /**
      * Return a view
