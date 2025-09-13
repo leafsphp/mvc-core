@@ -10,4 +10,13 @@ class Model extends \Illuminate\Database\Eloquent\Model
     {
         parent::__construct($attributes);
     }
+
+    /**
+     * Define the default seeder for the model
+     * @return array
+     */
+    public static function __seeder()
+    {
+        return [];
+    }
 }
