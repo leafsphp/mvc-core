@@ -142,10 +142,10 @@ class Core
         }
 
         if (class_exists('Leaf\Log')) {
-            $config['app'] = array_merge([
+            $config['app'] = array_merge($config['app'] ?? [], [
                 'log.open' => true,
                 'log.level' => Log::DEBUG,
-            ], $config['app'] ?? []);
+            ]);
         }
 
         app()->config($config['app']);
