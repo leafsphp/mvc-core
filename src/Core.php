@@ -452,11 +452,31 @@ class Core
     }
 
     /**
+     * Load and force-load application env into app context
+     * @param string $directory Application root directory
+     * @return void
+     */
+    public static function loadApplicationEnv(string $directory)
+    {
+        \Dotenv\Dotenv::createUnsafeImmutable($directory)->safeLoad();
+
+        if ($_ENV['APP_ENV'] !== 'production') {
+            foreach ($_ENV as $key => $value) {
+                putenv(assignment: $key);
+                unset($_ENV[$key], $_SERVER[$key]);
+            }
+
+            \Dotenv\Dotenv::createUnsafeImmutable($directory)->load();
+        }
+    }
+
+    /**
      * Load all application routes and run the application
+     * @return void
      */
     public static function runApplication()
     {
-        // trick process into setting Leaf up
+        // trick process into setting Leaf up for errors, sessions, etc
         app();
 
         try {
