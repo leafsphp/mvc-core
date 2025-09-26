@@ -37,7 +37,7 @@ class Database
         static::$capsule->setAsGlobal();
         static::$capsule->bootEloquent();
 
-        if (php_sapi_name() === 'cli') {
+        if (php_sapi_name() === 'cli' && class_exists('Leaf\Schema')) {
             Schema::setDbConnection(static::$capsule);
         }
     }

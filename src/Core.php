@@ -434,6 +434,10 @@ class Core
                 $externalCommands[] = \Leaf\Billing::commands();
             }
 
+            if (class_exists('Leaf\Schema')) {
+                $externalCommands[] = \Leaf\Commands\DatabaseCommands::commands();
+            }
+
             foreach ($externalCommands as $command) {
                 $console->register($command);
             }
