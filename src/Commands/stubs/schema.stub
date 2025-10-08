@@ -1,0 +1,20 @@
+# schema files add auto-increments and timestamps automatically
+
+# you can add all the columns you want under the columns key
+columns:
+  name: string
+  identifier:
+    type: string
+    unique: true
+  verified_at:
+    type: timestamp
+    nullable: true
+
+# you can add foreign ids for other models under the relationships key key
+relationships:
+  - User
+
+# seeds are optional and can be used to populate the database with dummy data from models
+seeds:
+  count: 5
+  truncate: true
