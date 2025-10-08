@@ -438,6 +438,10 @@ class Core
                 $externalCommands[] = \Leaf\Commands\DatabaseCommands::commands();
             }
 
+            if (class_exists('\Leaf\Sprout\Seedling')) {
+                $externalCommands[] = \Leaf\Sprout\Seedling::commands();
+            }
+
             foreach ($externalCommands as $command) {
                 $console->register($command);
             }
