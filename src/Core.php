@@ -510,7 +510,8 @@ class Core
             $handler->pushHandler(new \Leaf\Exception\Handler\PlainTextHandler());
 
             echo $handler->handleException($th);
-            return 1;
+
+            exit(1);
         }
     }
 
