@@ -15,7 +15,7 @@ class GenerateHelperCommand extends Command
     {
         list($helper, $modelName) = $this->mapNames($this->argument('helper'));
 
-        $helperFile = getcwd() . HelpersPath("$helper.php");
+        $helperFile = getcwd() . DIRECTORY_SEPARATOR . HelpersPath("$helper.php");
 
         if (file_exists($helperFile)) {
             return $this->error("$helper already exists!");

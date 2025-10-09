@@ -12,7 +12,7 @@ class AppDownCommand extends Command
 
     protected function handle()
     {
-        $file = getcwd() . '/.env';
+        $file = getcwd() . DIRECTORY_SEPARATOR . '.env';
 
         $fileContent = file_get_contents($file);
         $fileContent = str_replace(

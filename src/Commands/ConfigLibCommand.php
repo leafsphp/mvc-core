@@ -12,8 +12,10 @@ class ConfigLibCommand extends Command
 
     protected function handle()
     {
-        if (!\Leaf\FS\Directory::exists(LibPath())) {
-            \Leaf\FS\Directory::create(LibPath());
+        $directory = getcwd() . DIRECTORY_SEPARATOR . LibPath();
+
+        if (!\Leaf\FS\Directory::exists($directory)) {
+            \Leaf\FS\Directory::create($directory);
         }
 
         $this->comment('lib folder setup successfully!');

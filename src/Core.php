@@ -502,6 +502,8 @@ class Core
             }
 
             $console->run();
+
+            exit(0);
         } catch (\Throwable $th) {
             echo "\n------------------------\n\nLeaf MVC ";
             $handler = (new \Leaf\Exception\Run());

@@ -12,7 +12,7 @@ class AppUpCommand extends Command
 
     protected function handle()
     {
-        $env = getcwd() . '/.env';
+        $env = getcwd() . DIRECTORY_SEPARATOR . '.env';
 
         $envContent = file_get_contents($env);
         $envContent = str_replace(

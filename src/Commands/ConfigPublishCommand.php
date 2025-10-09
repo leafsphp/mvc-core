@@ -12,8 +12,10 @@ class ConfigPublishCommand extends Command
 
     protected function handle()
     {
-        if (!\Leaf\FS\Directory::exists(ConfigPath())) {
-            \Leaf\FS\Directory::create(ConfigPath());
+        $configDir = getcwd() . DIRECTORY_SEPARATOR . ConfigPath();
+
+        if (!\Leaf\FS\Directory::exists($configDir)) {
+            \Leaf\FS\Directory::create($configDir);
         }
 
         $config = $this->argument('config');
@@ -26,7 +28,7 @@ class ConfigPublishCommand extends Command
 
             \Leaf\FS\File::copy(
                 __DIR__ . "/stubs/config/$file",
-                ConfigPath($file),
+                getcwd() . DIRECTORY_SEPARATOR . ConfigPath($file),
                 ['recursive' => true, 'overwrite' => true]
             );
         }

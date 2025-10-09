@@ -12,8 +12,8 @@ class EnvGenerateCommand extends Command
 
     protected function handle()
     {
-        $envFile = getcwd() . '/.env';
-        $envExampleFile = getcwd() . '/.env.example';
+        $envFile = getcwd() . DIRECTORY_SEPARATOR . '.env';
+        $envExampleFile = getcwd() . DIRECTORY_SEPARATOR . '.env.example';
 
         if (file_exists($envFile)) {
             $this->error('.env already exists');

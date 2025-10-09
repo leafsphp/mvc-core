@@ -16,7 +16,7 @@ class GenerateRouteCommand extends Command
     protected function handle()
     {
         $routeName = Str::lower(Str::kebab(ltrim($this->argument('routeName'), '_')));
-        $routeFile = getcwd() . RoutesPath("_$routeName.php");
+        $routeFile = getcwd() . DIRECTORY_SEPARATOR . RoutesPath("_$routeName.php");
         $controller = Str::pascal($routeName) . 'Controller';
 
         if (file_exists($routeFile)) {

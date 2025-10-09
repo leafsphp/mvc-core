@@ -14,7 +14,9 @@ class EnvSetCommand extends Command
 
     protected function handle()
     {
-        if (!file_exists(getcwd() . '/.env')) {
+        $envFile = getcwd() . DIRECTORY_SEPARATOR . '.env';
+
+        if (!file_exists($envFile)) {
             $this->comment('No .env file found. Generating one...');
 
             if (sprout()->process('php leaf env:generate')->run() !== 0) {
@@ -23,7 +25,7 @@ class EnvSetCommand extends Command
             }
         }
 
-        \Leaf\FS\File::write(getcwd() . '/.env', function ($env) {
+        \Leaf\FS\File::write($envFile, function ($env) {
             $key = $this->argument('key');
             $value = $this->argument('value');
 
@@ -38,7 +40,7 @@ class EnvSetCommand extends Command
             return $env;
         });
 
-        if (file_exists($envExampleFile = getcwd() . '/.env.example')) {
+        if (file_exists($envExampleFile = getcwd() . DIRECTORY_SEPARATOR . '.env.example')) {
             \Leaf\FS\File::write($envExampleFile, function ($envExample) {
                 $key = $this->argument('key');
 

@@ -20,7 +20,7 @@ class DeleteControllerCommand extends Command
             $controller .= 'Controller';
         }
 
-        $controllerFile = getcwd() . ControllersPath("$controller.php");
+        $controllerFile = getcwd() . DIRECTORY_SEPARATOR . ControllersPath("$controller.php");
 
         if (!\Leaf\FS\File::exists($controllerFile)) {
             $this->error("$controller doesn't exist!");

@@ -19,7 +19,7 @@ class GenerateMiddlewareCommand extends Command
             $middleware .= 'Middleware';
         }
 
-        $middlewareFile = getcwd() . AppPaths('middleware') . "/$middleware.php";
+        $middlewareFile = getcwd() . DIRECTORY_SEPARATOR . AppPaths('middleware') . "/$middleware.php";
 
         if (file_exists($middlewareFile)) {
             $this->error("$middleware already exists");

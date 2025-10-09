@@ -19,7 +19,7 @@ class GenerateMailerCommand extends Command
             $mailer .= 'Mailer';
         }
 
-        $mailerFile = getcwd() . AppPaths('mail') . "/$mailer.php";
+        $mailerFile = getcwd() . DIRECTORY_SEPARATOR . AppPaths('mail') . "/$mailer.php";
 
         if (file_exists($mailerFile)) {
             $this->error("$mailer already exists");

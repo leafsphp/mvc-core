@@ -14,7 +14,8 @@ class DeleteModelCommand extends Command
     protected function handle()
     {
         $model = Str::studly($this->argument('model'));
-        $file = getcwd() . ModelsPath("$model.php");
+
+        $file = getcwd() . DIRECTORY_SEPARATOR . ModelsPath("$model.php");
 
         if (!\Leaf\FS\File::exists($file)) {
             $this->error("$model doesn't exist!");

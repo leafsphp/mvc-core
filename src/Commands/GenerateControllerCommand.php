@@ -29,7 +29,7 @@ class GenerateControllerCommand extends Command
             $controller .= 'Controller';
         }
 
-        $controllerFile = getcwd() . ControllersPath("$controller.php");
+        $controllerFile = getcwd() . DIRECTORY_SEPARATOR . ControllersPath("$controller.php");
 
         $modelName = Str::singular(Str::studly(
             str_replace('Controller', '', basename($this->argument('controller')))
@@ -45,7 +45,7 @@ class GenerateControllerCommand extends Command
         return $this->generateExtraFiles($modelName);
     }
 
-    protected function generateController($controllerFile, $controller, $modelName)
+    protected function generateController($controllerFile, $controller, $modelName): int
     {
         $stub = \Leaf\Core::mode() === 'web' ? 'controller' : 'apiController';
 

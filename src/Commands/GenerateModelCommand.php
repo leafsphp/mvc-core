@@ -22,7 +22,7 @@ class GenerateModelCommand extends Command
             list($dirname, $className) = explode('/', $model);
         }
 
-        $file = getcwd() . ModelsPath("$model.php");
+        $file = getcwd() . DIRECTORY_SEPARATOR . ModelsPath("$model.php");
 
         if (file_exists($file)) {
             $this->error('Model already exists');

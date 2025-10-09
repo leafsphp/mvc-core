@@ -38,7 +38,7 @@ class GenerateTemplateCommand extends Command
 
         $templateName = strtolower($this->argument('name'));
         $templateName = $this->getTemplateName($templateName);
-        $template = getcwd() . ViewsPath(
+        $template = getcwd() . DIRECTORY_SEPARATOR . ViewsPath(
             $this->type === 'blade' ? $templateName : "/js/$templateName"
         );
 

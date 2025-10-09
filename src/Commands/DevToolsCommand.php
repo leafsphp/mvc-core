@@ -21,7 +21,7 @@ class DevToolsCommand extends Command
 
         $this->comment('Installing leaf devtools routes...');
 
-        $rootFilePath = getcwd() . PublicPath('index.php');
+        $rootFilePath = getcwd() . DIRECTORY_SEPARATOR . PublicPath('index.php');
         $rootFile = str_replace(
             "/*
 |--------------------------------------------------------------------------
