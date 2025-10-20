@@ -440,7 +440,6 @@ class Core
                 \Leaf\Commands\EnvSetCommand::class,
 
                 // Delete Commands
-                \Leaf\Commands\DeleteModelCommand::class,
                 \Leaf\Commands\DeleteControllerCommand::class,
 
                 // Generate Commands
@@ -448,7 +447,6 @@ class Core
                 \Leaf\Commands\GenerateHelperCommand::class,
                 \Leaf\Commands\GenerateMailerCommand::class,
                 \Leaf\Commands\GenerateMiddlewareCommand::class,
-                \Leaf\Commands\GenerateModelCommand::class,
                 \Leaf\Commands\GenerateTemplateCommand::class,
                 \Leaf\Commands\GenerateRouteCommand::class,
 
