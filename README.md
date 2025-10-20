@@ -20,7 +20,6 @@ It ships with all Leaf MVC applications and is not meant to be used on its own.
 MVC Core comes with:
 
 - Base Controllers
-- Database & Model functionalities
 - Shortcuts for views and layouts
 - Console commands for generating files/layouts/modules
 - Automatic module loading
