@@ -41,7 +41,7 @@
         "illuminate/events": "*",
         "symfony/yaml": "*",
         "leafs/db": "*",
-        "leafs/sprout": "^0.7.0"
+        "leafs/sprout": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24"
