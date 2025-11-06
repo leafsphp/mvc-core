@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Controllers;
+
+class ClassName extends Controller
+{
+    public function index()
+    {
+        response()->json([
+            'message' => 'ClassName@index output'
+        ]);
+    }
+}

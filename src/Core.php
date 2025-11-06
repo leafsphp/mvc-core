@@ -411,7 +411,60 @@ class Core
 
             \Leaf\Database::connect();
 
-            $console = new \Aloe\Console('v4.4');
+            $console = sprout()->createApp([
+                'name' => '<comment> _                __   __  ____     ______
+| |    ___  __ _ / _| |  \/  \ \   / / ___|
+| |   / _ \/ _` | |_  | |\/| |\ \ / / |
+| |__|  __/ (_| |  _| | |  | | \ V /| |___
+|_____\___|\__,_|_|   |_|  |_|  \_/  \____| by Leaf PHP</comment>',
+                'version' => 'v4.4',
+            ]);
+
+            $console->register([
+                // Random Commands
+                \Leaf\Commands\AppDownCommand::class,
+                \Leaf\Commands\AppUpCommand::class,
+                \Leaf\Commands\InteractCommand::class,
+                \Leaf\Commands\ServeCommand::class,
+
+                // Aloe Commands
+                \Leaf\Commands\DevToolsCommand::class,
+                \Leaf\Commands\KeyGenerateCommand::class,
+
+                // config commands
+                \Leaf\Commands\ConfigLibCommand::class,
+                \Leaf\Commands\ConfigPublishCommand::class,
+
+                // Env Commands
+                \Leaf\Commands\EnvGenerateCommand::class,
+                \Leaf\Commands\EnvSetCommand::class,
+
+                // Delete Commands
+                \Leaf\Commands\DeleteControllerCommand::class,
+
+                // Generate Commands
+                \Leaf\Commands\GenerateControllerCommand::class,
+                \Leaf\Commands\GenerateHelperCommand::class,
+                \Leaf\Commands\GenerateMailerCommand::class,
+                \Leaf\Commands\GenerateMiddlewareCommand::class,
+                \Leaf\Commands\GenerateTemplateCommand::class,
+                \Leaf\Commands\GenerateRouteCommand::class,
+
+                // View commands
+                \Leaf\Commands\ViewBuildCommand::class,
+                \Leaf\Commands\ViewDevCommand::class,
+                \Leaf\Commands\ViewInstallCommand::class,
+
+                // Symbolic link command
+                \Leaf\Commands\LinkCommand::class,
+
+                // Scaffold Commands
+                \Leaf\Commands\ScaffoldAuthCommand::class,
+                \Leaf\Commands\ScaffoldMailCommand::class,
+                \Leaf\Commands\ScaffoldLandingPageCommand::class,
+                \Leaf\Commands\ScaffoldWaitlistCommand::class,
+                \Leaf\Commands\ScaffoldShadcnCommand::class,
+            ]);
 
             if (\Leaf\FS\Directory::exists(static::$paths['commands'])) {
                 $consolePath = static::$paths['commands'];
@@ -434,11 +487,21 @@ class Core
                 $externalCommands[] = \Leaf\Billing::commands();
             }
 
+            if (class_exists('\Leaf\Sprout\Seedling')) {
+                $externalCommands[] = \Leaf\Sprout\Seedling::commands();
+            }
+
+            if (class_exists('Leaf\Schema')) {
+                $externalCommands[] = \Leaf\Commands\DatabaseCommands::commands();
+            }
+
             foreach ($externalCommands as $command) {
                 $console->register($command);
             }
 
             $console->run();
+
+            exit(0);
         } catch (\Throwable $th) {
             echo "\n------------------------\n\nLeaf MVC ";
             $handler = (new \Leaf\Exception\Run());
@@ -447,7 +510,8 @@ class Core
             $handler->pushHandler(new \Leaf\Exception\Handler\PlainTextHandler());
 
             echo $handler->handleException($th);
-            return 1;
+
+            exit(1);
         }
     }
 
