@@ -23,11 +23,7 @@ class Controller
         $this->request = new Http\Request;
         $this->response = new Http\Response;
 
-        if (count($this->services) > 0) {
-            foreach ($this->services as $name => $value) {
-                $this->services[$name] = make($value);
-            }
-        }
+        $this->injectServices();
     }
 
     /**
@@ -94,6 +90,54 @@ class Controller
             'validation' => $this->request->errors()
         ];
     }
+
+    protected function getImports(\ReflectionClass $ref): array
+    {
+        $file = file($ref->getFileName());
+        $imports = [];
+
+        foreach ($file as $line) {
+            if (preg_match('/^use\s+([^;]+);/', trim($line), $m)) {
+                $fqcn = trim($m[1]);
+                $short = basename(str_replace('\\', '/', $fqcn));
+                $imports[$short] = $fqcn;
+            }
+
+            if (strpos(trim($line), 'class ') === 0) {
+                break;
+            }
+        }
+
+        return $imports;
+    }
+
+
+    protected function injectServices()
+    {
+        $ref = new \ReflectionClass(static::class);
+        $doc = $ref->getDocComment();
+
+        if (!$doc) {
+            return;
+        }
+
+        $imports = $this->getImports($ref);
+
+        preg_match_all('/@property\s+([\w\\\\]+)\s+\$([\w]+)/', $doc, $matches, PREG_SET_ORDER);
+
+        foreach ($matches as $match) {
+            list($full, $className, $name) = $match;
+
+            if (!str_contains($className, '\\')) {
+                $className = isset($imports[$className]) ? $imports[$className] : $ref->getNamespaceName() . "\\" . $className;
+            }
+
+            if (class_exists($className)) {
+                $this->services[$name] = make($className);
+            }
+        }
+    }
+
 
     public function __get(string $name)
     {
