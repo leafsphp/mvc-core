@@ -10,7 +10,7 @@ class ServeCommand extends Command
         {--p|port=5500 : Port to run Leaf app on}
         {--t|path? : Path to your app}
         {--s|host=localhost : Your application host}
-        {--c|no-concurrent? : Run PHP server without Vite server}
+        {--c|clean? : Run PHP server without Vite server}
         {--w|no-env-watch? : Run PHP server without automatic .env file watching}';
     protected $description = 'Start the leaf development server';
     protected $help = 'Run your Leaf app on PHP\'s local development server';
@@ -30,7 +30,7 @@ class ServeCommand extends Command
         $this->path = $this->option('path') ?? getcwd() . DIRECTORY_SEPARATOR . 'public';
         $this->host = $this->option('host');
 
-        $noConcurrent = $this->option('no-concurrent');
+        $noConcurrent = $this->option('clean');
 
         if ($noConcurrent || (!$redisDetected && !$jobsDetected && !$viteDetected)) {
             $useConcurrent = false;
@@ -213,7 +213,7 @@ class ServeCommand extends Command
             return "npx @leafphp/watcher --watch .env --exec " . escapeshellarg($phpCommand);
         }
 
-        return "\"npx @leafphp/watcher --watch .env --exec \\\"$phpCommand\\\"\"";
+        return "npx @leafphp/watcher --watch .env --exec \"$phpCommand\"";
     }
 
     /**
