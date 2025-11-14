@@ -16,11 +16,18 @@ class Controller
     public $request;
     public $response;
     public $view;
+    protected $services = [];
 
     public function __construct()
     {
         $this->request = new Http\Request;
         $this->response = new Http\Response;
+
+        if (count($this->services) > 0) {
+            foreach ($this->services as $name => $value) {
+                $this->services[$name] = make($value);
+            }
+        }
     }
 
     /**
@@ -86,5 +93,16 @@ class Controller
             'auth' => $this->auth()->errors(),
             'validation' => $this->request->errors()
         ];
+    }
+
+    public function __get(string $name)
+    {
+        if (isset($this->services[$name])) {
+            return $this->services[$name];
+        }
+
+        trigger_error("Undefined property: " . static::class . "::$" . $name, E_USER_WARNING);
+
+        return null;
     }
 }
