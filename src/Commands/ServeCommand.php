@@ -213,7 +213,7 @@ class ServeCommand extends Command
             return "npx @leafphp/watcher --watch .env --exec " . escapeshellarg($phpCommand);
         }
 
-        return "npx @leafphp/watcher --watch .env --exec \"$phpCommand\"";
+        return escapeshellarg("npx @leafphp/watcher --watch .env --exec \"$phpCommand\"");
     }
 
     /**
