@@ -157,9 +157,9 @@ class ServeCommand extends Command
             $this->info("\nHappy gardening 🍁\n");
 
             if ($this->option('no-env-watch') || !file_exists(getcwd() . DIRECTORY_SEPARATOR . '.env') || !$this->hasInternetConnection()) {
-                $this->writeln(shell_exec($this->buildPhpServerCommand()) ?? "");
+                sprout()->process($this->buildPhpServerCommand())->run();
             } else {
-                $this->writeln(shell_exec($this->buildWatcherCommand()) ?? "");
+                sprout()->process($this->buildWatcherCommand())->run();
             }
         }
 
@@ -213,7 +213,7 @@ class ServeCommand extends Command
             return "npx @leafphp/watcher --watch .env --exec " . escapeshellarg($phpCommand);
         }
 
-        return escapeshellarg("npx @leafphp/watcher --watch .env --exec \"$phpCommand\"");
+        return escapeshellcmd("npx @leafphp/watcher --watch .env --exec \"$phpCommand\"");
     }
 
     /**
