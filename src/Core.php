@@ -168,6 +168,18 @@ class Core
             redis()->connect($config['redis']);
         }
 
+        if (class_exists('Leaf\Lingo')) {
+            $config['lingo'] = array_merge([
+                'locales.default' => _env('APP_LOCALE', 'en'),
+                'locales.path' => _env('LOCALES_PATH', AppPaths('locales')),
+                'locales.strategy' => _env('LOCALES_STRATEGY', 'router'),
+                'locales.cacheKey' => _env('LOCALES_CACHE_KEY', '__lingo.locale__'),
+                'locales.customStrategy' => null,
+            ], $config['lingo'] ?? []);
+
+            lingo()->create($config['lingo']);
+        }
+
         if ($config['view']['viewEngine']) {
             Config::attachView($config['view']['viewEngine'], 'template');
 

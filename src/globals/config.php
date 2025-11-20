@@ -36,6 +36,7 @@ function PathsConfig($setting = null)
         'scripts' => 'app/scripts',
         'seeds' => 'app/database/seeds',
         'services' => 'app/services',
+        'locales' => 'app/locales',
         'storage' => 'storage',
         'utils' => 'app/utils',
         'views' => 'app/views',
