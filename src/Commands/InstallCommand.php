@@ -33,7 +33,6 @@ class InstallCommand extends Command
             $this->writeln('<error>No composer.json found in the current directory. Pass in a package to add if you meant to install something.</error>');
             return 1;
         }
-        ;
 
         if (!sprout()->composer()->install()->isSuccessful()) {
             return 1;

@@ -18,7 +18,8 @@ class GenerateHelperCommand extends Command
         $helperFile = getcwd() . DIRECTORY_SEPARATOR . HelpersPath("$helper.php");
 
         if (file_exists($helperFile)) {
-            return $this->error("$helper already exists!");
+            $this->error("$helper already exists!");
+            return 1;
         }
 
         \Leaf\FS\File::create($helperFile, function () use ($helper, $modelName) {
@@ -28,7 +29,9 @@ class GenerateHelperCommand extends Command
             return $fileContent;
         }, ['recursive' => true]);
 
-        return $this->comment("$helper generated successfully");
+        $this->comment("$helper generated successfully");
+
+        return 0;
     }
 
     public function mapNames($helperName)

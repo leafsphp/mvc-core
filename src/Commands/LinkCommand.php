@@ -35,7 +35,6 @@ class LinkCommand extends Command
 
             $this->writeln('<comment>Experimental: </comment>This command is experimental and may not work on Windows');
             $this->writeln(shell_exec("mklink /J $publicPath\\storage $storagePath"));
-
         } else {
             try {
                 shell_exec("ln -s $storagePath $publicPath/storage");
@@ -46,5 +45,7 @@ class LinkCommand extends Command
         }
 
         $this->writeln('<info>✔</info> Symbolic link created successfully');
+
+        return 0;
     }
 }
