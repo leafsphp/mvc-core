@@ -33,9 +33,9 @@ MVC Core comes with:
 - [Join the forum](https://github.com/leafsphp/leaf/discussions/37)
 - [Chat on discord](https://discord.com/invite/Pkrm9NJPE3)
 
-## 📓 Learning Leaf 3
+## 📓 Learning Leaf 4 MVC
 
-- Leaf has a very easy to understand [documentation](https://leafphp.dev) which contains information on all operations in Leaf.
+- Leaf has a very easy to understand [documentation](https://leafphp.dev/docs/) which contains information on all operations in Leaf.
 - You can also check out our [youtube channel](https://www.youtube.com/channel/UCllE-GsYy10RkxBUK0HIffw) which has video tutorials on different topics
 - We are also working on codelabs which will bring hands-on tutorials you can follow and contribute to.
 
@@ -51,4 +51,4 @@ We are committed to keeping Leaf open-source and free, but maintaining and devel
 
 You can sponsor Leaf and any of our packages on [open collective](https://opencollective.com/leaf) or check the [contribution page](https://leafphp.dev/support/) for a list of ways to contribute.
 
-And to all our [existing cash/code contributors](https://leafphp.dev#sponsors), we love you all ❤️
+And to all our [existing cash/code contributors](https://leafphp.dev/support.html#our-sponsors), we love you all ❤️
