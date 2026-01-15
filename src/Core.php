@@ -577,6 +577,10 @@ class Core
                 require $routeFile;
             }
 
+            if (class_exists('Craftly\Core')) {
+                \Craftly\Core::setup();
+            }
+
             app()->run();
         } catch (\Throwable $th) {
             throw $th;
