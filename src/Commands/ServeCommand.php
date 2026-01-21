@@ -210,7 +210,8 @@ class ServeCommand extends Command
         $phpCommand = $this->buildPhpServerCommand();
 
         if ($this->isWindows()) {
-            return "npx @leafphp/watcher --watch .env --exec " . escapeshellarg($phpCommand);
+            $phpCommand = str_replace('"', '\\"', $phpCommand);
+            return "\"npx @leafphp/watcher --watch .env --exec \\\"$phpCommand\\\"\"";
         }
 
         return escapeshellcmd("npx @leafphp/watcher --watch .env --exec \"$phpCommand\"");
@@ -222,7 +223,7 @@ class ServeCommand extends Command
     protected function buildNpmRunCommand($script)
     {
         if ($this->isWindows()) {
-            return "npm run $script";
+            return "\"npm run $script\"";
         }
 
         return "\"npm run $script\"";
