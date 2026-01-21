@@ -536,7 +536,7 @@ class Core
     {
         \Dotenv\Dotenv::createUnsafeImmutable($directory)->safeLoad();
 
-        if ($_ENV['APP_ENV'] !== 'production') {
+        if (($_ENV['APP_ENV'] ?? getenv('APP_ENV')) !== 'production') {
             foreach ($_ENV as $key => $value) {
                 putenv(assignment: $key);
                 unset($_ENV[$key], $_SERVER[$key]);
