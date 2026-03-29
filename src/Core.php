@@ -491,11 +491,11 @@ class Core
                 }
             }
 
-            if (class_exists('Leaf\Queue')) {
+            if (class_exists('\Leaf\Queue')) {
                 $externalCommands[] = \Leaf\Queue::commands();
             }
 
-            if (class_exists('Leaf\Billing')) {
+            if (class_exists('\Leaf\Billing')) {
                 $externalCommands[] = \Leaf\Billing::commands();
             }
 
@@ -503,7 +503,7 @@ class Core
                 $externalCommands[] = \Leaf\Sprout\Seedling::commands();
             }
 
-            if (class_exists('Leaf\Schema')) {
+            if (class_exists('\Leaf\Schema')) {
                 $externalCommands[] = \Leaf\Commands\DatabaseCommands::commands();
             }
 
@@ -577,8 +577,12 @@ class Core
                 require $routeFile;
             }
 
-            if (class_exists('Craftly\Core')) {
+            if (class_exists('\Craftly\Core')) {
                 \Craftly\Core::setup();
+            }
+
+            if (class_exists('\Leaf\Sitemap')) {
+                sitemap()->init();
             }
 
             app()->run();
