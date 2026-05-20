@@ -207,13 +207,13 @@ class ServeCommand extends Command
      */
     protected function buildWatcherCommand()
     {
-        $phpCommand = $this->buildPhpServerCommand();
-
         if ($this->isWindows()) {
-            return "npx @leafphp/watcher --watch .env --exec " . escapeshellarg($phpCommand);
+            $path = str_replace('\\', '/', $this->path);
+
+            return '"npx @leafphp/watcher --watch .env --exec \\"php -S ' . $this->host . ':' . $this->port . ' -t ' . $path . '\\""';
         }
 
-        return escapeshellcmd("npx @leafphp/watcher --watch .env --exec \"$phpCommand\"");
+        return '"npx @leafphp/watcher --watch .env --exec \'php -S ' . $this->host . ':' . $this->port . ' -t ' . $this->path . '\' "';
     }
 
     /**
@@ -221,10 +221,6 @@ class ServeCommand extends Command
      */
     protected function buildNpmRunCommand($script)
     {
-        if ($this->isWindows()) {
-            return "npm run $script";
-        }
-
         return "\"npm run $script\"";
     }
 }
