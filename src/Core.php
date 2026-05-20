@@ -215,7 +215,7 @@ class Core
                 'session.lifetime' => 60 * 60 * 24,
                 'session.cookie' => ['secure' => false, 'httponly' => true, 'samesite' => 'lax'],
                 'token.lifetime' => 60 * 60 * 24 * 365,
-                'token.secret' => _env('AUTH_TOKEN_SECRET', '@leaf$MVC*JWT#AUTH.Secret'),
+                'token.secret' => _env('AUTH_TOKEN_SECRET', _env('APP_KEY', 'base64:5+MvnTq3h89dgFy28oI3OVdojigEGFnyTznObOmfT0A=')),
                 'messages.loginParamsError' => 'Incorrect credentials!',
                 'messages.loginPasswordError' => 'Password is incorrect!',
                 'password.key' => 'password',
