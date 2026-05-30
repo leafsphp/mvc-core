@@ -156,10 +156,10 @@ class ServeCommand extends Command
         } else {
             $this->info("\nHappy gardening 🍁\n");
 
-            if ($this->option('no-env-watch') || !file_exists(getcwd() . DIRECTORY_SEPARATOR . '.env') || !$this->hasInternetConnection()) {
+            if ($this->option('no-env-watch') || $noConcurrent || !file_exists(getcwd() . DIRECTORY_SEPARATOR . '.env') || !$this->hasInternetConnection()) {
                 sprout()->process($this->buildPhpServerCommand())->run();
             } else {
-                sprout()->process($this->buildWatcherCommand())->run();
+                sprout()->process(trim($this->buildWatcherCommand(), '"'))->run();
             }
         }
 
