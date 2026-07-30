@@ -31,15 +31,15 @@ class Core
 
         \Leaf\Database::initDb();
 
+        if (storage()->exists(LibPath())) {
+            static::loadLibs();
+        }
+
         if (php_sapi_name() !== 'cli') {
             if (class_exists('Leaf\Vite')) {
                 \Leaf\Vite::config('assets', PublicPath('build'));
                 \Leaf\Vite::config('build', 'public/build');
                 \Leaf\Vite::config('hotFile', 'public/hot');
-            }
-
-            if (storage()->exists(LibPath())) {
-                static::loadLibs();
             }
 
             if (storage()->exists('app/index.php')) {
