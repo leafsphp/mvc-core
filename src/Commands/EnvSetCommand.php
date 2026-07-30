@@ -7,8 +7,8 @@ use Leaf\Sprout\Command;
 class EnvSetCommand extends Command
 {
     protected $signature = 'env:set
-        {key : The environment variable key}
-        {value : The environment variable value}';
+        {key : The variable key, or KEY=VALUE in one argument}
+        {value? : The environment variable value}';
     protected $description = 'Set a new environment variable for your app';
     protected $help = 'Set a new environment variable in the .env file and update .env.example if it exists.';
 
@@ -28,6 +28,16 @@ class EnvSetCommand extends Command
         \Leaf\FS\File::write($envFile, function ($env) {
             $key = $this->argument('key');
             $value = $this->argument('value');
+
+            // support the `env:set KEY=VALUE` form
+            if ($value === null && strpos($key, '=') !== false) {
+                [$key, $value] = explode('=', $key, 2);
+            }
+
+            if ($value === null) {
+                $this->error('No value given. Use `env:set KEY VALUE` or `env:set KEY=VALUE`.');
+                return $env;
+            }
 
             if (strpos($env, $key) !== false) {
                 $this->info("$key already exists, updating value...");
