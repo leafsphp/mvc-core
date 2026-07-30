@@ -1,0 +1,52 @@
+<?php
+
+namespace Leaf\Commands;
+
+use Leaf\Sprout\Command;
+
+class ScaffoldContactCommand extends Command
+{
+    protected $signature = 'scaffold:contact';
+    protected $description = 'Scaffold a contact form wired to leaf mail';
+    protected $help = 'Create a contact page, controller and mailer';
+
+    protected function handle()
+    {
+        if (!class_exists('Leaf\Mail')) {
+            $this->comment('Installing leaf mail...');
+
+            if (!sprout()->composer()->install('leafs/mail')->isSuccessful()) {
+                $this->error('Failed to install leafs/mail. Please run "composer require leafs/mail" manually.');
+
+                return 1;
+            }
+        }
+
+        if (!file_exists(getcwd() . '/config/mail.php')) {
+            \Leaf\FS\Directory::copy(
+                __DIR__ . '/themes/mail',
+                getcwd(),
+                ['recursive' => true]
+            );
+        }
+
+        \Leaf\FS\Directory::copy(
+            __DIR__ . '/themes/contact',
+            getcwd(),
+            ['recursive' => true]
+        );
+
+        foreach (['.env', '.env.example'] as $envFile) {
+            $path = getcwd() . "/$envFile";
+
+            if (file_exists($path) && strpos((string) file_get_contents($path), 'CONTACT_EMAIL') === false) {
+                file_put_contents($path, "\nCONTACT_EMAIL=\n", FILE_APPEND);
+            }
+        }
+
+        $this->info('Contact form generated successfully.');
+        $this->writeln('👉  Set CONTACT_EMAIL (and your MAIL_ config) in .env, then visit <comment>/contact</comment>');
+
+        return 0;
+    }
+}

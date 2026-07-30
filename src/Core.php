@@ -478,6 +478,10 @@ class Core
                 \Leaf\Commands\ScaffoldLandingPageCommand::class,
                 \Leaf\Commands\ScaffoldWaitlistCommand::class,
                 \Leaf\Commands\ScaffoldShadcnCommand::class,
+                \Leaf\Commands\ScaffoldAiCommand::class,
+                \Leaf\Commands\ScaffoldBlogCommand::class,
+                \Leaf\Commands\ScaffoldContactCommand::class,
+                \Leaf\Commands\ScaffoldLegalCommand::class,
             ]);
 
             if (\Leaf\FS\Directory::exists(static::$paths['commands'])) {

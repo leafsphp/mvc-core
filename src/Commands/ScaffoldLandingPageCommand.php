@@ -36,12 +36,6 @@ class ScaffoldLandingPageCommand extends Command
         $this->comment("Scaffolding landing page using $scaffold scaffold...");
 
         if ($scaffold === 'default') {
-            if (!sprout()->composer()->install('leafs/zero')->isSuccessful()) {
-                $this->error('Failed to install leafs/zero. Please run "composer require leafs/zero" manually.');
-
-                return 1;
-            }
-
             sprout()->run('php leaf view:install --tailwind');
         }
 

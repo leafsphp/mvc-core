@@ -32,7 +32,7 @@ class ServeCommand extends Command
         $viteDetected = (class_exists('Leaf\Vite') || file_exists(getcwd() . DIRECTORY_SEPARATOR . 'vite.config.js')) && file_exists(getcwd() . DIRECTORY_SEPARATOR . 'package.json');
 
         $this->port = $this->option('port');
-        $this->path = $this->option('path') ?? getcwd() . DIRECTORY_SEPARATOR . 'public';
+        $this->path = $this->option('path') ?: getcwd() . DIRECTORY_SEPARATOR . 'public';
         $this->host = $this->option('host');
 
         if (!is_dir($this->path)) {
