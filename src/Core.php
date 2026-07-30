@@ -429,7 +429,7 @@ class Core
 | |   / _ \/ _` | |_  | |\/| |\ \ / / |
 | |__|  __/ (_| |  _| | |  | | \ V /| |___
 |_____\___|\__,_|_|   |_|  |_|  \_/  \____| by Leaf PHP</comment>',
-                'version' => 'v4.4',
+                'version' => 'v5.0',
             ]);
 
             $console->register([
@@ -511,9 +511,7 @@ class Core
                 $console->register($command);
             }
 
-            $console->run();
-
-            exit(0);
+            exit((int) ($console->run(false) ?? 0));
         } catch (\Throwable $th) {
             echo "\n------------------------\n\nLeaf MVC ";
             $handler = (new \Leaf\Exception\Run());
