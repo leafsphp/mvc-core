@@ -52,28 +52,42 @@
 
         <section class="block" aria-labelledby="essentials">
             <h2 id="essentials" class="sr">The essentials, one function away</h2>
-            <p class="eyebrow">The essentials, one function away</p>
+            <p class="eyebrow">Ship features, not boilerplate</p>
             <div class="tilebed">
                 <article class="tile">
+                    <p class="file">app/routes/_auth.php</p>
                     <h3>Auth in one line</h3>
-                    <pre class="mono"><span class="fn">auth</span>()-&gt;login([
-  <span class="str">'email'</span> =&gt; <span class="fn">request</span>()-&gt;get(<span class="str">'email'</span>),
-  <span class="str">'password'</span> =&gt; <span class="fn">request</span>()-&gt;get(<span class="str">'password'</span>),
+                    <p class="blurb">Login, signup, sessions and tokens, from one function.</p>
+                    <pre class="mono">$email = <span class="fn">request</span>()-&gt;get(<span class="str">'email'</span>);
+$password = <span class="fn">request</span>()-&gt;get(<span class="str">'password'</span>);
+
+<span class="fn">auth</span>()-&gt;login([
+  <span class="str">'email'</span> =&gt; $email,
+  <span class="str">'password'</span> =&gt; $password,
 ]);</pre>
                 </article>
                 <article class="tile">
-                    <h3>Data without ceremony</h3>
-                    <pre class="mono">$posts = <span class="fn">db</span>()
-  -&gt;select(<span class="str">'posts'</span>)
-  -&gt;where(<span class="str">'published'</span>, true)
-  -&gt;orderBy(<span class="str">'created_at'</span>, <span class="str">'desc'</span>)
-  -&gt;all();</pre>
+                    <p class="file">app/database/users.yml</p>
+                    <h3>Your database is a YAML file</h3>
+                    <p class="blurb">Edit it, run <code class="mono">leaf db:migrate</code>, and Leaf diffs the changes in. Seeds included.</p>
+                    <pre class="mono"><span class="fn">columns</span>:
+  <span class="fn">email</span>: {'{'} <span class="fn">type</span>: <span class="str">string</span>, <span class="fn">unique</span>: <span class="str">true</span> {'}'}
+  <span class="fn">plan</span>: <span class="str">string</span>
+<span class="fn">seeds</span>:
+  <span class="fn">count</span>: <span class="str">10</span>
+  <span class="fn">data</span>:
+    <span class="fn">email</span>: <span class="str">'@faker.unique.safeEmail'</span></pre>
                 </article>
                 <article class="tile">
-                    <h3>Respond like you mean it</h3>
-                    <pre class="mono"><span class="fn">response</span>()-&gt;json([
+                    <p class="file">app/controllers/SignupController.php</p>
+                    <h3>Heavy work leaves the request</h3>
+                    <p class="blurb">Queue the slow part, respond instantly. A worker picks it up in the background.</p>
+                    <pre class="mono"><span class="fn">dispatch</span>(
+  SendWelcomeEmail::<span class="fn">with</span>($user-&gt;id)
+);
+
+<span class="fn">response</span>()-&gt;json([
   <span class="str">'status'</span> =&gt; <span class="str">'shipped'</span>,
-  <span class="str">'posts'</span> =&gt; $posts,
 ]);</pre>
                 </article>
             </div>
@@ -141,12 +155,15 @@
     section.block { padding: 56px 0; border-top: 1px solid var(--line); }
     .tilebed { margin-top: 24px; display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); }
     @media (min-width: 768px) { .tilebed { grid-template-columns: repeat(3, 1fr); } }
-    .tile { background: var(--card); padding: 26px; transition: background .15s; }
+    .tile { background: var(--card); padding: 26px; transition: background .15s; min-width: 0; }
     .tile:hover { background: var(--card-hover); }
+    .tile .file { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--soft); margin-bottom: 10px; }
     .tile h3 { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+    .tile p.blurb { margin-top: 6px; font-size: 13px; line-height: 1.55; color: var(--muted); }
     .tile pre { margin-top: 14px; font-size: 12.5px; line-height: 1.7; color: var(--fg); overflow-x: auto; }
     .tile pre .fn { color: #D4542B; }
     .tile pre .str { color: #7c8a4d; }
+    .tile pre .cmt { color: var(--soft); }
     .install-line { margin-top: 20px; font-size: 13px; color: var(--soft); }
     .install-line code { color: var(--fg); border: 1px solid var(--line); padding: 3px 8px; }
     footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 18px 0; border-top: 1px solid var(--line); font-size: 13px; color: var(--soft); font-family: "JetBrains Mono", monospace; }

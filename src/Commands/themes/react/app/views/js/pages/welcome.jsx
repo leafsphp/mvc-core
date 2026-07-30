@@ -161,34 +161,52 @@ export default function Welcome({ auth, phpVersion }) {
                             <h2 id="essentials" className="sr-only">
                                 The essentials, one function away
                             </h2>
-                            <p className="eyebrow text-stone-500 dark:text-stone-400">The essentials, one function away</p>
+                            <p className="eyebrow text-stone-500 dark:text-stone-400">Ship features, not boilerplate</p>
 
                             <div className="mt-6 grid grid-cols-1 gap-px border border-stone-950/10 bg-stone-950/10 dark:border-stone-50/10 dark:bg-stone-50/10 md:grid-cols-3">
-                                <article className="bg-white p-[26px] transition hover:bg-stone-50 dark:bg-stone-950 dark:hover:bg-stone-900">
+                                <article className="min-w-0 bg-white p-[26px] transition hover:bg-stone-50 dark:bg-stone-950 dark:hover:bg-stone-900">
+                                    <p className="font-mono-ds mb-2.5 text-[11px] text-stone-500 dark:text-stone-400">app/routes/_auth.php</p>
                                     <h3 className="font-display text-base font-semibold tracking-tight">Auth in one line</h3>
+                                    <p className="mt-1.5 text-[13px] leading-[1.55] text-stone-600 dark:text-stone-400">
+                                        Login, signup, sessions and tokens, from one function.
+                                    </p>
                                     <pre className="font-mono-ds mt-3.5 overflow-x-auto text-[12.5px] leading-[1.7]">
+                                        $email = <span className="text-[#D4542B]">request</span>()-&gt;get(<span className="text-[#7c8a4d]">'email'</span>);{"\n"}
+                                        $password = <span className="text-[#D4542B]">request</span>()-&gt;get(<span className="text-[#7c8a4d]">'password'</span>);{"\n"}
+                                        {"\n"}
                                         <span className="text-[#D4542B]">auth</span>()-&gt;login([{"\n"}
-                                        {"  "}<span className="text-[#7c8a4d]">'email'</span> =&gt; <span className="text-[#D4542B]">request</span>()-&gt;get(<span className="text-[#7c8a4d]">'email'</span>),{"\n"}
-                                        {"  "}<span className="text-[#7c8a4d]">'password'</span> =&gt; <span className="text-[#D4542B]">request</span>()-&gt;get(<span className="text-[#7c8a4d]">'password'</span>),{"\n"}
+                                        {"  "}<span className="text-[#7c8a4d]">'email'</span> =&gt; $email,{"\n"}
+                                        {"  "}<span className="text-[#7c8a4d]">'password'</span> =&gt; $password,{"\n"}
                                         ]);
                                     </pre>
                                 </article>
-                                <article className="bg-white p-[26px] transition hover:bg-stone-50 dark:bg-stone-950 dark:hover:bg-stone-900">
-                                    <h3 className="font-display text-base font-semibold tracking-tight">Data without ceremony</h3>
+                                <article className="min-w-0 bg-white p-[26px] transition hover:bg-stone-50 dark:bg-stone-950 dark:hover:bg-stone-900">
+                                    <p className="font-mono-ds mb-2.5 text-[11px] text-stone-500 dark:text-stone-400">app/database/users.yml</p>
+                                    <h3 className="font-display text-base font-semibold tracking-tight">Your database is a YAML file</h3>
+                                    <p className="mt-1.5 text-[13px] leading-[1.55] text-stone-600 dark:text-stone-400">
+                                        Edit it, run <code className="font-mono-ds">leaf db:migrate</code>, and Leaf diffs the changes in. Seeds included.
+                                    </p>
                                     <pre className="font-mono-ds mt-3.5 overflow-x-auto text-[12.5px] leading-[1.7]">
-                                        $posts = <span className="text-[#D4542B]">db</span>(){"\n"}
-                                        {"  "}-&gt;select(<span className="text-[#7c8a4d]">'posts'</span>){"\n"}
-                                        {"  "}-&gt;where(<span className="text-[#7c8a4d]">'published'</span>, true){"\n"}
-                                        {"  "}-&gt;orderBy(<span className="text-[#7c8a4d]">'created_at'</span>, <span className="text-[#7c8a4d]">'desc'</span>){"\n"}
-                                        {"  "}-&gt;all();
+                                        <span className="text-[#D4542B]">columns</span>:{"\n"}
+                                        {"  "}<span className="text-[#D4542B]">email</span>: {"{"} <span className="text-[#D4542B]">type</span>: <span className="text-[#7c8a4d]">string</span>, <span className="text-[#D4542B]">unique</span>: <span className="text-[#7c8a4d]">true</span> {"}"}{"\n"}
+                                        {"  "}<span className="text-[#D4542B]">plan</span>: <span className="text-[#7c8a4d]">string</span>{"\n"}
+                                        <span className="text-[#D4542B]">seeds</span>:{"\n"}
+                                        {"  "}<span className="text-[#D4542B]">count</span>: <span className="text-[#7c8a4d]">10</span>{"\n"}
+                                        {"  "}<span className="text-[#D4542B]">data</span>:{"\n"}
+                                        {"    "}<span className="text-[#D4542B]">email</span>: <span className="text-[#7c8a4d]">'@faker.unique.safeEmail'</span>
                                     </pre>
                                 </article>
-                                <article className="bg-white p-[26px] transition hover:bg-stone-50 dark:bg-stone-950 dark:hover:bg-stone-900">
-                                    <h3 className="font-display text-base font-semibold tracking-tight">Respond like you mean it</h3>
+                                <article className="min-w-0 bg-white p-[26px] transition hover:bg-stone-50 dark:bg-stone-950 dark:hover:bg-stone-900">
+                                    <p className="font-mono-ds mb-2.5 text-[11px] text-stone-500 dark:text-stone-400">app/controllers/SignupController.php</p>
+                                    <h3 className="font-display text-base font-semibold tracking-tight">Heavy work leaves the request</h3>
+                                    <p className="mt-1.5 text-[13px] leading-[1.55] text-stone-600 dark:text-stone-400">
+                                        Queue the slow part, respond instantly. A worker picks it up in the background.
+                                    </p>
                                     <pre className="font-mono-ds mt-3.5 overflow-x-auto text-[12.5px] leading-[1.7]">
+                                        <span className="text-[#D4542B]">dispatch</span>({"\n"}  SendWelcomeEmail::<span className="text-[#D4542B]">with</span>($user-&gt;id){"\n"});{"\n"}
+                                        {"\n"}
                                         <span className="text-[#D4542B]">response</span>()-&gt;json([{"\n"}
                                         {"  "}<span className="text-[#7c8a4d]">'status'</span> =&gt; <span className="text-[#7c8a4d]">'shipped'</span>,{"\n"}
-                                        {"  "}<span className="text-[#7c8a4d]">'posts'</span> =&gt; $posts,{"\n"}
                                         ]);
                                     </pre>
                                 </article>
