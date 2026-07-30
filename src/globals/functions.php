@@ -64,30 +64,35 @@ if (!function_exists('redirect')) {
 
 if (!function_exists('route')) {
     /**
-     * Get a route by name
+     * Get a route URL by name. Params fill the route's placeholders —
+     * positionally (route('users.show', 5)) or by name
+     * (route('users.show', ['id' => 5])).
      */
-    function route()
+    function route(string $routeName, ...$params)
     {
-        $args = func_get_args();
+        // named params: hand straight to the router, which understands
+        // optional params and inline constraints
+        if (count($params) === 1 && is_array($params[0])) {
+            return app()->route($routeName, $params[0]);
+        }
 
-        $routeName = array_shift($args);
-        $routeParams = count($args) > 0 ? $args : [];
+        if (empty($params)) {
+            return app()->route($routeName);
+        }
 
-        $route = app()->route($routeName);
+        // positional params: map onto the placeholders in order
+        $pattern = app()->route($routeName);
+        preg_match_all('/\{([^}:?]+)(\?|:[^}]*)?\}/', $pattern, $matches);
 
-        # check if it has args to replace
-        if (preg_match_all('/\{([^}]+)\}/', $route, $matches)) {
-            foreach ($matches[1] as $key => $paramName) {
-                if (isset($routeParams[$key])) {
-                    $route = str_replace('{' . $paramName . '}', $routeParams[$key], $route);
-                } else {
-                    // Handle missing parameters
-                    throw new InvalidArgumentException("Missing parameter '$paramName' for route '$routeName'.");
-                }
+        $named = [];
+
+        foreach ($matches[1] as $index => $paramName) {
+            if (array_key_exists($index, $params)) {
+                $named[$paramName] = $params[$index];
             }
         }
 
-        return $route;
+        return app()->route($routeName, $named);
     }
 }
 
