@@ -37,7 +37,7 @@ class ScaffoldAuthCommand extends Command
 
         $this->comment("Installing leaf auth using $scaffold scaffold...");
 
-        if (!sprout()->composer()->install('leafs/auth')) {
+        if (!sprout()->composer()->install('leafs/auth')->isSuccessful()) {
             $this->error('Failed to install Leafs Auth package. Please run "composer require leafs/auth" manually.');
             return 1;
         }

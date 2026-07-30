@@ -7,7 +7,7 @@ use Leaf\Sprout\Command;
 class ScaffoldLandingPageCommand extends Command
 {
     protected $signature = 'scaffold:landing-page
-        {--s|scaffold=default : Which scaffold to use for authentication (default/react/vue/svelte)}';
+        {--s|scaffold=default : Which scaffold to use for your landing page (default/react/vue/svelte)}';
     protected $description = 'Scaffold landing page for your app';
     protected $help = 'Create basic views, components and assets for your landing page';
 
@@ -36,8 +36,13 @@ class ScaffoldLandingPageCommand extends Command
         $this->comment("Scaffolding landing page using $scaffold scaffold...");
 
         if ($scaffold === 'default') {
-            sprout()->composer()->install('leafs/zero');
-            $this->writeln(shell_exec('php leaf view:install --tailwind'));
+            if (!sprout()->composer()->install('leafs/zero')->isSuccessful()) {
+                $this->error('Failed to install leafs/zero. Please run "composer require leafs/zero" manually.');
+
+                return 1;
+            }
+
+            sprout()->run('php leaf view:install --tailwind');
         }
 
         \Leaf\FS\Directory::copy(

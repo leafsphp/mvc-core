@@ -12,6 +12,15 @@ class ScaffoldShadcnCommand extends Command
 
     protected function handle()
     {
+        $isReactApp = \Leaf\FS\File::exists(getcwd() . '/app/views/_inertia.blade.php')
+            && strpos(\Leaf\FS\File::read(getcwd() . '/app/views/_inertia.blade.php'), '.jsx') !== false;
+
+        if (!$isReactApp) {
+            $this->error('shadcn/ui is for React apps. Set up React first with "php leaf view:install --react".');
+
+            return 1;
+        }
+
         $this->comment("Scaffolding Shadcn support files...");
 
         \Leaf\FS\Directory::copy(

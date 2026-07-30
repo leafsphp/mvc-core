@@ -88,3 +88,14 @@ PHP);
     expect($exit)->toBe(0)
         ->and($output)->toContain('lib loaded in cli');
 });
+
+test('scaffold:shadcn refuses to run outside a react app', function () {
+    $sandbox = sandboxApp();
+
+    [$exit, $output] = mvc($sandbox, 'scaffold:shadcn');
+
+    expect($exit)->toBe(1);
+    expect($output)->toContain('React');
+
+    removeSandbox($sandbox);
+});
