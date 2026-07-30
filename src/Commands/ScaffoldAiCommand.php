@@ -6,12 +6,33 @@ use Leaf\Sprout\Command;
 
 class ScaffoldAiCommand extends Command
 {
-    protected $signature = 'scaffold:ai';
+    protected $signature = 'scaffold:ai
+        {--s|scaffold=default : Which scaffold to use for your AI chat (default/react/vue/svelte)}';
     protected $description = 'Scaffold a streaming AI chat powered by Claude';
     protected $help = 'Create a chat page, streaming endpoint and Anthropic SDK setup';
 
     protected function handle()
     {
+        $directory = getcwd();
+        $scaffold = $this->option('scaffold');
+
+        if (!in_array($scaffold, ['default', 'react', 'vue', 'svelte'])) {
+            $this->error("Invalid scaffold $scaffold. Available scaffolds are default, react, vue, svelte.");
+            return 1;
+        }
+
+        if (\Leaf\FS\File::exists("$directory/app/views/_inertia.blade.php")) {
+            $content = \Leaf\FS\File::read("$directory/app/views/_inertia.blade.php");
+
+            if (strpos($content, '.jsx') !== false) {
+                $scaffold = 'react';
+            } else if (strpos($content, '.svelte') !== false) {
+                $scaffold = 'svelte';
+            } else if (strpos($content, '.vue') !== false) {
+                $scaffold = 'vue';
+            }
+        }
+
         $this->comment('Installing the Anthropic SDK...');
 
         if (!sprout()->composer()->install('anthropic-ai/sdk')->isSuccessful()) {
@@ -21,7 +42,7 @@ class ScaffoldAiCommand extends Command
         }
 
         \Leaf\FS\Directory::copy(
-            __DIR__ . '/themes/ai',
+            __DIR__ . '/themes/ai/' . $scaffold,
             getcwd(),
             ['recursive' => true]
         );
