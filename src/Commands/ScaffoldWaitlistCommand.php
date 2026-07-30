@@ -7,7 +7,7 @@ use Leaf\Sprout\Command;
 class ScaffoldWaitlistCommand extends Command
 {
     protected $signature = 'scaffold:waitlist
-        {--s|scaffold=default : Which scaffold to use for authentication (default/react/vue/svelte)}';
+        {--s|scaffold=default : Which scaffold to use for your waitlist (default/react/vue/svelte)}';
     protected $description = 'Scaffold waitlist for your app';
     protected $help = 'Create basic views, components and assets for your waitlist';
 
