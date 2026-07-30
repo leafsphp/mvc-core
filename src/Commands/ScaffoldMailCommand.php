@@ -14,7 +14,11 @@ class ScaffoldMailCommand extends Command
     {
         $this->comment('Installing leaf mail...');
 
-        sprout()->composer()->install('leafs/mail');
+        if (!sprout()->composer()->install('leafs/mail')->isSuccessful()) {
+            $this->error('Failed to install leafs/mail. Please run "composer require leafs/mail" manually.');
+
+            return 1;
+        }
 
         $this->comment('Setting up leaf mail...');
 
