@@ -180,7 +180,9 @@ class Core
             lingo()->create($config['lingo']);
         }
 
-        if ($config['view']['viewEngine']) {
+        // view engines are template dependencies, not core ones — API apps
+        // (or consoles booting without blade installed) skip views gracefully
+        if ($config['view']['viewEngine'] && class_exists($config['view']['viewEngine'])) {
             Config::attachView($config['view']['viewEngine'], 'template');
 
             if ($config['view']['config']) {
