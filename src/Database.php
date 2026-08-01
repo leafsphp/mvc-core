@@ -37,6 +37,18 @@ class Database
         static::$capsule->setAsGlobal();
         static::$capsule->bootEloquent();
 
+        if (function_exists('crash')) {
+            foreach (array_keys($connections) as $name) {
+                static::$capsule
+                    ->getConnection($config['default'] === $name ? 'default' : $name)
+                    ->listen(function ($query) {
+                        crash()->leaveCrumb($query->sql, 'query', [
+                            'ms' => $query->time,
+                        ], false);
+                    });
+            }
+        }
+
         if (php_sapi_name() === 'cli' && class_exists('Leaf\Schema')) {
             Schema::setDbConnection(static::$capsule);
         }
