@@ -19,10 +19,12 @@ return [
     |--------------------------------------------------------------------------
     |
     | This is the secret key used to generate the CSRF token. It is
-    | combined with a random string to generate the token.
+    | combined with a random string to generate the token. When this is
+    | null, Leaf derives a unique secret for your app from your APP_KEY,
+    | so you only need to set this to override that.
     |
     */
-    'secret' => _env('APP_KEY', '@nkor_leaf$0Secret!!_'),
+    'secret' => _env('X_CSRF_SECRET'),
 
     /*
     |--------------------------------------------------------------------------

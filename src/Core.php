@@ -251,7 +251,10 @@ class Core
 
         if (class_exists('Leaf\Anchor\CSRF')) {
             $config['csrf'] = array_merge([
-                'secret' => _env('APP_KEY', '@nkor_leaf$0Secret!!'),
+                // no secret here on purpose: the csrf module derives a
+                // per-app secret from APP_KEY when none is configured,
+                // and mixes in a context string rather than using the
+                // raw key that auth tokens already depend on
                 'secretKey' => 'X-Leaf-CSRF-Token',
                 'except' => [],
                 'methods' => ['POST', 'PUT', 'PATCH', 'DELETE'],
