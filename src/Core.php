@@ -523,12 +523,7 @@ class Core
             exit((int) ($console->run(false) ?? 0));
         } catch (\Throwable $th) {
             echo "\n------------------------\n\nLeaf MVC ";
-            $handler = (new \Leaf\Exception\Run());
-            $handler->allowQuit(false);
-            $handler->writeToOutput(false);
-            $handler->pushHandler(new \Leaf\Exception\Handler\PlainTextHandler());
-
-            echo $handler->handleException($th);
+            echo \Leaf\Crash\Report::from($th)->toText();
 
             exit(1);
         }
