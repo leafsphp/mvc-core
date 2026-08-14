@@ -21,7 +21,7 @@ class ScaffoldShadcnCommand extends Command
             return 1;
         }
 
-        $this->comment("Scaffolding Shadcn support files...");
+        $this->comment('Scaffolding Shadcn support files...');
 
         \Leaf\FS\Directory::copy(
             __DIR__ . '/themes/shadcn',

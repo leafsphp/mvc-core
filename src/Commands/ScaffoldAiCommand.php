@@ -26,9 +26,9 @@ class ScaffoldAiCommand extends Command
 
             if (strpos($content, '.jsx') !== false) {
                 $scaffold = 'react';
-            } else if (strpos($content, '.svelte') !== false) {
+            } elseif (strpos($content, '.svelte') !== false) {
                 $scaffold = 'svelte';
-            } else if (strpos($content, '.vue') !== false) {
+            } elseif (strpos($content, '.vue') !== false) {
                 $scaffold = 'vue';
             }
         }

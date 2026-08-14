@@ -47,7 +47,8 @@
     "require-dev": {
         "pestphp/pest": "*",
         "leafs/alchemy": "^5.0",
-        "fakerphp/faker": "*"
+        "fakerphp/faker": "*",
+        "friendsofphp/php-cs-fixer": "*"
     },
     "scripts": {
         "alchemy": "@php vendor/bin/alchemy all",

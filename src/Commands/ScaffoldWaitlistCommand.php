@@ -26,9 +26,9 @@ class ScaffoldWaitlistCommand extends Command
 
             if (strpos($content, '.jsx') !== false) {
                 $scaffold = 'react';
-            } else if (strpos($content, '.svelte') !== false) {
+            } elseif (strpos($content, '.svelte') !== false) {
                 $scaffold = 'svelte';
-            } else if (strpos($content, '.vue') !== false) {
+            } elseif (strpos($content, '.vue') !== false) {
                 $scaffold = 'vue';
             }
         }
@@ -43,9 +43,9 @@ class ScaffoldWaitlistCommand extends Command
 
         if (\Leaf\FS\File::exists("$directory/app/views/js/pages/welcome.jsx")) {
             \Leaf\FS\File::delete("$directory/app/views/js/pages/welcome.jsx");
-        } else if (\Leaf\FS\File::exists("$directory/app/views/js/pages/welcome.svelte")) {
+        } elseif (\Leaf\FS\File::exists("$directory/app/views/js/pages/welcome.svelte")) {
             \Leaf\FS\File::delete("$directory/app/views/js/pages/welcome.svelte");
-        } else if (\Leaf\FS\File::exists("$directory/app/views/js/pages/welcome.vue")) {
+        } elseif (\Leaf\FS\File::exists("$directory/app/views/js/pages/welcome.vue")) {
             \Leaf\FS\File::delete("$directory/app/views/js/pages/welcome.vue");
         }
 

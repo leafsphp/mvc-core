@@ -96,7 +96,7 @@ class ViewInstallCommand extends Command
 
         if (\Leaf\FS\File::exists("$directory/vite.config.js")) {
             \Leaf\FS\File::write("$directory/vite.config.js", function ($content) {
-                if (strpos($content, "@vitejs/plugin-react") === false) {
+                if (strpos($content, '@vitejs/plugin-react') === false) {
                     $content = str_replace(
                         ["import leaf from '@leafphp/vite-plugin';", 'import leaf from "@leafphp/vite-plugin";'],
                         "import leaf from '@leafphp/vite-plugin';\nimport react from '@vitejs/plugin-react';",
@@ -104,7 +104,7 @@ class ViewInstallCommand extends Command
                     );
                 }
 
-                if (strpos($content, "@tailwindcss/vite") === false) {
+                if (strpos($content, '@tailwindcss/vite') === false) {
                     $content = str_replace(
                         ["import leaf from '@leafphp/vite-plugin';", 'import leaf from "@leafphp/vite-plugin";'],
                         "import leaf from '@leafphp/vite-plugin';\nimport tailwindcss from '@tailwindcss/vite';",
@@ -112,12 +112,12 @@ class ViewInstallCommand extends Command
                     );
                 }
 
-                if (strpos($content, "tailwindcss(") === false) {
-                    $content = str_replace("leaf({", "tailwindcss(),\nleaf({", $content);
+                if (strpos($content, 'tailwindcss(') === false) {
+                    $content = str_replace('leaf({', "tailwindcss(),\nleaf({", $content);
                 }
 
-                if (strpos($content, "react(") === false) {
-                    $content = str_replace("leaf({", "react(),\nleaf({", $content);
+                if (strpos($content, 'react(') === false) {
+                    $content = str_replace('leaf({', "react(),\nleaf({", $content);
                 }
 
                 return $content;
@@ -195,7 +195,7 @@ class ViewInstallCommand extends Command
 
         if (\Leaf\FS\File::exists("$directory/vite.config.js")) {
             \Leaf\FS\File::write("$directory/vite.config.js", function ($content) {
-                if (strpos($content, "@sveltejs/vite-plugin-svelte") === false) {
+                if (strpos($content, '@sveltejs/vite-plugin-svelte') === false) {
                     $content = str_replace(
                         ["import leaf from '@leafphp/vite-plugin';", 'import leaf from "@leafphp/vite-plugin";'],
                         "import leaf from '@leafphp/vite-plugin';\nimport { svelte } from '@sveltejs/vite-plugin-svelte'",
@@ -203,7 +203,7 @@ class ViewInstallCommand extends Command
                     );
                 }
 
-                if (strpos($content, "@tailwindcss/vite") === false) {
+                if (strpos($content, '@tailwindcss/vite') === false) {
                     $content = str_replace(
                         ["import leaf from '@leafphp/vite-plugin';", 'import leaf from "@leafphp/vite-plugin";'],
                         "import leaf from '@leafphp/vite-plugin';\nimport tailwindcss from '@tailwindcss/vite';",
@@ -211,12 +211,12 @@ class ViewInstallCommand extends Command
                     );
                 }
 
-                if (strpos($content, "tailwindcss(") === false) {
-                    $content = str_replace("leaf({", "tailwindcss(),\nleaf({", $content);
+                if (strpos($content, 'tailwindcss(') === false) {
+                    $content = str_replace('leaf({', "tailwindcss(),\nleaf({", $content);
                 }
 
-                if (strpos($content, "svelte(") === false) {
-                    $content = str_replace("leaf({", "svelte(),\nleaf({", $content);
+                if (strpos($content, 'svelte(') === false) {
+                    $content = str_replace('leaf({', "svelte(),\nleaf({", $content);
                 }
 
                 return $content;
@@ -285,7 +285,7 @@ class ViewInstallCommand extends Command
 
         if (\Leaf\FS\File::exists('vite.config.js')) {
             \Leaf\FS\File::write('vite.config.js', function ($content) {
-                if (strpos($content, "@tailwindcss/vite") === false) {
+                if (strpos($content, '@tailwindcss/vite') === false) {
                     $content = str_replace(
                         ["import leaf from '@leafphp/vite-plugin';", 'import leaf from "@leafphp/vite-plugin";'],
                         "import leaf from '@leafphp/vite-plugin';\nimport tailwindcss from '@tailwindcss/vite';",
@@ -293,8 +293,8 @@ class ViewInstallCommand extends Command
                     );
                 }
 
-                if (strpos($content, "tailwindcss(") === false) {
-                    $content = str_replace("leaf({", "tailwindcss(),\nleaf({", $content);
+                if (strpos($content, 'tailwindcss(') === false) {
+                    $content = str_replace('leaf({', "tailwindcss(),\nleaf({", $content);
                 }
 
                 return $content;
@@ -387,7 +387,7 @@ class ViewInstallCommand extends Command
 
         if (\Leaf\FS\File::exists("$directory/vite.config.js")) {
             \Leaf\FS\File::write("$directory/vite.config.js", function ($content) {
-                if (strpos($content, "@vitejs/plugin-vue") === false) {
+                if (strpos($content, '@vitejs/plugin-vue') === false) {
                     $content = str_replace(
                         ["import leaf from '@leafphp/vite-plugin';", 'import leaf from "@leafphp/vite-plugin";'],
                         "import leaf from '@leafphp/vite-plugin';\nimport vue from '@vitejs/plugin-vue';",
@@ -395,7 +395,7 @@ class ViewInstallCommand extends Command
                     );
                 }
 
-                if (strpos($content, "@tailwindcss/vite") === false) {
+                if (strpos($content, '@tailwindcss/vite') === false) {
                     $content = str_replace(
                         ["import leaf from '@leafphp/vite-plugin';", 'import leaf from "@leafphp/vite-plugin";'],
                         "import leaf from '@leafphp/vite-plugin';\nimport tailwindcss from '@tailwindcss/vite';",
@@ -403,12 +403,12 @@ class ViewInstallCommand extends Command
                     );
                 }
 
-                if (strpos($content, "tailwindcss(") === false) {
-                    $content = str_replace("leaf({", "tailwindcss(),\nleaf({", $content);
+                if (strpos($content, 'tailwindcss(') === false) {
+                    $content = str_replace('leaf({', "tailwindcss(),\nleaf({", $content);
                 }
 
-                if (strpos($content, "vue(") === false) {
-                    $content = str_replace("leaf({", "vue({
+                if (strpos($content, 'vue(') === false) {
+                    $content = str_replace('leaf({', "vue({
             template: {
                 transformAssetUrls: {
                     base: null,

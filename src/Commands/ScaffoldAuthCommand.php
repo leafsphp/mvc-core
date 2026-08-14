@@ -23,14 +23,14 @@ class ScaffoldAuthCommand extends Command
 
         if (\Leaf\Core::mode() === 'api') {
             $scaffold = 'api';
-        } else if (\Leaf\FS\File::exists("$directory/app/views/_inertia.blade.php")) {
+        } elseif (\Leaf\FS\File::exists("$directory/app/views/_inertia.blade.php")) {
             $content = \Leaf\FS\File::read("$directory/app/views/_inertia.blade.php");
 
             if (strpos($content, '.jsx') !== false) {
                 $scaffold = 'react';
-            } else if (strpos($content, '.svelte') !== false) {
+            } elseif (strpos($content, '.svelte') !== false) {
                 $scaffold = 'svelte';
-            } else if (strpos($content, '.vue') !== false) {
+            } elseif (strpos($content, '.vue') !== false) {
                 $scaffold = 'vue';
             }
         }
@@ -49,7 +49,7 @@ class ScaffoldAuthCommand extends Command
         );
 
         if (\Leaf\FS\File::exists("$directory/app/views/js/pages/welcome.jsx")) {
-            sprout()->npm()->install("class-variance-authority clsx tailwind-merge lucide-react @radix-ui/react-separator @radix-ui/react-tooltip @radix-ui/react-dialog @radix-ui/react-avatar @radix-ui/react-dropdown-menu @radix-ui/react-navigation-menu");
+            sprout()->npm()->install('class-variance-authority clsx tailwind-merge lucide-react @radix-ui/react-separator @radix-ui/react-tooltip @radix-ui/react-dialog @radix-ui/react-avatar @radix-ui/react-dropdown-menu @radix-ui/react-navigation-menu');
 
             \Leaf\FS\File::write("$directory/app/views/js/pages/welcome.jsx", function ($content) {
                 return str_replace(
@@ -58,7 +58,7 @@ class ScaffoldAuthCommand extends Command
                     $content
                 );
             });
-        } else if (\Leaf\FS\File::exists("$directory/app/views/js/pages/welcome.svelte")) {
+        } elseif (\Leaf\FS\File::exists("$directory/app/views/js/pages/welcome.svelte")) {
             sprout()->npm()->install('class-variance-authority clsx tailwind-merge lucide-svelte @tailwindcss/forms');
 
             \Leaf\FS\File::write("$directory/app/views/js/pages/welcome.svelte", function ($content) {
@@ -68,7 +68,7 @@ class ScaffoldAuthCommand extends Command
                     $content
                 );
             });
-        } else if (\Leaf\FS\File::exists("$directory/app/views/js/pages/welcome.vue")) {
+        } elseif (\Leaf\FS\File::exists("$directory/app/views/js/pages/welcome.vue")) {
             sprout()->npm()->install('class-variance-authority clsx tailwind-merge lucide-vue-next @headlessui/vue @tailwindcss/forms @vueuse/core radix-vue');
 
             \Leaf\FS\File::write("$directory/app/views/js/pages/welcome.vue", function ($content) {

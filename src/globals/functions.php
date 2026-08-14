@@ -112,7 +112,7 @@ if (!function_exists('vite')) {
 
                 return trim($baseDir, '/') . '/' . ltrim($file, '/');
             }, $files);
-        } else if (is_string($files)) {
+        } elseif (is_string($files)) {
             if (strpos($files, $baseDir) === false) {
                 $files = trim($baseDir, '/') . '/' . ltrim($files, '/');
             }

@@ -62,7 +62,7 @@ class EnvSetCommand extends Command
             });
         }
 
-        $this->info("Environment updated successfully.");
+        $this->info('Environment updated successfully.');
 
         return 0;
     }

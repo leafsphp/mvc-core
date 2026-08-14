@@ -20,8 +20,8 @@ class Controller
 
     public function __construct()
     {
-        $this->request = new Http\Request;
-        $this->response = new Http\Response;
+        $this->request = new Http\Request();
+        $this->response = new Http\Response();
 
         $this->injectServices();
     }
@@ -129,7 +129,7 @@ class Controller
             list($full, $className, $name) = $match;
 
             if (!str_contains($className, '\\')) {
-                $className = isset($imports[$className]) ? $imports[$className] : $ref->getNamespaceName() . "\\" . $className;
+                $className = isset($imports[$className]) ? $imports[$className] : $ref->getNamespaceName() . '\\' . $className;
             }
 
             if (class_exists($className)) {
@@ -145,7 +145,7 @@ class Controller
             return $this->services[$name];
         }
 
-        trigger_error("Undefined property: " . static::class . "::$" . $name, E_USER_WARNING);
+        trigger_error('Undefined property: ' . static::class . '::$' . $name, E_USER_WARNING);
 
         return null;
     }

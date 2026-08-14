@@ -193,7 +193,7 @@ class Core
                         'cache' => $config['app']['views.cachePath'],
                     ]
                 ]);
-            } else if (method_exists(app()->template(), 'configure')) {
+            } elseif (method_exists(app()->template(), 'configure')) {
                 app()->template()->configure([
                     'views' => $config['app']['views.path'],
                     'cache' => $config['app']['views.cachePath'],

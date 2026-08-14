@@ -25,9 +25,9 @@ class GenerateTemplateCommand extends Command
 
             if (strpos($content, '.jsx') !== false) {
                 $this->type = 'react';
-            } else if (strpos($content, '.svelte') !== false) {
+            } elseif (strpos($content, '.svelte') !== false) {
                 $this->type = 'svelte';
-            } else if (strpos($content, '.vue') !== false) {
+            } elseif (strpos($content, '.vue') !== false) {
                 $this->type = 'vue';
             }
         }
@@ -62,7 +62,7 @@ class GenerateTemplateCommand extends Command
                 return "$content\n\n$routeToAdd";
             })
         ) {
-            $this->comment("Route added successfully");
+            $this->comment('Route added successfully');
         }
 
         return 0;

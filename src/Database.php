@@ -2,9 +2,9 @@
 
 namespace Leaf;
 
-use \Illuminate\Database\Capsule\Manager;
-use \Illuminate\Events\Dispatcher;
-use \Illuminate\Container\Container;
+use Illuminate\Database\Capsule\Manager;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Container\Container;
 
 /**
  * Leaf Database Config
@@ -21,7 +21,7 @@ class Database
      */
     public static function connect()
     {
-        static::$capsule = new Manager;
+        static::$capsule = new Manager();
 
         $config = Config::getStatic('mvc.config')['database'] ?? [];
         $connections = $config['connections'] ?? [];
@@ -33,7 +33,7 @@ class Database
             );
         }
 
-        static::$capsule->setEventDispatcher(new Dispatcher(new Container));
+        static::$capsule->setEventDispatcher(new Dispatcher(new Container()));
         static::$capsule->setAsGlobal();
         static::$capsule->bootEloquent();
 
