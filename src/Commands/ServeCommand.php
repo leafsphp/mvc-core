@@ -111,12 +111,22 @@ class ServeCommand extends Command
      */
     protected function runServer(): int
     {
-        return sprout()
+        $server = sprout()
             ->process($this->buildPhpServerCommand())
-            ->setTimeout(null)
-            ->run(function ($type, $buffer) {
-                echo $buffer;
-            });
+            ->setTimeout(null);
+
+        $server->start(function ($type, $buffer) {
+            echo $buffer;
+        });
+
+        while ($server->isRunning()) {
+            usleep(500000);
+            $this->pumpCompanions();
+        }
+
+        $this->pumpCompanions();
+
+        return (int) $server->getExitCode();
     }
 
     /**
@@ -147,6 +157,8 @@ class ServeCommand extends Command
             while ($server->isRunning()) {
                 usleep(500000);
 
+                $this->pumpCompanions();
+
                 clearstatcache(true, $envFile);
                 $mtime = @filemtime($envFile);
 
@@ -165,6 +177,18 @@ class ServeCommand extends Command
             if (!$restart) {
                 return (int) $server->getExitCode();
             }
+        }
+    }
+
+    /**
+     * Flush any buffered companion output through their prefixed callbacks.
+     * Output callbacks only fire when a process object's pipes are read —
+     * an untouched companion never prints a single line
+     */
+    protected function pumpCompanions()
+    {
+        foreach ($this->companions as $companion) {
+            $companion->isRunning();
         }
     }
 
