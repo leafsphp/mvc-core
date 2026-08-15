@@ -66,8 +66,9 @@ class ViewInstallCommand extends Command
         $directory = getcwd();
 
         // vite 8 plugins (plugin-react 6+) conflict with @leafphp/vite-plugin's peer range,
-        // so everything vite-adjacent stays pinned to the vite 7 line
-        if (!sprout()->npm()->install('@leafphp/vite-plugin @vitejs/plugin-react@^5.0 @inertiajs/react react react-dom vite@^7.0 tailwindcss @tailwindcss/vite')->isSuccessful()) {
+        // so everything vite-adjacent stays pinned to the vite 7 line; inertia clients
+        // stay on v2 — leafs/inertia speaks the v2 protocol and a v3 client renders blank
+        if (!sprout()->npm()->install('@leafphp/vite-plugin @vitejs/plugin-react@^5.0 @inertiajs/react@^2.0 react react-dom vite@^7.0 tailwindcss @tailwindcss/vite')->isSuccessful()) {
             $this->writeln('❌  <error>Failed to install react</error>');
             return 1;
         }
@@ -168,7 +169,7 @@ class ViewInstallCommand extends Command
         $this->writeln("📦  <info>Installing svelte...</info>\n");
 
         $directory = getcwd();
-        if (!sprout()->npm()->install('@leafphp/vite-plugin svelte @sveltejs/vite-plugin-svelte@^6.0 @inertiajs/svelte vite@^7.0 tailwindcss @tailwindcss/vite')->isSuccessful()) {
+        if (!sprout()->npm()->install('@leafphp/vite-plugin svelte @sveltejs/vite-plugin-svelte@^6.0 @inertiajs/svelte@^2.0 vite@^7.0 tailwindcss @tailwindcss/vite')->isSuccessful()) {
             $this->writeln('❌  <error>Failed to install svelte</error>');
             return 1;
         }
@@ -360,7 +361,7 @@ class ViewInstallCommand extends Command
 
         $directory = getcwd();
 
-        if (!sprout()->npm()->install('@leafphp/vite-plugin @vitejs/plugin-vue@^6.0 @inertiajs/vue3@^1.0 vue vite@^7.0 tailwindcss @tailwindcss/vite')->isSuccessful()) {
+        if (!sprout()->npm()->install('@leafphp/vite-plugin @vitejs/plugin-vue@^6.0 @inertiajs/vue3@^2.0 vue vite@^7.0 tailwindcss @tailwindcss/vite')->isSuccessful()) {
             $this->writeln('❌  <error>Failed to install Vue</error>');
             return 1;
         }
