@@ -65,7 +65,9 @@ class ViewInstallCommand extends Command
 
         $directory = getcwd();
 
-        if (!sprout()->npm()->install('npm install @leafphp/vite-plugin @vitejs/plugin-react @inertiajs/react react react-dom vite tailwindcss @tailwindcss/vite')) {
+        // vite 8 plugins (plugin-react 6+) conflict with @leafphp/vite-plugin's peer range,
+        // so everything vite-adjacent stays pinned to the vite 7 line
+        if (!sprout()->npm()->install('@leafphp/vite-plugin @vitejs/plugin-react@^5.0 @inertiajs/react react react-dom vite@^7.0 tailwindcss @tailwindcss/vite')->isSuccessful()) {
             $this->writeln('❌  <error>Failed to install react</error>');
             return 1;
         }
@@ -77,7 +79,7 @@ class ViewInstallCommand extends Command
         $this->writeln("\n✅  <info>React installed successfully</info>");
         $this->writeln("🧱  <info>Setting up Leaf React server bridge...</info>\n");
 
-        if (!sprout()->composer()->install('leafs/inertia leafs/vite')) {
+        if (!sprout()->composer()->install('leafs/inertia leafs/vite')->isSuccessful()) {
             $this->writeln('❌  <error>Failed to setup Leaf React server bridge</error>');
             return 1;
         }
@@ -166,7 +168,7 @@ class ViewInstallCommand extends Command
         $this->writeln("📦  <info>Installing svelte...</info>\n");
 
         $directory = getcwd();
-        if (!sprout()->npm()->install('@leafphp/vite-plugin svelte @sveltejs/vite-plugin-svelte @inertiajs/svelte vite tailwindcss @tailwindcss/vite')) {
+        if (!sprout()->npm()->install('@leafphp/vite-plugin svelte @sveltejs/vite-plugin-svelte@^6.0 @inertiajs/svelte vite@^7.0 tailwindcss @tailwindcss/vite')->isSuccessful()) {
             $this->writeln('❌  <error>Failed to install svelte</error>');
             return 1;
         }
@@ -176,7 +178,7 @@ class ViewInstallCommand extends Command
         $this->writeln("\n✅  <info>Svelte installed successfully</info>");
         $this->writeln("🧱  <info>Setting up Leaf Svelte server bridge...</info>\n");
 
-        if (!sprout()->composer()->install('leafs/inertia leafs/vite')) {
+        if (!sprout()->composer()->install('leafs/inertia leafs/vite')->isSuccessful()) {
             $this->writeln('❌  <error>Failed to setup Leaf Svelte server bridge</error>');
             return 1;
         }
@@ -266,7 +268,7 @@ class ViewInstallCommand extends Command
 
         $this->writeln("📦  <info>Installing tailwind...</info>\n");
 
-        if (!sprout()->npm()->install('@leafphp/vite-plugin vite tailwindcss @tailwindcss/vite')) {
+        if (!sprout()->npm()->install('@leafphp/vite-plugin vite@^7.0 tailwindcss @tailwindcss/vite')->isSuccessful()) {
             $this->writeln('❌  <error>Failed to install tailwind</error>');
             return 1;
         }
@@ -276,7 +278,7 @@ class ViewInstallCommand extends Command
         $this->writeln("\n✅  <info>Tailwind CSS installed successfully</info>");
         $this->writeln("🧱  <info>Setting up Leaf server bridge...</info>\n");
 
-        $success = sprout()->composer()->install('leafs/vite');
+        $success = sprout()->composer()->install('leafs/vite')->isSuccessful();
 
         if (!$success) {
             $this->writeln('❌  <error>Failed to setup Leaf server bridge</error>');
@@ -358,7 +360,7 @@ class ViewInstallCommand extends Command
 
         $directory = getcwd();
 
-        if (!sprout()->npm()->install('@leafphp/vite-plugin @vitejs/plugin-vue @inertiajs/vue3@^1.0 vue vite tailwindcss @tailwindcss/vite')) {
+        if (!sprout()->npm()->install('@leafphp/vite-plugin @vitejs/plugin-vue@^6.0 @inertiajs/vue3@^1.0 vue vite@^7.0 tailwindcss @tailwindcss/vite')->isSuccessful()) {
             $this->writeln('❌  <error>Failed to install Vue</error>');
             return 1;
         }
@@ -368,7 +370,7 @@ class ViewInstallCommand extends Command
         $this->writeln("\n✅  <info>Vue installed successfully</info>");
         $this->writeln("🧱  <info>Setting up Leaf Vue server bridge...</info>\n");
 
-        if (!sprout()->composer()->install('leafs/inertia leafs/vite')) {
+        if (!sprout()->composer()->install('leafs/inertia leafs/vite')->isSuccessful()) {
             $this->writeln('❌  <error>Failed to setup Leaf Vue server bridge</error>');
             return 1;
         }

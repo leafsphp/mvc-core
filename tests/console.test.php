@@ -99,3 +99,28 @@ test('scaffold:shadcn refuses to run outside a react app', function () {
 
     removeSandbox($sandbox);
 });
+
+test('view:install pins every vite-adjacent npm package and checks results', function () {
+    $source = file_get_contents(dirname(__DIR__) . '/src/Commands/ViewInstallCommand.php');
+
+    // unpinned @vitejs/* and vite resolve to whatever npm's latest is —
+    // when vite 8 shipped, latest plugin-react moved to a peer range
+    // @leafphp/vite-plugin doesn't allow, and every install ERESOLVE'd
+    preg_match_all('/->install\(\'([^\']+)\'\)/', $source, $matches);
+
+    foreach ($matches[1] as $packageList) {
+        foreach (explode(' ', $packageList) as $package) {
+            expect($package)->not->toBe('npm')->not->toBe('install');
+
+            if (preg_match('/^(@vitejs\/|@sveltejs\/|vite$)/', $package)) {
+                expect($package)->toContain('@^');
+            }
+        }
+    }
+
+    // install() returns a Process (always truthy) — a bare boolean guard
+    // reports success even when npm exits non-zero
+    preg_match_all('/!\s*sprout\(\)->(?:npm|composer)\(\)->install\(\'[^\']+\'\)\s*[\)&|]/', $source, $bareGuards);
+
+    expect($bareGuards[0])->toBeEmpty();
+});
