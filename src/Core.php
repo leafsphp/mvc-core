@@ -520,6 +520,21 @@ class Core
                 $console->register($command);
             }
 
+            $console->on('command.notFound', function ($event) {
+                $commandName = $event->getData()['commandName'] ?? '';
+                $globalCommands = ['create', 'install', 'uninstall', 'context', 'up', 'deploy', 'update', 'test'];
+
+                echo "Command not found: $commandName\n";
+
+                if (in_array($commandName, $globalCommands, true)) {
+                    echo "\n`$commandName` is a global Leaf CLI command, not a project command.\n";
+                    echo "Try:  leaf $commandName (without the `php` prefix)\n";
+                    echo "No global CLI? Install it with: composer global require leafs/cli\n";
+                }
+
+                $event->setExitCode(1);
+            });
+
             exit((int) ($console->run(false) ?? 0));
         } catch (\Throwable $th) {
             echo "\n------------------------\n\nLeaf MVC ";
