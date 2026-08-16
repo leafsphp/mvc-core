@@ -6,6 +6,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        response()->inertia('dashboard');
+        return response()->inertia('dashboard');
     }
 }

@@ -124,3 +124,61 @@ test('view:install pins every vite-adjacent npm package and checks results', fun
 
     expect($bareGuards[0])->toBeEmpty();
 });
+
+test('db() borrows the Eloquent connection instead of opening its own', function () {
+    // two PDO connections to one sqlite file is how an auth read used to
+    // deadlock the first model write — LEAF-132
+    file_put_contents($this->sandbox . '/app/console/ConnectionProbeCommand.php', <<<'PHP'
+<?php
+
+namespace App\Console;
+
+use Leaf\Sprout\Command;
+
+class ConnectionProbeCommand extends Command
+{
+    protected $signature = 'connection:probe';
+    protected $description = 'Probe db()/Eloquent connection identity';
+
+    protected function handle(): int
+    {
+        $leafDbPdo = db()->connection();
+        $eloquentPdo = \Leaf\Database::$capsule->getConnection()->getPdo();
+
+        $this->info($leafDbPdo === $eloquentPdo ? 'one shared connection' : 'SEPARATE CONNECTIONS');
+
+        // and the shared connection actually works from both sides
+        $eloquentPdo->exec('CREATE TABLE IF NOT EXISTS probes (name TEXT)');
+        $eloquentPdo->exec("INSERT INTO probes VALUES ('via-eloquent')");
+        $row = db()->query('SELECT name FROM probes')->fetchObj();
+        $this->info('read back: ' . $row->name);
+
+        // a db() transaction must cover Eloquent-side writes now — this
+        // was impossible on two connections (the old docs caveat)
+        db()->beginTransaction();
+        \Leaf\Database::$capsule::table('probes')->insert(['name' => 'rolled-back']);
+        db()->rollback();
+
+        $count = \Leaf\Database::$capsule::table('probes')->where('name', 'rolled-back')->count();
+        $this->info($count === 0 ? 'transaction covers models' : 'TRANSACTION LEAKED');
+
+        return 0;
+    }
+}
+PHP);
+
+    [$exit, $output] = mvc($this->sandbox, 'connection:probe');
+
+    expect($exit)->toBe(0)
+        ->and($output)->toContain('one shared connection')
+        ->and($output)->toContain('read back: via-eloquent')
+        ->and($output)->toContain('transaction covers models');
+});
+
+test('global CLI commands get a helpful hint instead of a bare not-found', function () {
+    [$exit, $output] = mvc($this->sandbox, 'install auth');
+
+    expect($exit)->toBe(1)
+        ->and($output)->toContain('global Leaf CLI command')
+        ->and($output)->toContain('leaf install');
+});

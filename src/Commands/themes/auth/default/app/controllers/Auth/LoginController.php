@@ -8,7 +8,7 @@ class LoginController extends Controller
     {
         $form = flash()->display('form') ?? [];
 
-        response()->view('pages.auth.login', array_merge($form, [
+        return response()->view('pages.auth.login', array_merge($form, [
             'errors' => flash()->display('error') ?? [],
         ]));
     }
@@ -21,7 +21,7 @@ class LoginController extends Controller
         ]);
 
         if (!$data) {
-            response()
+            return response()
                 ->withFlash('form', request()->body())
                 ->withFlash('error', request()->errors())
                 ->redirect('/auth/login');
@@ -30,13 +30,13 @@ class LoginController extends Controller
         $success = auth()->login($data);
 
         if (!$success) {
-            response()
+            return response()
                 ->withFlash('form', request()->body())
                 ->withFlash('error', request()->errors())
                 ->redirect('/auth/login');
         }
 
-        response()->redirect('/dashboard');
+        return response()->redirect('/dashboard');
     }
 
     public function logout()

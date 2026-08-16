@@ -27,7 +27,7 @@ export function initializeTheme() {
 }
 
 export function useAppearance() {
-    const [appearance, setAppearance] = useState < Appearance > "system";
+    const [appearance, setAppearance] = useState("system");
 
     const updateAppearance = (mode) => {
         setAppearance(mode);

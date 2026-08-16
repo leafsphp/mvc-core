@@ -65,7 +65,7 @@
                 <Input
                     id="email"
                     type="email"
-                    className="mt-1 block w-full"
+                    class="mt-1 block w-full"
                     value={$form.email}
                     onChange={(e) => $form.email = e.target.value}
                     required

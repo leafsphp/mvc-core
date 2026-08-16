@@ -6,7 +6,7 @@ class AccountController extends Controller
 {
     public function index()
     {
-        response()->json([
+        return response()->json([
             'message' => 'User account',
             'data' => auth()->user()->get(),
         ]);
@@ -16,7 +16,7 @@ class AccountController extends Controller
     {
         $data = request()->validate([
             'email' => 'optional|email',
-            'name' => 'optional|text',
+            'name' => 'optional|string',
         ]);
 
         if (!$data) {
@@ -35,7 +35,7 @@ class AccountController extends Controller
             ], 400);
         }
 
-        response()->json([
+        return response()->json([
             'message' => 'User account updated',
             'data' => auth()->user()->get(),
         ]);

@@ -27,7 +27,7 @@ class LoginController extends Controller
             ], 400);
         }
 
-        response()->json([
+        return response()->json([
             'message' => 'Login successful',
             'data' => auth()->data(),
         ]);

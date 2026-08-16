@@ -7,10 +7,10 @@ import Button from "@/components/form/button";
 import Input from "@/components/form/input";
 import Label from "@/components/form/label";
 
-export default function Profile({ auth }) {
+export default function Profile({ name, email }) {
     const { data, setData, patch, errors, processing } = useForm({
-        name: auth.user.name,
-        email: auth.user.email,
+        name: name ?? "",
+        email: email ?? "",
     });
 
     const submit = (e) => {
@@ -72,16 +72,6 @@ export default function Profile({ auth }) {
 
                     <div className="flex items-center gap-4">
                         <Button disabled={processing}>Save</Button>
-
-                        {/* <Transition
-                            show={recentlySuccessful}
-                            enter="transition ease-in-out"
-                            enterFrom="opacity-0"
-                            leave="transition ease-in-out"
-                            leaveTo="opacity-0"
-                        >
-                            <p className="text-sm text-neutral-600">Saved</p>
-                        </Transition> */}
                     </div>
                 </form>
             </div>

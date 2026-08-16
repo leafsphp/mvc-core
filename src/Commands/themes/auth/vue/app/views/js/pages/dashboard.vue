@@ -12,9 +12,9 @@ import { Head } from '@inertiajs/vue3';
             href: '/dashboard',
         },
     ]">
-        <div className="py-4 px-4">
-            <div className="overflow-hidden shadow-sm sm:rounded-lg bg-black">
-                <div className="p-6 text-gray-100">You're logged in!</div>
+        <div class="py-4 px-4">
+            <div class="overflow-hidden shadow-sm sm:rounded-lg bg-black">
+                <div class="p-6 text-gray-100">You're logged in!</div>
             </div>
         </div>
     </Layout>

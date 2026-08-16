@@ -30,7 +30,10 @@ app()->group('/dashboard', [
     },
 ]);
 
-app()->group('/settings', function () {
-    app()->get('/profile', 'Profile\AccountController@show_update');
-    app()->patch('/profile', 'Profile\AccountController@update');
-});
+app()->group('/settings', [
+    'middleware' => 'auth.required',
+    function () {
+        app()->get('/profile', 'Profile\AccountController@show_update');
+        app()->patch('/profile', 'Profile\AccountController@update');
+    },
+]);

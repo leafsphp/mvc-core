@@ -57,7 +57,7 @@ export default function Welcome({ auth, phpVersion }) {
                             className="flex items-center gap-2.5 text-[15px] font-semibold tracking-tight"
                             aria-label="Leaf PHP"
                         >
-                            <img src="https://v5-x.leafphp.dev/logo-circle.png" alt="" className="h-7 w-7" />
+                            <img src="/favicon.ico" alt="" className="h-7 w-7" />
                             <span>Leaf MVC</span>
                             <span className="font-mono-ds border border-stone-950/10 px-1.5 py-0.5 text-[11px] font-semibold text-stone-500 dark:border-stone-50/10 dark:text-stone-400">
                                 v5
@@ -132,7 +132,7 @@ export default function Welcome({ auth, phpVersion }) {
 
                             <div className="mt-9 flex flex-wrap justify-center gap-2.5">
                                 <a
-                                    href="https://leafphp.dev/docs/intro/first-app"
+                                    href="https://leafphp.dev/learn/mvc"
                                     target="_blank"
                                     rel="noreferrer"
                                     className="inline-flex items-center gap-2 bg-stone-900 px-[18px] py-[11px] text-sm font-medium text-stone-50 transition hover:bg-stone-800 dark:bg-stone-50 dark:text-stone-900 dark:hover:bg-stone-200"

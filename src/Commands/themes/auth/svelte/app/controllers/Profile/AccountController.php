@@ -8,7 +8,7 @@ class AccountController extends Controller
     {
         $user = auth()->user();
 
-        response()->inertia('profile/update', [
+        return response()->inertia('profile/update', [
             'errors' => flash()->display('errors') ?? [],
             'name' => $user->name ?? null,
             'email' => $user->email ?? null,
@@ -19,7 +19,7 @@ class AccountController extends Controller
     {
         $data = request()->validate([
             'email' => 'optional|email',
-            'name' => 'optional|text',
+            'name' => 'optional|string',
         ]);
 
         if (!$data) {
@@ -36,6 +36,6 @@ class AccountController extends Controller
                 ->redirect('/settings/profile', 303);
         }
 
-        response()->redirect('/dashboard', 303);
+        return response()->redirect('/dashboard', 303);
     }
 }
