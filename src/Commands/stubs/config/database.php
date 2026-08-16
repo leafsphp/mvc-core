@@ -36,6 +36,8 @@ return [
             'database' => _env('DB_DATABASE', AppPaths('databaseStorage') . '/database.sqlite'),
             'prefix' => '',
             'foreign_key_constraints' => _env('DB_FOREIGN_KEYS', true),
+            'journal_mode' => _env('DB_JOURNAL_MODE', 'wal'),
+            'busy_timeout' => _env('DB_BUSY_TIMEOUT', 5000),
         ],
 
         'mysql' => [
