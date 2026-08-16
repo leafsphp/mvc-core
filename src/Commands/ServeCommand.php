@@ -115,9 +115,7 @@ class ServeCommand extends Command
             ->process($this->buildPhpServerCommand())
             ->setTimeout(null);
 
-        $server->start(function ($type, $buffer) {
-            echo $buffer;
-        });
+        $server->start($this->prefixedEcho('server', '0;36'));
 
         while ($server->isRunning()) {
             usleep(500000);
@@ -148,9 +146,7 @@ class ServeCommand extends Command
                 ->process($this->buildPhpServerCommand())
                 ->setTimeout(null);
 
-            $server->start(function ($type, $buffer) {
-                echo $buffer;
-            });
+            $server->start($this->prefixedEcho('server', '0;36'));
 
             $restart = false;
 
@@ -199,13 +195,32 @@ class ServeCommand extends Command
     {
         $process = sprout()->process($command)->setTimeout(null);
 
-        $process->start(function ($type, $buffer) use ($name, $color) {
-            echo "\033[{$color}m[$name]\033[0m $buffer";
-        });
+        $process->start($this->prefixedEcho($name, $color));
 
         $this->companions[] = $process;
 
         return $process;
+    }
+
+    /**
+     * Output callback that tags every line with a colored [name] label.
+     * Process output arrives in arbitrary chunks — multi-line buffers and
+     * split lines both — so lines are reassembled before tagging, else
+     * only a chunk's first line gets the label and the rest float loose
+     */
+    protected function prefixedEcho(string $name, string $color): callable
+    {
+        $carry = '';
+
+        return function ($type, $buffer) use ($name, $color, &$carry) {
+            $carry .= $buffer;
+            $lines = explode("\n", $carry);
+            $carry = array_pop($lines); // an unterminated line waits for its chunk
+
+            foreach ($lines as $line) {
+                echo "\033[{$color}m[$name]\033[0m $line\n";
+            }
+        };
     }
 
     /**
