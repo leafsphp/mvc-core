@@ -27,6 +27,11 @@ class Database
         $connections = $config['connections'] ?? [];
 
         foreach ($connections as $name => $connection) {
+            if (($connection['driver'] ?? null) === 'sqlite') {
+                $connection['journal_mode'] = $connection['journal_mode'] ?? _env('DB_JOURNAL_MODE', 'wal');
+                $connection['busy_timeout'] = $connection['busy_timeout'] ?? (int) _env('DB_BUSY_TIMEOUT', 5000);
+            }
+
             static::$capsule->addConnection(
                 $connection,
                 $config['default'] === $name ? 'default' : $name,
@@ -81,6 +86,20 @@ class Database
             }
 
             db()->addConnections($connections, $config['default']);
+
+            if (method_exists(db(), 'connectionResolver')) {
+                foreach (array_keys($config['connections']) as $name) {
+                    $connectionName = $config['default'] === $name ? 'default' : $name;
+
+                    db()->connectionResolver(function () use ($connectionName) {
+                        if (!static::$capsule) {
+                            static::connect();
+                        }
+
+                        return static::$capsule->getConnection($connectionName)->getPdo();
+                    }, $connectionName);
+                }
+            }
         }
 
         return null;

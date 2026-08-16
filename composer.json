@@ -41,7 +41,7 @@
         "illuminate/database": "*",
         "illuminate/events": "*",
         "symfony/yaml": "*",
-        "leafs/db": "^5.0",
+        "leafs/db": "^5.1",
         "leafs/sprout": "^5.0"
     },
     "require-dev": {
