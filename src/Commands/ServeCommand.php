@@ -257,6 +257,8 @@ class ServeCommand extends Command
      */
     protected function buildPhpServerCommand()
     {
-        return "php -S {$this->host}:{$this->port} -t " . escapeshellarg($this->path);
+        $prefix = DIRECTORY_SEPARATOR === '\\' ? '' : 'exec ';
+
+        return "{$prefix}php -S {$this->host}:{$this->port} -t " . escapeshellarg($this->path);
     }
 }
