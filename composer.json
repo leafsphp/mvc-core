@@ -42,7 +42,7 @@
         "illuminate/events": "*",
         "symfony/yaml": "*",
         "leafs/db": "^5.1",
-        "leafs/sprout": "^5.0"
+        "leafs/sprout": "^5.1"
     },
     "require-dev": {
         "pestphp/pest": "*",

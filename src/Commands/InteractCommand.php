@@ -14,9 +14,15 @@ class InteractCommand extends Command
     protected function handle()
     {
         if (!sprout()->composer()->hasDependency('psy/psysh')) {
+            if (!sprout()->confirm('interact needs psy/psysh (dev dependency). Install it now?', true)) {
+                $this->writeln('Skipped. Run `composer require psy/psysh --dev` when you want the REPL.');
+
+                return 1;
+            }
+
             $this->comment('> Installing psy/psysh...');
 
-            if (!sprout()->composer()->install('psy/psysh')) {
+            if (!sprout()->composer()->installDev('psy/psysh')) {
                 $this->writeln('<error>❌  Failed to install psy/psysh.</error>');
                 return 1;
             }
