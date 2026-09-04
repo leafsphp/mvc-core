@@ -93,6 +93,17 @@ class ServeCommand extends Command
             }
         }
 
+        $displayHost = ($this->host === '0.0.0.0' || $this->host === '::') ? 'localhost' : $this->host;
+        $this->writeln("<info> ➜ </info>Local:   <comment>http://{$displayHost}:{$this->port}</comment>");
+
+        if ($this->host === '0.0.0.0' || $this->host === '::') {
+            if ($lanIp = $this->detectLanIp()) {
+                $this->writeln("<info> ➜ </info>Network: <comment>http://{$lanIp}:{$this->port}</comment> (reachable from other devices)");
+            }
+        } else {
+            $this->writeln("<info> ➜ </info>Network: re-run with <comment>--host=0.0.0.0</comment> to test on your phone");
+        }
+
         $this->info("\nHappy gardening 🍁\n");
 
         $watchEnv = !$this->option('no-env-watch') && file_exists(getcwd() . DIRECTORY_SEPARATOR . '.env');
@@ -104,6 +115,35 @@ class ServeCommand extends Command
         }
 
         return $exitCode;
+    }
+
+    /**
+     * Best-effort LAN IP detection for the Network line. Returns null when
+     * the machine's address cannot be determined confidently.
+     */
+    protected function detectLanIp(): ?string
+    {
+        if (function_exists('socket_create')) {
+            $socket = @socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+
+            if ($socket) {
+                @socket_connect($socket, '8.8.8.8', 53);
+                @socket_getsockname($socket, $ip);
+                socket_close($socket);
+
+                if (!empty($ip) && $ip !== '0.0.0.0' && strpos($ip, '127.') !== 0) {
+                    return $ip;
+                }
+            }
+        }
+
+        $ip = gethostbyname(gethostname());
+
+        if (filter_var($ip, FILTER_VALIDATE_IP) && strpos($ip, '127.') !== 0) {
+            return $ip;
+        }
+
+        return null;
     }
 
     /**
