@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
     leaf({
-      input: ['js/app.js', 'css/app.css'],
+      input: ['app/views/js/app.js', 'app/views/css/app.css'],
       refresh: true,
     }),
   ],
